@@ -110,7 +110,14 @@ e//weapon \*§\* - Generates a random weapon. If text is added, it will put the 
 
 
 
+### role - Roles
+
+e//role @ # - Gives/removes a role (via id) to/from a user if they don't/already have said role.
+
+
+
 ### tags - Tags
+
 
 e//tag ena - Enables tags
 
