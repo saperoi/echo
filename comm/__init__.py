@@ -10,8 +10,6 @@ from .gif_com import gboop
 from .gif_com import gbark
 from .gif_com import gwag
 from .gif_com import gboof
-from .comm import atheria_council
-from .comm import atheria_guilds
 from .comm import mats0
 from .comm import mats1
 from .comm import mats2
