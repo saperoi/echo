@@ -16,7 +16,7 @@ def unload(bot):
 @lightbulb.option("dX", "Type of dice (e.g. 6 for d6, 20 for d20)")
 @lightbulb.option("amount", "Amount of dice", type=int)
 @lightbulb.set_help("Rolls a set amount of dice with some amount of sides. Example command: a//dice 2 d6 (the d is optional)")
-@lightbulb.command("dice", "Rolls a dice")
+@lightbulb.command("dice", "Rolls a dice", aliases="roll")
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def dice(ctx: lightbulb.Context):
     comm.log_com(ctx)
