@@ -92,9 +92,9 @@ e//dice | / # - Roll a dice. |: amount of dice, /: sides of dice (eg d20), #: bo
 
 e//coin - Flip a coin, it has a 1 in 6000 chance of landing on its side, are you that lucky?
 
-e//8ball ... - Ask the magic 8ball some questions.
+e//8ball \* - Ask the magic 8ball some questions.
 
-e//rps . - Rock paper scissors against the bot
+e//rps \* - Rock paper scissors against the bot
 
 
 
