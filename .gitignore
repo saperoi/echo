@@ -1,0 +1,4 @@
+bk_db.db
+log.txt
+*.pyc
+.env
