@@ -108,7 +108,7 @@ async def serverinfo(ctx: lightbulb.Context):
     if ctx.options.server == None:
         u = ctx.guild_id
     else:
-        u = ctx.options.user
+        u = ctx.options.server
     su = await ctx.app.rest.fetch_guild(u)
     description = ""
     description += "ServerID: " + str(su.id) + "\n"
