@@ -101,9 +101,9 @@ async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.option("server", "The user to get their avatar.", required=False)
 @lightbulb.set_help("The usual userinfo command. Can be ping or user ID")
-@lightbulb.command("userinfo", "Gets someone's avatar", aliases=["whois"])
+@lightbulb.command("serverinfo", "Gets someone's avatar", aliases=["whois"])
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
-async def userinfo(ctx: lightbulb.Context):
+async def serverinfo(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if ctx.options.user == None:
         u = ctx.guild_id
@@ -118,8 +118,8 @@ async def userinfo(ctx: lightbulb.Context):
     embed.set_thumbnail(su.icon_url)
     await ctx.respond(embed)
 
-@userinfo.set_error_handler
-async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
+@serverinfo.set_error_handler
+async def serverinfo_error_handler(event: lightbulb.CommandErrorEvent):
     exception = event.exception.__cause__ or event.exception
     if isinstance(exception, ValueError):
         await event.context.respond("You did not provide a server (ID)")
