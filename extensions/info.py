@@ -64,7 +64,7 @@ async def avatar_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("This user does not EXIST")
 
 @plugin.command
-@lightbulb.option("user", "The user to get their avatar.", required=False)
+@lightbulb.option("user", "The user to get their info.", required=False)
 @lightbulb.set_help("The usual userinfo command. Can be ping or user ID")
 @lightbulb.command("userinfo", "Gets someone's avatar", aliases=["whois"])
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
@@ -99,13 +99,13 @@ async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("This user does not EXIST")
 
 @plugin.command
-@lightbulb.option("server", "The user to get their avatar.", required=False)
+@lightbulb.option("server", "The server to get their info.", required=False)
 @lightbulb.set_help("The usual serverinfo command. Can be ping or user ID")
 @lightbulb.command("serverinfo", "Gets someone's avatar")
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def serverinfo(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    if ctx.options.user == None:
+    if ctx.options.server == None:
         u = ctx.guild_id
     else:
         u = ctx.options.user
