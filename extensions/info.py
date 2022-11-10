@@ -100,7 +100,7 @@ async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
 
 @plugin.command
 @lightbulb.option("server", "The user to get their avatar.", required=False)
-@lightbulb.set_help("The usual userinfo command. Can be ping or user ID")
+@lightbulb.set_help("The usual serverinfo command. Can be ping or user ID")
 @lightbulb.command("serverinfo", "Gets someone's avatar")
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def serverinfo(ctx: lightbulb.Context):
