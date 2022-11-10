@@ -53,7 +53,7 @@ async def avatar(ctx: lightbulb.Context):
         embed.set_image(ru.default_avatar_url)
     else:
         embed.set_image(ru.avatar_url)
-    await comm.send_msg(ctx,embed)
+    await ctx.respond(embed)
 
 @avatar.set_error_handler
 async def avatar_error_handler(event: lightbulb.CommandErrorEvent):
@@ -88,7 +88,7 @@ async def userinfo(ctx: lightbulb.Context):
         embed.set_thumbnail(ru.default_avatar_url)
     else:
         embed.set_thumbnail(ru.avatar_url)
-    await comm.send_msg(ctx,embed)
+    await ctx.respond(embed)
 
 @userinfo.set_error_handler
 async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
@@ -97,3 +97,31 @@ async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("You did not provide a user (ID)")
     elif isinstance(exception, hikari.errors.NotFoundError):
         await event.context.respond("This user does not EXIST")
+
+@plugin.command
+@lightbulb.option("server", "The user to get their avatar.", required=False)
+@lightbulb.set_help("The usual userinfo command. Can be ping or user ID")
+@lightbulb.command("userinfo", "Gets someone's avatar", aliases=["whois"])
+@lightbulb.implements(lightbulb.PrefixCommandGroup)
+async def userinfo(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    if ctx.options.user == None:
+        u = ctx.guild_id
+    else:
+        u = ctx.options.user
+    su = await ctx.app.rest.fetch_guild(u)
+    description = ""
+    description += "ServerID: " + str(su.id) + "\n"
+    description += "Created at: " + str(su.created_at)[:16] + "\n"
+    description += "Owner: " + str(su.owner_id) + "<@" + str(su.owner_id) + ">\n"
+    embed = hikari.Embed(title=str(su.name), description=description, color=random.randint(0x0, 0xffffff))
+    embed.set_thumbnail(su.icon_url)
+    await ctx.respond(embed)
+
+@userinfo.set_error_handler
+async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
+    exception = event.exception.__cause__ or event.exception
+    if isinstance(exception, ValueError):
+        await event.context.respond("You did not provide a server (ID)")
+    elif isinstance(exception, hikari.errors.NotFoundError):
+        await event.context.respond("This server does not EXIST")
