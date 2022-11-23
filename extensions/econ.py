@@ -3,6 +3,7 @@ import comm
 import sqlite3
 import random
 import hikari
+import math
 
 plugin = lightbulb.Plugin('econ', 'MONEY MONEY MONEY MONEY MONEY -Mr Krabs')
 
@@ -138,13 +139,32 @@ async def gamble(ctx: lightbulb.Context):
             await comm.send_msg(ctx,"💰💰💰 You WON Ξ" + str(ctx.options.amount))
 
 @plugin.command
-@lightbulb.set_help("Not functioning")
+@lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
+@lightbulb.set_help("See the top 10 richest folks")
 @lightbulb.command("leaderboard", "Check the top 10 users", aliases=["lb"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def leaderboard(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = ctx.author.id
     table_check(ctx.guild_id, ctx.author.id)
+    cureco.execute("SELECT uid, wallet + bank AS netto FROM eco_" + str(ctx.guild_id) + " ORDER BY netto DESC")
+    t = cureco.fetchall()
+    coneco.commit()
+    if ctx.options.page > math.ceil(len(t)/10):
+        page = math.ceil(len(t)/10) -1
+    else:
+        page = ctx.options.page -1
+    msg = ""
+    for b in range(len(t) % 10):
+        id, net = t[b + page*10]
+        msg += str(b+1 + page*10) + ". <@" + str(id) +">: Ξ" + str(net) + "\n"
+    msg += "Page " + str(page +1) + " out of " + str(math.ceil(len(t)/10))
+    print(msg)
+    await comm.send_msg(ctx,msg)
+
+"""
+SELECT id, wallet + bank AS netto FROM <econ table> ORDER BY netto DESC
+"""
 
 @plugin.command
 @lightbulb.add_cooldown(3600, 1, lightbulb.UserBucket)

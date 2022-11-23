@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 import hikari
 import lightbulb
@@ -6,8 +7,13 @@ import comm
 
 load_dotenv()
 
-__tok = os.getenv("T")
-__prf = os.getenv("P")
+mode = sys.argv[1]
+if mode.lower() == "echo":
+    __tok = os.getenv("ECHO_T")
+    __prf = os.getenv("ECHO_P")
+elif mode.lower() == "ache":
+    __tok = os.getenv("ACHE_T")
+    __prf = os.getenv("ACHE_P")
 
 bot = lightbulb.BotApp(token=__tok, prefix=__prf)
 

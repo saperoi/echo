@@ -23,12 +23,10 @@ def user_id_check(u):
         raise ValueError
 
 async def send_msg(ctx: lightbulb.Context, txt: str):
-    if len(txt) > 6000:
-        await ctx.respond('Sorry, but this command has resulted in a response message exceeding a length of 6000 characters. To prevent abuse, this message has not been sent.')
+    if len(txt) > 2000:
+        await ctx.respond('Sorry, but this command has resulted in a response message exceeding a length of 2000 characters. The expected message hasn\'t been sent.')
     else:
-        lines = textwrap.wrap(txt, 2000, break_long_words=False)
-        for i in range(len(lines)):
-            await ctx.respond(lines[i])
+        await ctx.respond(txt)
 
 def rndm_name():
     chars = [random.choice('azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890') for _ in range(10)]
