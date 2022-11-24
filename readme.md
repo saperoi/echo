@@ -42,7 +42,7 @@ e//work - Get money, 1 hr cooldown
 
 e//rob @ - Get someone else's money, 1 hr cooldown
 
-
+e//leaderboard # - show the top #*10 users in the server
 
 ### gifs - Gifs
 
@@ -130,3 +130,8 @@ e//tag rec \* - Recalls a tag
 e//tag crt \* \* - Create a tag
 
 e//tag dlt \* - Remove a tag
+
+
+### misc - Miscellaneous
+
+e//urban \* - Search the Urban Dictionary for a term
