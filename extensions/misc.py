@@ -33,20 +33,3 @@ async def urban(ctx: lightbulb.Context):
 
     data = json.loads(response.text)
     await comm.send_msg(ctx, data["list"][0]["definition"].replace("[","").replace("]",""))
-
-"""
-url = "https://mashape-community-urban-dictionary.p.rapidapi.com/define"
-
-querystring = {"term":"wat"}
-
-headers = {
-    "X-RapidAPI-Key": "1e8d7c0b8cmsh5be7f5eadc26662p1919bfjsn1850caabedb4",
-    "X-RapidAPI-Host": "mashape-community-urban-dictionary.p.rapidapi.com"
-}
-
-response = requests.request("GET", url, headers=headers, params=querystring)
-
-data = json.loads(response.text)
-
-print(data["list"][0]["definition"].replace("[","").replace("]",""))
-"""
