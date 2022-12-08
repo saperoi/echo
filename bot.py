@@ -15,7 +15,7 @@ elif mode.lower() == "ache":
     __tok = os.getenv("ACHE_T")
     __prf = os.getenv("ACHE_P")
 
-bot = lightbulb.BotApp(token=__tok, prefix=__prf)
+bot = lightbulb.BotApp(token=__tok, prefix=__prf, intents=hikari.Intents.ALL_UNPRIVILEGED | hikari.Intents.MESSAGE_CONTENT)
 
 """
 @bot.listen(lightbulb.CommandErrorEvent)
@@ -51,6 +51,49 @@ async def slst(ctx: lightbulb.Context):
     for i in range(len(results)):
         re += str(results[i].id) + " - " + results[i].name + "\n"
     await ctx.respond(re)
+
+@bot.command
+@lightbulb.add_checks(lightbulb.owner_only)
+@lightbulb.option("server", "The server to create an invite for.", required=True, type=int)
+@lightbulb.command("inv", "Make a server invite")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def inv(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    g = await ctx.app.rest.fetch_my_guilds()
+    gr = [item for item in g]
+    gre = []
+    for i in range(len(gr)):
+        gre.append(int(gr[i].id))
+    if ctx.options.server not in gre:
+        re = "I am not a member of that guild"
+    else:
+        s = await ctx.app.rest.fetch_guild(ctx.options.server)
+        print(s)
+        print(s.id)
+        c = await ctx.app.rest.fetch_guild_channels(s.id)
+        re = ""
+        print(c)
+        f = True
+        i = 0
+        while f:
+            try:
+                t = type(c[i])
+                print(t)
+                if str(t) != "<class 'hikari.channels.GuildTextChannel'>":
+                    raise Exception
+                invite = await ctx.app.rest.create_invite(c[i])
+                re = str(invite)
+                f = False
+            except:
+                i += 1
+    await ctx.respond(re)
+
+@bot.command
+@lightbulb.command("pigng", "checks the bot is alive")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def pigng(ctx: lightbulb.Context) -> None:
+    await ctx.respond("Pong!")
+
 
 bot.load_extensions_from("./extensions")
 
