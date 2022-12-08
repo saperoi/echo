@@ -88,13 +88,6 @@ async def inv(ctx: lightbulb.Context):
                 i += 1
     await ctx.respond(re)
 
-@bot.command
-@lightbulb.command("pigng", "checks the bot is alive")
-@lightbulb.implements(lightbulb.PrefixCommand)
-async def pigng(ctx: lightbulb.Context) -> None:
-    await ctx.respond("Pong!")
-
-
 bot.load_extensions_from("./extensions")
 
 bot.run()
