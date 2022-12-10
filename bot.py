@@ -90,4 +90,4 @@ async def inv(ctx: lightbulb.Context):
 
 bot.load_extensions_from("./extensions")
 
-bot.run()
+bot.run(activity=hikari.Activity(name="the " + __prf + "help command", type=hikari.presences.ActivityType.WATCHING), status=hikari.presences.Status.ONLINE)
