@@ -162,10 +162,6 @@ async def leaderboard(ctx: lightbulb.Context):
     print(msg)
     await comm.send_msg(ctx,msg)
 
-"""
-SELECT id, wallet + bank AS netto FROM <econ table> ORDER BY netto DESC
-"""
-
 @plugin.command
 @lightbulb.add_cooldown(3600, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 hour cooldown. Get between Ξ20 and Ξ120.")
