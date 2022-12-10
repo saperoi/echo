@@ -178,6 +178,36 @@ async def work(ctx: lightbulb.Context):
     await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for your hard work.")
 
 @plugin.command
+@lightbulb.add_cooldown(3600*24, 1, lightbulb.UserBucket)
+@lightbulb.set_help("1 day cooldown.")
+@lightbulb.command("daily", "Get cash yo")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def daily(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    table_check(ctx.guild_id, ctx.author.id)
+    p = random.randint(50, 200)
+    cureco.execute("SELECT wallet FROM eco_" + str(ctx.guild_id) + " WHERE uid=?", (ctx.author.id,))
+    wallet, = cureco.fetchone()
+    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p,ctx.author.id))
+    coneco.commit()
+    await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for your hard work.")
+
+@plugin.command
+@lightbulb.add_cooldown(3600*24*7, 1, lightbulb.UserBucket)
+@lightbulb.set_help("1 week cooldown.")
+@lightbulb.command("weekly", "Get cash yo")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def weekly(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    table_check(ctx.guild_id, ctx.author.id)
+    p = random.randint(350, 1400)
+    cureco.execute("SELECT wallet FROM eco_" + str(ctx.guild_id) + " WHERE uid=?", (ctx.author.id,))
+    wallet, = cureco.fetchone()
+    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p,ctx.author.id))
+    coneco.commit()
+    await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for your hard work.")
+
+@plugin.command
 @lightbulb.add_cooldown(3600, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 hour cooldown. Ξ100 fine if caught (50%).")
 @lightbulb.option("user", "The user to rob.", required=True)
