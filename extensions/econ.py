@@ -71,7 +71,7 @@ async def deposit(ctx: lightbulb.Context):
     else:
         bank += ctx.options.amount
         wallet -= ctx.options.amount
-        cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET bank=?, wallet=? WHERE uid=?", (bank,wallet,ctx.author.id))
+        cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET bank=?, wallet=? WHERE uid=?", (bank,wallet, ctx.author.id))
         coneco.commit()
         await comm.send_msg(ctx,"Deposited Ξ" + str(ctx.options.amount))
 
@@ -101,7 +101,7 @@ async def withdraw(ctx: lightbulb.Context):
     else:
         bank -= ctx.options.amount
         wallet += ctx.options.amount
-        cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET bank=?, wallet=? WHERE uid=?", (bank,wallet,ctx.author.id))
+        cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET bank=?, wallet=? WHERE uid=?", (bank,wallet, ctx.author.id))
         coneco.commit()
         await comm.send_msg(ctx,"Withdrew Ξ" + str(ctx.options.amount))
 
@@ -130,11 +130,11 @@ async def gamble(ctx: lightbulb.Context):
     else:
         r = random.randint(0,10)
         if r in [0,1,2,3,4,5]:
-            cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet-ctx.options.amount,ctx.author.id))
+            cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet-ctx.options.amount, ctx.author.id))
             coneco.commit()
             await comm.send_msg(ctx,"💸💸💸 You LOST Ξ" + str(ctx.options.amount))
         elif r in [6,7,8,9,10]:
-            cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet+ctx.options.amount,ctx.author.id))
+            cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet+ctx.options.amount, ctx.author.id))
             coneco.commit()
             await comm.send_msg(ctx,"💰💰💰 You WON Ξ" + str(ctx.options.amount))
 
@@ -173,7 +173,7 @@ async def work(ctx: lightbulb.Context):
     p = random.randint(20, 120)
     cureco.execute("SELECT wallet FROM eco_" + str(ctx.guild_id) + " WHERE uid=?", (ctx.author.id,))
     wallet, = cureco.fetchone()
-    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p,ctx.author.id))
+    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p, ctx.author.id))
     coneco.commit()
     await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for your hard work.")
 
@@ -188,7 +188,7 @@ async def daily(ctx: lightbulb.Context):
     p = random.randint(50, 200)
     cureco.execute("SELECT wallet FROM eco_" + str(ctx.guild_id) + " WHERE uid=?", (ctx.author.id,))
     wallet, = cureco.fetchone()
-    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p,ctx.author.id))
+    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p, ctx.author.id))
     coneco.commit()
     await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for your hard work.")
 
@@ -203,7 +203,7 @@ async def weekly(ctx: lightbulb.Context):
     p = random.randint(350, 1400)
     cureco.execute("SELECT wallet FROM eco_" + str(ctx.guild_id) + " WHERE uid=?", (ctx.author.id,))
     wallet, = cureco.fetchone()
-    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p,ctx.author.id))
+    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p, ctx.author.id))
     coneco.commit()
     await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for your hard work.")
 
