@@ -76,11 +76,11 @@ async def userinfo(ctx: lightbulb.Context):
         u = int(ctx.author.id)
     ru = await ctx.app.rest.fetch_user(u)
     description = ""
-    description += "UserID: " + str(ru.id) + "\n"
-    description += "Created at: " + str(ru.created_at)[:16] + "\n"
+    description += "**UserID**: " + str(ru.id) + "\n"
+    description += "**Created at**: " + str(ru.created_at)[:16] + "\n"
     try:
         rm = await ctx.app.rest.fetch_member(ctx.guild_id, u)
-        description += "Joined at: " + str(rm.joined_at)[:16] + "\n"
+        description += "**Joined at**: " + str(rm.joined_at)[:16] + "\n"
     except:
         pass
     embed = hikari.Embed(title=str(ru.username) + "#" + str(ru.discriminator), description=description, color=random.randint(0x0, 0xffffff))
@@ -111,9 +111,9 @@ async def serverinfo(ctx: lightbulb.Context):
         u = ctx.options.server
     su = await ctx.app.rest.fetch_guild(u)
     description = ""
-    description += "ServerID: " + str(su.id) + "\n"
-    description += "Created at: " + str(su.created_at)[:16] + "\n"
-    description += "Owner: " + str(su.owner_id) + "<@" + str(su.owner_id) + ">\n"
+    description += "**ServerID**: " + str(su.id) + "\n"
+    description += "**Created at**: " + str(su.created_at)[:16] + "\n"
+    description += "**Owner**: " + str(su.owner_id) + "<@" + str(su.owner_id) + ">\n"
     embed = hikari.Embed(title=str(su.name), description=description, color=random.randint(0x0, 0xffffff))
     embed.set_thumbnail(su.icon_url)
     await ctx.respond(embed)
