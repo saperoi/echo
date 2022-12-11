@@ -2,8 +2,8 @@ import sqlite3
 coninv = sqlite3.connect("./db/invt.db")
 curinv = coninv.cursor()
 items =[
-(0, 'Shovel', 30, 1),
-(1, 'Digging License', 80, 1)
+(0, 'Shovel', 200, 1),
+(1, 'Digging License', 500, 1)
 ]
 
 curinv.execute("DROP TABLE IF EXISTS item")

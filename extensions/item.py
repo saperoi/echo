@@ -4,6 +4,7 @@ import sqlite3
 import random
 import hikari
 import math
+import random
 
 plugin = lightbulb.Plugin('econ', 'MONEY MONEY MONEY MONEY MONEY -Mr Krabs')
 
@@ -82,7 +83,7 @@ async def buy(ctx: lightbulb.Context):
     curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (ctx.author.id, ctx.options.item))
     amount, = curinv.fetchone()
     coninv.commit()
-    if limit != None and amount == limit:
+    if limit != None and amount >= limit:
         await ctx.respond("You can't buy any more of this item.")
         return
     curinv.execute("UPDATE inv_" + str(ctx.guild_id) + " SET amount=? WHERE uid=? and item=?", (amount+1, ctx.author.id, ctx.options.item))
@@ -118,3 +119,47 @@ async def inv(ctx: lightbulb.Context):
     msg += "Page " + str(page +1) + " out of " + str(math.ceil(len(t)/10))
     print(msg)
     await comm.send_msg(ctx,msg)
+
+@plugin.command
+@lightbulb.option("item", "The item you want to use (USE THE ID SHOWN IN THE SHOP)", type=int, required=True)
+@lightbulb.command("use", "Use an item of yours")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def use(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    inv_table_check(ctx.guild_id, ctx.author.id, ctx.options.item)
+    curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (ctx.author.id, ctx.options.item))
+    amount, = curinv.fetchone()
+    coninv.commit()
+    if amount == 0:
+        await ctx.respond("You don't own this item")
+        return
+
+    if ctx.options.item not in [0]:
+        await ctx.respond("You can't use this item")
+        return
+
+# SHOVEL
+    if ctx.options.item == 0:
+        curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (ctx.author.id, 1))
+        license = curinv.fetchone()
+        if license in [None, (0,)]:
+            re = "You need a license to dig!"
+        else:
+            re = "You tried to dig..."
+            p = random.randint(0,10)
+            if p == 0:
+                re += " BUT YOUR SHOVEL BROKE!"
+                curinv.execute("UPDATE inv_" + str(ctx.guild_id) + " SET amount=? WHERE uid=? and item=?", (amount-1, ctx.author.id, ctx.options.item))
+                coninv.commit()
+            else:
+                re += " and you found..."
+                if p in [1, 3, 5, 7, 9]:
+                    k = random.randint(0,101) * math.ceil(p/2)
+                    re += " Ξ" + str(k) + "! Lucky you!"
+                    cureco.execute("SELECT wallet FROM eco_" + str(ctx.guild_id) + " WHERE uid=?", (ctx.author.id,))
+                    wallet, = cureco.fetchone()
+                    cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet+k, ctx.author.id))
+                    coneco.commit()
+                else:
+                    re += " something, but we don't know what it is yet."
+        await ctx.respond(re)
