@@ -39,8 +39,8 @@ def inv_table_check(s, uid, iid):
 
 @plugin.command
 @lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
-@lightbulb.command("shop", "Shows you all items")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.command("shop", "Shows you all items", aliases=["store", "market"])
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def shop(ctx: lightbulb.Context):
     comm.log_com(ctx)
     curinv.execute("SELECT id, name, price FROM item")
@@ -55,15 +55,13 @@ async def shop(ctx: lightbulb.Context):
         id, name, price = t[b + page*10]
         msg += str(id) + ". " + name + ": Ξ" + str(price) + "\n"
     msg += "Page " + str(page +1) + " out of " + str(math.ceil(len(t)/10))
-    print(msg)
     await comm.send_msg(ctx,msg)
 
 @plugin.command
 @lightbulb.option("item", "The item you want (USE THE ID SHOWN IN THE SHOP)", type=int, default=1)
 @lightbulb.command("buy", "Shows you all items")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def buy(ctx: lightbulb.Context):
-    print(ctx.options.item)
     comm.log_com(ctx)
     curinv.execute("SELECT name, price, lim FROM item WHERE id=?", (ctx.options.item,))
     t = curinv.fetchone()
@@ -95,7 +93,7 @@ async def buy(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
 @lightbulb.command("inv", "Shows you all items", aliases=["inventory"])
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def inv(ctx: lightbulb.Context):
     comm.log_com(ctx)
     curinv.execute("CREATE TABLE IF NOT EXISTS inv_" + str(ctx.guild_id) + "(uid INTEGER, item INTEGER, amount INTEGER)")
@@ -115,15 +113,16 @@ async def inv(ctx: lightbulb.Context):
         item, amount = t[b + page*10]
         curinv.execute("SELECT name FROM item WHERE id=?", (item,))
         name, = curinv.fetchone()
-        msg += str(amount) + " " + name + "\n"
+        if amount != 0:
+            msg += "(" + str(item) + ") " + str(amount) + " " + name + "\n"
     msg += "Page " + str(page +1) + " out of " + str(math.ceil(len(t)/10))
-    print(msg)
     await comm.send_msg(ctx,msg)
 
 @plugin.command
+@lightbulb.option("user", "The user to use something on.", required=False)
 @lightbulb.option("item", "The item you want to use (USE THE ID SHOWN IN THE SHOP)", type=int, required=True)
 @lightbulb.command("use", "Use an item of yours")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def use(ctx: lightbulb.Context):
     comm.log_com(ctx)
     inv_table_check(ctx.guild_id, ctx.author.id, ctx.options.item)
@@ -134,7 +133,7 @@ async def use(ctx: lightbulb.Context):
         await ctx.respond("You don't own this item")
         return
 
-    if ctx.options.item not in [0]:
+    if ctx.options.item not in [0, 3]:
         await ctx.respond("You can't use this item")
         return
 
@@ -146,6 +145,19 @@ async def use(ctx: lightbulb.Context):
             re = "You need a license to dig!"
         else:
             re = "You tried to dig..."
+            if ctx.options.user != None:
+                try:
+                    comm.user_id_check(ctx.options.user)
+                    re += " but WHOAWHOAWHOA WHAT ARE YOU DOING? YOU WOULDN'T... you killed them... YOU BASTARD YOU KILLED THEM!"
+                    p = random.randint(0,2)
+                    if p == 0:
+                        re += " At least your shovel broke, so you can't hurt anyone with it anymore!"
+                        curinv.execute("UPDATE inv_" + str(ctx.guild_id) + " SET amount=? WHERE uid=? and item=?", (amount-1, ctx.author.id, ctx.options.item))
+                        coninv.commit()
+                    await ctx.respond(re)
+                    return
+                except:
+                    pass
             p = random.randint(0,10)
             if p == 0:
                 re += " BUT YOUR SHOVEL BROKE!"
@@ -163,3 +175,49 @@ async def use(ctx: lightbulb.Context):
                 else:
                     re += " something, but we don't know what it is yet."
         await ctx.respond(re)
+
+#GUN
+    if ctx.options.item == 3:
+        curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (ctx.author.id, 5))
+        license = curinv.fetchone()
+        if license in [None, (0,)]:
+            ownsLicense = False
+        else:
+            ownsLicense = True
+        curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (ctx.author.id, 4))
+        ammo = curinv.fetchone()
+        if ammo in [None, (0,)]:
+            await ctx.respond("You have no bullets to shoot!")
+            return
+        else:
+            ammo, = ammo
+        if ctx.options.user != None:
+            try:
+                u = comm.user_id_check(ctx.options.user)
+                curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (u, 3))
+                oppGun = curinv.fetchone()
+                if oppGun in [None, (0,)]:
+                    oppGun = False
+                else:
+                    oppGun = True
+                u = comm.user_id_check(ctx.options.user)
+                curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (u, 4))
+                oppAmmo = curinv.fetchone()
+                if oppAmmo in [None, (0,)]:
+                    oppAmmo = False
+                else:
+                    oppAmmo = True
+                if oppAmmo and oppGun:
+                    p = random.randint(0,2)
+                    if p == 0:
+                        await ctx.respond("<@" + str(u) + "> was aware of the incoming attempt on their life and took yours away instead.")
+                    else:
+                        await ctx.respond("You shot them, dead! DEAD I TELL YOU! WHY.. WHY?")
+                else:
+                    await ctx.respond("Your enemy <@" + str(u) + "> couldn't defend themselves and perished")
+                curinv.execute("UPDATE inv_" + str(ctx.guild_id) + " SET amount=? WHERE uid=? and item=?", (ammo-1, ctx.author.id, 4))
+                coninv.commit()
+            except:
+                await ctx.respond("You didn't target anybody")
+        else:
+            await ctx.respond("You didn't target anybody")

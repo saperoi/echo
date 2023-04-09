@@ -129,12 +129,13 @@ gbonk = [
 "https://c.tenor.com/D_-8tx--KDAAAAAC/chuunibyou-anime.gif",
 "https://c.tenor.com/tf2de2mbRgwAAAAC/touka-kirishima-tokyo-ghoul.gif",
 "https://c.tenor.com/d-VuohsbIQ8AAAAC/arknights-kurotofu.gif",
-"https://c.tenor.com/q_aGiOevPkMAAAAC/kisuke-urahara.gif",
+"https://c.tenor.com/q_aGiOevPkMAAAAC/kisuke-urahara.gif"
+]
+
+ghbonk = [
 "https://c.tenor.com/sbTyMNi0vb0AAAAd/horny-jail-bonk.gif",
 "https://c.tenor.com/GBX2pZtshT4AAAAC/city-hunter-nicky-larson.gif",
 "https://c.tenor.com/MEOjAEYcT2cAAAAC/bonk.gif",
-"https://c.tenor.com/Iv_1zP4135gAAAAC/waifu-maker-how-to-make-waifu.gif",
-"https://c.tenor.com/wCqp5yu_7awAAAAC/horny-bonk-bonk.gif"
 ]
 
 gboop = [

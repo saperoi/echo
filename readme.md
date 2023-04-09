@@ -1,137 +1,140 @@
 # ｅｃｈｏ
 
-
-
 Prefix: e//
 
 Invite link: https://discord.com/api/oauth2/authorize?client_id=1039988982253092926&permissions=8&scope=applications.commands%20bot
 
+# USING
+
+If you wish to use this bot locally, there are a few packages you need to install. These are:  
+- hikari  
+- hikari-lightbulb      /lightbulb  
+- hikari-miru           /miru  
+- python-dotenv         /dotenv  
+- requests  
+- pillow                /PIL  
+
+Then, in the terminal, you need to run:  
+```
+python3 bot.py
+```
+
+# COMMANDS
+
+This lists the commands per module in the source.  
+
+**bold** shows the command name, if preceded by *italics*  it's a subcommand, with the italics being the command group.  
+(items inside the parentheses are your inputs/variables/options, what ever you want to call it.)  
+(*italics inside these parentheses mean it's optional*)  
+[*italics inside these brackets show the command aliases*]  
+
+### Administration (admn.py)
+
+**ban** (user, *reason*): Bans a user from the server  
+**unban** (user): Unbans a user from the server  
+**kick** (user, reason): Kicks a user from the server  
+**purge** (amount) [*clear*]: Deletes up to 100 messages in the channel used in  
+*warn* **add** (user, *reason*): Warn a user  
+*warn* **rmv** (user, timestamp): Remove a warn from a user, uses timestamps as warn ID (use *warn* **lst** to see)  
+*warn* **lst** (user): Lists a user's warns   
+
+### Economy (econ.py)
+
+**balance** (*user*) [*bal*]: See a user's bank and wallet balance  
+**deposit** (amount) [*dep*]: Deposit an amount into your bank (10% of net worth must remain in wallet)  
+**withdraw** (amount) [*wd*, *with*]: Withdraw money into your wallet  
+**gamble** (amount): Gamble your money, you might win!  
+**leaderboard** (*page*) [*lb*]: See the leaderboard's richest people in the server  
+**work**: Go to work (1hr cooldown)  
+**daily**: Get your daily bonus (24hr cooldown)  
+**weekly**: Get your weekly bonus (7d cooldown)  
+**rob** (user): Rob someone for their money (1hr cooldown)  
+**pay** (user, amount): Give someone your money  
+
+### GIFs and Images (gifs.py)
+
+**kill** (user): Kill a user  
+**slap** (user): Slap a user  
+**bonk** (user): Bonk a user  
+**hbonk** (user): Horny bonk a user  
+**boop** (user): Boop a user  
+**boof** (user): Pass the boof to a user  
+**bark** (user): Bark at a user  
+**pat** (user): Headpat a user  
+**wag** (user): Wag your tail at a user  
+**hug** (user): Hug a user  
+**floof**: Send a random fox  
+**doggo**: Send a random dog  
+**ducky**: Send a random duck  
+
+### Information (info.py)
+
+**ping**: Check the bot's latency  
+**check**: Check if the bot can respond  
+**uid**: Get the current user id  
+**sid**: Get the current server id  
+**avatar** (*user*) [*av*]: Get the avatar of a particular Discord user  
+**userinfo** (*user*) [*whois*]: Get information about a particular Discord user  
+**serverinfo** (*server*): Get information about a particular Discord server  
+
+### Items and Inventory (item.py)
+
+**shop** (*page*) [*store*, *market*]: See the available items to buy and their prices  
+**buy** (item): Buy an item  
+**inv** (*page*) [*inventory*]: Check your items  
+**use** (item, *user*): Use an item (on a user if needed)  
+
+### Luck and RNG (luck.py)
+
+**dice** (amount, sides, *bonus*) [*roll*]: Roll a dice (example: /roll 1 d6 -2)  
+**coin** [*flip*]: Flip a coin  
+**8ball** (question): Ask the magic 8-ball something  
+**rps** (hand): Play RPS against the random bot  
+*rtg* **dndalign** (who): Align someone on the chaotic-lawful evil-good scales  
+*rtg* **twunkscale** (who): Put someone on the twink-bear-hunk scale  
+*rtg* **futchscale** (who): Put someone on the femme-butch scale  
+*rtg* **smash_or_pass** (who) [*sop*]: Smash or pass someone  
+*rtg* **susmeter** (who): Measure how sus someone is  
+
+### Miscellaneous (misc.py)
+
+**urban** (word): Look up a word's definition on Urban Dictionary  
+**dict** (word): Look up a word's definition  
+**xkcd** (*comic*): Pull a (random) XKCD comic  
+**echo** (sentence) [*parrot*]: Repeat a sentence back  
+**emojify** (sentence) [*emoji_echo*]: Replace letters with emoji's  
+**atheria_emojify** (sentence) [*atheria_echo*, *atheric_echo*, *atheric_emojify*]: Replace letters with emoji's from ATHERIA  
+
+### Image Manipulation (pict.py)
 
+**show_color** (color): Display a 256x256px image of a particular color  
 
-## command list
+### Games (play.py)
 
-### admn - Administration
+**weapon** (*sentence*): Generate a random weapon (place § where you want it to appear)  
+**ninemaze** [*9maze*]: Small original RPG  
+**chess**: Play chess against a really bad robot  
 
-e//ban @ - Ban a user
+### Roles (role.py)
 
-e//unban @ - Unban a user
+**role** (user, role): Add or remove a role from a user if they don't or do have it (switch)  
+*role* **add** (user, role): Add a role to a user  
+*role* **rmv** (user, role): Remove a role from a user  
+*role* **in** (role): Lists all users that have a certain role  
+*role* **list**: List all the roles in the server  
+*role* **info** (role): Gets information about a role  
+*role* **purge_role_members** (role to remove, role to look in) [*prm*]: Remove a certain role from members with a different role  
+*role* **add_role_members** (role to add, role to add in) [*arm*]: Add a cartain role to members with a different role  
+*role* **global_add** (user, role) [*gadd*, *g_add*]: Add a role to a user across different Atheric servers  
 
-e//kick @ - Kick a user
+### Tags (tags.py)
 
-e//warn add @ - Ban a user
+*tag*: Regular server tags  
+*g_tag*: Global tags added by the developer  
 
-e//warn rmv @ - Ban a user
-
-e//warn lst @ - Ban a user
-
-e//purge # - Ban a user       Aliases: e//clear
-
-
-
-### econ - Economy  (not global)
-
-e//balance @ - Check a user's balance
-
-e//deposit # - Deposit your money into the bank (10% must remain in your wallet)
-
-e//withdraw # - Withdraw some money from the bank
-
-e//gamble # - 5/11 odds to double your money
-
-e//work - Get money, 1 hr cooldown
-
-e//rob @ - Get someone else's money, 1 hr cooldown
-
-e//leaderboard # - show the top #*10 users in the server
-
-### gifs - Gifs
-
-e//boof @ - Pass it to 'em
-
-e//wag @ - Wag at 'em
-
-e//hug @ - Hug 'em
-
-e//kill @ - Kill 'em
-
-e//slap @ - Slap 'em
-
-e//bark @ - Bark at 'em
-
-e//pat @ - Pat 'em
-
-e//bonk @ - bonk 'em
-
-e//boop @ - Boop 'em
-
-e//ducky - quack :)
-
-e//floof - floofy :)
-
-e//doggo - pupper :)
-
-
-
-### info - Information
-
-e//ping - Pong! Get latency
-
-e//uid - Get your user ID
-
-e//sid - Get the current server ID
-
-e//avatar @ - Get someone's avatar       Aliases: e//av
-
-e//userinfo @ - Regular userinfo command       Aliases: e//whois
-
-
-
-### luck - Luck
-
-e//dice | / # - Roll a dice. |: amount of dice, /: sides of dice (eg d20), #: bonus (eg +-2)       Aliases: e//roll
-
-e//coin - Flip a coin, it has a 1 in 6000 chance of landing on its side, are you that lucky?
-
-e//8ball \* - Ask the magic 8ball some questions.
-
-e//rps \* - Rock paper scissors against the bot
-
-
-
-### pict - Picture manipulation
-
-None yet
-
-
-
-### play - Roleplay
-
-e//weapon \*§\* - Generates a random weapon. If text is added, it will put the weapon at the end unless you add this character: §, then it will replace and put it there.
-
-
-
-### role - Roles
-
-e//role @ # - Gives/removes a role (via id) to/from a user if they don't/already have said role.
-
-
-
-### tags - Tags
-
-
-e//tag ena - Enables tags
-
-e//tag dis - Disables tags
-
-e//tag lst - Lists tags in server
-
-e//tag rec \* - Recalls a tag
-
-e//tag crt \* \* - Create a tag
-
-e//tag dlt \* - Remove a tag
-
-
-### misc - Miscellaneous
-
-e//urban \* - Search the Urban Dictionary for a term
+*(t)* **ena**: Enable tags  
+*(t)* **dis**: Disable tags  
+*(t/g)* **rec** (name): Send a tag  
+*(t)* **crt** (name, content): Create a tag  
+*(t)* **dlt** (name): Delete a tag  
+*(t/g)* **lst**: Lists all tags  

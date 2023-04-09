@@ -6,7 +6,6 @@ import random
 import datetime
 import sqlite3
 import time
-import re
 
 plugin = lightbulb.Plugin('admn')
 
@@ -23,7 +22,7 @@ def unload(bot):
 @lightbulb.option("user", "The user to ban.")
 @lightbulb.set_help("Ban a user. May use user ID or ping")
 @lightbulb.command("ban", "Ban a user from the server.")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def ban(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = comm.user_id_check(ctx.options.user)
@@ -49,7 +48,7 @@ async def ban_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("user", "The user to kick.")
 @lightbulb.set_help("Kick a user. May use user ID or ping")
 @lightbulb.command("kick", "Kick a user from the server.")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def kick(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = comm.user_id_check(ctx.options.user)
@@ -74,7 +73,7 @@ async def kick_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("user", "The user to unban.")
 @lightbulb.set_help("Unban a user. May use user ID or ping")
 @lightbulb.command("unban", "Unban a user from the server.")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def unban(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = comm.user_id_check(ctx.options.user)
@@ -93,9 +92,9 @@ async def unban_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
 @lightbulb.option("amount", "The amount of messages to remove.", required=True, type=int)
-@lightbulb.set_help("Purges an amount of messages. Must be between 0 abnd 100. Messages cannot be older than 14 days.")
+@lightbulb.set_help("Purges an amount of messages. Must be between 0 and 100. Messages cannot be older than 14 days.")
 @lightbulb.command("purge", "Purges a set amount of messages.", aliases=["clear"])
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def purge(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if 0 < int(ctx.options.amount) <= 100:
@@ -103,7 +102,7 @@ async def purge(ctx: lightbulb.Context):
         await ctx.app.rest.delete_messages(ctx.channel_id, messages)
     else:
         raise ValueError
-    await comm.send_msg(ctx,"Purged " + str(len(messages)) + " messages.", delete_after=3)
+    await ctx.respond("Purged " + str(len(messages)) + " messages.", delete_after=3)
 
 @purge.set_error_handler
 async def purge_error_handler(event: lightbulb.CommandErrorEvent):
@@ -124,7 +123,7 @@ def table_check(s):
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
 @lightbulb.command("warn", "Warning command group")
-@lightbulb.implements(lightbulb.PrefixCommandGroup)
+@lightbulb.implements(lightbulb.PrefixCommandGroup, lightbulb.SlashCommandGroup)
 async def warn(ctx: lightbulb.Context):
     comm.log_com(ctx)
     table_check(ctx.guild_id)
@@ -136,12 +135,12 @@ async def warn(ctx: lightbulb.Context):
 @lightbulb.option("user", "The user to warn.")
 @lightbulb.set_help("Warn a user. May use user ID or ping")
 @lightbulb.command("add", "Warning command group")
-@lightbulb.implements(lightbulb.PrefixSubGroup)
+@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
 async def add(ctx: lightbulb.Context):
     comm.log_com(ctx)
     table_check(ctx.guild_id)
     u = comm.user_id_check(ctx.options.user)
-    curmod.execute("INSERT INTO mod_" + str(ctx.guild_id) + " VALUES (?, ?, ?)", (u, math.floor(time.time()), re.sub(r'[^a-zA-Z0-9]', '',ctx.options.reason)))
+    curmod.execute("INSERT INTO mod_" + str(ctx.guild_id) + " VALUES (?, ?, ?)", (u, math.floor(time.time()), ctx.options.reason))
     await comm.send_msg(ctx,"Warned <@" + str(u) + "> for: " + ctx.options.reason)
     conmod.commit()
 
@@ -160,7 +159,7 @@ async def add_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("user", "The user to unwarn.")
 @lightbulb.set_help("Unwarn a user. May use user ID or ping")
 @lightbulb.command("rmv", "Warning command group")
-@lightbulb.implements(lightbulb.PrefixSubGroup)
+@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
 async def rmv(ctx: lightbulb.Context):
     comm.log_com(ctx)
     table_check(ctx.guild_id)
@@ -183,7 +182,7 @@ async def rmv_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("user", "The user to list warns from.")
 @lightbulb.set_help("Lists a user's warns. May use user ID or ping")
 @lightbulb.command("lst", "List warnings")
-@lightbulb.implements(lightbulb.PrefixSubGroup)
+@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
 async def lst(ctx: lightbulb.Context):
     comm.log_com(ctx)
     table_check(ctx.guild_id)

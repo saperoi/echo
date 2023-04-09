@@ -21,7 +21,7 @@ def table_check(s, i):
     coneco.commit()
     cureco.execute("SELECT * FROM eco_" + str(s) + " WHERE uid=?", (int(i),))
     if cureco.fetchall() == []:
-        cureco.execute("INSERT INTO eco_" + str(s) + " VALUES (?, ?, ?)", (int(i), 0, 100) )
+        cureco.execute("INSERT INTO eco_" + str(s) + " VALUES (?, ?, ?)", (int(i), 10, 90) )
         coneco.commit()
     coneco.commit()
 
@@ -29,7 +29,7 @@ def table_check(s, i):
 @lightbulb.option("user", "The user to check balance from.", required=False)
 @lightbulb.set_help("Checks a user's balance (yours if user is not specified). Can use mention or user ID")
 @lightbulb.command("balance", "See the balances of a user", aliases=["bal"])
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def balance(ctx: lightbulb.Context):
     comm.log_com(ctx)
     try:
@@ -53,7 +53,7 @@ async def balance(ctx: lightbulb.Context):
 @lightbulb.option("amount", "The amount of money to deposit.", required=True, type=int)
 @lightbulb.set_help("Deposits a set amount of money in the bank. 10% of your net worth must remain in your wallet when depositing.")
 @lightbulb.command("deposit", "Put the money in the bank", aliases=["dep"])
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def deposit(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = ctx.author.id
@@ -81,12 +81,11 @@ async def deposit_error_handler(event: lightbulb.CommandErrorEvent):
     if isinstance(exception, lightbulb.NotEnoughArguments):
         await comm.send_msg(ctx,"You didn't tell me how much to deposit!")
 
-
 @plugin.command
 @lightbulb.option("amount", "The amount of money to withdraw.", required=True, type=int)
 @lightbulb.set_help("Withdraws a set of money from your bank")
 @lightbulb.command("withdraw", "Put the money in the bag", aliases=["wd", "with"])
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def withdraw(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = ctx.author.id
@@ -111,16 +110,15 @@ async def withdraw_error_handler(event: lightbulb.CommandErrorEvent):
     if isinstance(exception, lightbulb.NotEnoughArguments):
         await comm.send_msg(ctx,"You didn't tell me how much to withdraw!")
 
-
 @plugin.command
 @lightbulb.option("amount", "The amount of money to gamble.", required=True, type=int)
 @lightbulb.set_help("Almost 50% odds! 5/11 chance to win.")
 @lightbulb.command("gamble", "Spin away!")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def gamble(ctx: lightbulb.Context):
     comm.log_com(ctx)
     table_check(ctx.guild_id, ctx.author.id)
-    cureco.execute("SELECT wallet FROM eco_" + str(ctx.guild_id) + " WHERE uid=?", (u,))
+    cureco.execute("SELECT wallet FROM eco_" + str(ctx.guild_id) + " WHERE uid=?", (ctx.author.id,))
     wallet, = cureco.fetchone()
     coneco.commit()
     if ctx.options.amount > wallet:
@@ -142,7 +140,7 @@ async def gamble(ctx: lightbulb.Context):
 @lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
 @lightbulb.set_help("See the top 10 richest folks")
 @lightbulb.command("leaderboard", "Check the top 10 users", aliases=["lb"])
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def leaderboard(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = ctx.author.id
@@ -157,16 +155,23 @@ async def leaderboard(ctx: lightbulb.Context):
     msg = ""
     for b in range(len(t) % 10):
         id, net = t[b + page*10]
-        msg += str(b+1 + page*10) + ". <@" + str(id) +">: Ξ" + str(net) + "\n"
+        if len(str(net)) > 3:
+            trunc = str(net)[0] + "." + str(net)[1]
+            trunc += str(int(str(net)[2])+1) if int(str(net)[3]) >= 5 else str(net)[2]
+            trunc += "e" + str(len(str(net))-1)
+        else:
+            trunc = str(net)
+        msg += str(b+1 + page*10) + ". <@" + str(id) +">: Ξ" + trunc + "\n"
     msg += "Page " + str(page +1) + " out of " + str(math.ceil(len(t)/10))
-    print(msg)
-    await comm.send_msg(ctx,msg)
+    embed = hikari.Embed(title="Economy Leaderboard", description=msg, color=random.randint(0x0, 0xffffff))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
 
 @plugin.command
 @lightbulb.add_cooldown(3600, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 hour cooldown. Get between Ξ20 and Ξ120.")
 @lightbulb.command("work", "Get money nicely")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def work(ctx: lightbulb.Context):
     comm.log_com(ctx)
     table_check(ctx.guild_id, ctx.author.id)
@@ -181,7 +186,7 @@ async def work(ctx: lightbulb.Context):
 @lightbulb.add_cooldown(3600*24, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 day cooldown.")
 @lightbulb.command("daily", "Get cash yo")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def daily(ctx: lightbulb.Context):
     comm.log_com(ctx)
     table_check(ctx.guild_id, ctx.author.id)
@@ -190,13 +195,13 @@ async def daily(ctx: lightbulb.Context):
     wallet, = cureco.fetchone()
     cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p, ctx.author.id))
     coneco.commit()
-    await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for your hard work.")
+    await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for existing.")
 
 @plugin.command
 @lightbulb.add_cooldown(3600*24*7, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 week cooldown.")
 @lightbulb.command("weekly", "Get cash yo")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def weekly(ctx: lightbulb.Context):
     comm.log_com(ctx)
     table_check(ctx.guild_id, ctx.author.id)
@@ -205,14 +210,14 @@ async def weekly(ctx: lightbulb.Context):
     wallet, = cureco.fetchone()
     cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p, ctx.author.id))
     coneco.commit()
-    await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for your hard work.")
+    await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for existing.")
 
 @plugin.command
 @lightbulb.add_cooldown(3600, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 hour cooldown. Ξ100 fine if caught (50%).")
 @lightbulb.option("user", "The user to rob.", required=True)
 @lightbulb.command("rob", "Put their money in the bag")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def rob(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = comm.user_id_check(ctx.options.user)
@@ -261,7 +266,7 @@ async def rob_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("user", "The user to pay.", required=True)
 @lightbulb.set_help("Give a user money, may use ping or user ID.")
 @lightbulb.command("pay", "Put your money in the bag")
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def pay(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = comm.user_id_check(ctx.options.user)
@@ -297,7 +302,7 @@ async def pay_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("amount", "The amount of money to add", required=True, type=int)
 @lightbulb.option("user", "The user to check balance from.", required=True)
 @lightbulb.command("deb_add", "Add money to a user", hidden=True)
-@lightbulb.implements(lightbulb.PrefixCommand)
+@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
 async def deb_add(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = comm.user_id_check(ctx.options.user)
