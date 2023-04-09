@@ -4,8 +4,6 @@ import comm
 from PIL import Image
 import base64
 import io
-from PIL import Image
-
 
 # https://stackoverflow.com/questions/60676893/converting-pil-pillow-image-to-data-url
 def pillow_image_to_base64_string(img):
