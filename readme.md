@@ -16,8 +16,9 @@ If you wish to use this bot locally, there are a few packages you need to instal
 
 Then, in the terminal, you need to run:  
 ```
-python3 bot.py
+python3 bot.py <echo/ache>
 ```
+ECHO is the official bot.  ACHE is the testing bot in the dedicated testing server.  
 
 # COMMANDS
 
