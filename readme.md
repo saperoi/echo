@@ -104,7 +104,7 @@ This lists the commands per module in the source.
 **xkcd** (*comic*): Pull a (random) XKCD comic  
 **echo** (sentence) [*parrot*]: Repeat a sentence back  
 **emojify** (sentence) [*emoji_echo*]: Replace letters with emoji's  
-**atheria_emojify** (sentence) [*atheria_echo*, *atheric_echo*, *atheric_emojify*]: Replace letters with emoji's from ATHERIA  
+**cookie** [*cookie_count*, *cookies*]: Shows how many commands have been used since implementation.  
 
 ### Image Manipulation (pict.py)
 
@@ -126,7 +126,6 @@ This lists the commands per module in the source.
 *role* **info** (role): Gets information about a role  
 *role* **purge_role_members** (role to remove, role to look in) [*prm*]: Remove a certain role from members with a different role  
 *role* **add_role_members** (role to add, role to add in) [*arm*]: Add a cartain role to members with a different role  
-*role* **global_add** (user, role) [*gadd*, *g_add*]: Add a role to a user across different Atheric servers  
 
 ### Tags (tags.py)
 
