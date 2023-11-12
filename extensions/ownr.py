@@ -54,16 +54,6 @@ async def bancount(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.owner_only)
-@lightbulb.option("server", "The server to leave", type=int, required=True)
-@lightbulb.command("leave", "Lists the bot's servers", hidden=True)
-@lightbulb.implements(lightbulb.PrefixCommand)
-async def leave(ctx: lightbulb.Context):
-    comm.log_com(ctx)
-    await ctx.app.rest.leave_guild(ctx.options.server)
-    print("Left server")
-
-@plugin.command
-@lightbulb.add_checks(lightbulb.owner_only)
 @lightbulb.option("server", "The server to create an invite for.", required=True, type=int)
 @lightbulb.command("inv", "Make a server invite")
 @lightbulb.implements(lightbulb.PrefixCommand)
