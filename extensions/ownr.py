@@ -52,6 +52,52 @@ async def bancount(ctx: lightbulb.Context):
     bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
     await ctx.respond("This server has " + str(len(bans)) + " bans.")
 
+@plugin.command
+@lightbulb.add_checks(lightbulb.owner_only)
+@lightbulb.option("server", "The server to leave", type=int, required=True)
+@lightbulb.command("leave", "Lists the bot's servers", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def leave(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    await ctx.app.rest.leave_guild(ctx.options.server)
+    print("Left server")
+
+@plugin.command
+@lightbulb.add_checks(lightbulb.owner_only)
+@lightbulb.option("server", "The server to create an invite for.", required=True, type=int)
+@lightbulb.command("inv", "Make a server invite")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def inv(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    g = await ctx.app.rest.fetch_my_guilds()
+    gr = [item for item in g]
+    gre = []
+    for i in range(len(gr)):
+        gre.append(int(gr[i].id))
+    if ctx.options.server not in gre:
+        re = "I am not a member of that guild"
+    else:
+        s = await ctx.app.rest.fetch_guild(ctx.options.server)
+        print(s)
+        print(s.id)
+        c = await ctx.app.rest.fetch_guild_channels(s.id)
+        re = ""
+        print(c)
+        f = True
+        i = 0
+        while f:
+            try:
+                t = type(c[i])
+                print(t)
+                if str(t) != "<class 'hikari.channels.GuildTextChannel'>":
+                    raise Exception
+                invite = await ctx.app.rest.create_invite(c[i])
+                re = str(invite)
+                f = False
+            except:
+                i += 1
+    await ctx.respond(re)
+
 """
 @plugin.command
 @lightbulb.command("test", "test 'em")
