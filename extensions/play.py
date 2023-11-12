@@ -28,7 +28,7 @@ def maze_table_check(s):
 
 @plugin.command
 @lightbulb.option("phrase", "write '§' where the item needs to come.", modifier=lightbulb.OptionModifier.CONSUME_REST, type = str, required = False)
-@lightbulb.option("count", "how many items to generate", type=int, required=False, min_value=1, max_value=100)
+@lightbulb.option("count", "how many items to generate", type=int, required=False, min_value=1, max_value=100, default=1)
 @lightbulb.command("weapon", "Generates a random weapon")
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def weapon(ctx: lightbulb.Context):

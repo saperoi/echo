@@ -152,7 +152,7 @@ async def rtg(ctx: lightbulb.Context):
     comm.log_com(ctx)
 
 @rtg.child
-@lightbulb.option("who", "Who to determine the classpect of", type=str, required=True)
+@lightbulb.option("who", "Who to determine the classpect of", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("HOMESTUCK SBURB Classpects")
 @lightbulb.command("classpect", "HOMESTUCK SBURB Classpects")
 @lightbulb.implements(lightbulb.PrefixSubCommand)
@@ -172,7 +172,7 @@ async def classpect(ctx: lightbulb.Context):
         await comm.send_msg(ctx, ctx.options.who + " is a " + classpects)
 
 @rtg.child
-@lightbulb.option("who", "Who to put on the twunkscale", type=str, required=True)
+@lightbulb.option("who", "Who to put on the twunkscale", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Rates on the Twink-Hunk-Bear Scale")
 @lightbulb.command("twunkscale", "Rates on the Twink-Hunk-Bear Scale")
 @lightbulb.implements(lightbulb.PrefixSubCommand)
@@ -188,7 +188,7 @@ async def twunkscale(ctx: lightbulb.Context):
         await comm.send_msg(ctx, ctx.options.who + " is a " + random.choice(arr))
 
 @rtg.child
-@lightbulb.option("who", "Who to put on the futchscale", type=str, required=True)
+@lightbulb.option("who", "Who to put on the futchscale", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Rates on the Femme-Butch Scale")
 @lightbulb.command("futchscale", "Rates on the Femme-Butch Scale")
 @lightbulb.implements(lightbulb.PrefixSubCommand)
@@ -204,7 +204,7 @@ async def futchscale(ctx: lightbulb.Context):
         await comm.send_msg(ctx, ctx.options.who + " is a " + random.choice(arr))
 
 @rtg.child
-@lightbulb.option("who", "Who to S/P", type=str, required=True)
+@lightbulb.option("who", "Who to S/P", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Pass, Smass or Smash someone")
 @lightbulb.command("smash_or_pass", "Pass, Smass or Smash someone", aliases=["sop"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
@@ -220,7 +220,7 @@ async def smash_or_pass(ctx: lightbulb.Context):
         await comm.send_msg(ctx, "I would " + random.choice(arr) + " " + ctx.options.who)
 
 @rtg.child
-@lightbulb.option("who", "Who to measure", type=str, required=True)
+@lightbulb.option("who", "Who to measure", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Measure someone's sussiness")
 @lightbulb.command("susmeter", "Measure someone's sussiness")
 @lightbulb.implements(lightbulb.PrefixSubCommand)
@@ -235,7 +235,7 @@ async def susmeter(ctx: lightbulb.Context):
         await comm.send_msg(ctx, ctx.options.who + " is " + str(random.randint(0,100)) + "% sus.")
 
 @rtg.child
-@lightbulb.option("who", "Who to measure", type=str, required=True)
+@lightbulb.option("who", "Who to measure", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Measure someone's waifuness")
 @lightbulb.command("ratewaifu", "Measure someone's waifuness")
 @lightbulb.implements(lightbulb.PrefixSubCommand)
@@ -250,7 +250,7 @@ async def ratewaifu(ctx: lightbulb.Context):
         await comm.send_msg(ctx, ctx.options.who + " is " + str(random.randint(0,100)) + "% waifu.")
 
 @rtg.child
-@lightbulb.option("who", "Who to measure", type=str, required=True)
+@lightbulb.option("who", "Who to measure", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Measure someone's PP")
 @lightbulb.command("ppmeter", "Measure someone's PP")
 @lightbulb.implements(lightbulb.PrefixSubCommand)

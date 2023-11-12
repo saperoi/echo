@@ -170,7 +170,7 @@ async def leaderboard(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.add_cooldown(3600, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 hour cooldown. Get between Ξ20 and Ξ120.")
-@lightbulb.command("work", "Get money nicely")
+@lightbulb.command("work", "Get money nicely", aliases=["job"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def work(ctx: lightbulb.Context):
     comm.log_com(ctx)
