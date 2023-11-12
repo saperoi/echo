@@ -55,9 +55,9 @@ async def bancount(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.add_checks(lightbulb.owner_only)
 @lightbulb.option("server", "The server to create an invite for.", required=True, type=int)
-@lightbulb.command("inv", "Make a server invite")
+@lightbulb.command("invite", "Make a server invite")
 @lightbulb.implements(lightbulb.PrefixCommand)
-async def inv(ctx: lightbulb.Context):
+async def invite(ctx: lightbulb.Context):
     comm.log_com(ctx)
     g = await ctx.app.rest.fetch_my_guilds()
     gr = [item for item in g]
