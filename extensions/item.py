@@ -6,7 +6,7 @@ import hikari
 import math
 import random
 
-plugin = lightbulb.Plugin('econ', 'MONEY MONEY MONEY MONEY MONEY -Mr Krabs')
+plugin = lightbulb.Plugin('item', 'YO WHERE DID YOU GET THAT FROM')
 
 def load(bot):
     bot.add_plugin(plugin)
@@ -40,7 +40,7 @@ def inv_table_check(s, uid, iid):
 @plugin.command
 @lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
 @lightbulb.command("shop", "Shows you all items", aliases=["store", "market"])
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def shop(ctx: lightbulb.Context):
     comm.log_com(ctx)
     curinv.execute("SELECT id, name, price FROM item")
@@ -50,17 +50,18 @@ async def shop(ctx: lightbulb.Context):
         page = math.ceil(len(t)/10) -1
     else:
         page = ctx.options.page -1
-    msg = ""
+    msg = "```\n"
     for b in range(len(t) % 10):
         id, name, price = t[b + page*10]
         msg += str(id) + ". " + name + ": Ξ" + str(price) + "\n"
-    msg += "Page " + str(page +1) + " out of " + str(math.ceil(len(t)/10))
+    tempmsg = "Page " + str(page +1) + " out of " + str(math.ceil(len(t)/10))
+    msg += "-"*len(tempmsg) + "\n" + tempmsg + "\n```"
     await comm.send_msg(ctx,msg)
 
 @plugin.command
 @lightbulb.option("item", "The item you want (USE THE ID SHOWN IN THE SHOP)", type=int, default=1)
 @lightbulb.command("buy", "Shows you all items")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def buy(ctx: lightbulb.Context):
     comm.log_com(ctx)
     curinv.execute("SELECT name, price, lim FROM item WHERE id=?", (ctx.options.item,))
@@ -93,7 +94,7 @@ async def buy(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
 @lightbulb.command("inv", "Shows you all items", aliases=["inventory"])
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def inv(ctx: lightbulb.Context):
     comm.log_com(ctx)
     curinv.execute("CREATE TABLE IF NOT EXISTS inv_" + str(ctx.guild_id) + "(uid INTEGER, item INTEGER, amount INTEGER)")
@@ -119,10 +120,10 @@ async def inv(ctx: lightbulb.Context):
     await comm.send_msg(ctx,msg)
 
 @plugin.command
-@lightbulb.option("user", "The user to use something on.", required=False)
+@lightbulb.option("user", "The user to use something on.", type=hikari.Member, required=False)
 @lightbulb.option("item", "The item you want to use (USE THE ID SHOWN IN THE SHOP)", type=int, required=True)
 @lightbulb.command("use", "Use an item of yours")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def use(ctx: lightbulb.Context):
     comm.log_com(ctx)
     inv_table_check(ctx.guild_id, ctx.author.id, ctx.options.item)
@@ -147,7 +148,7 @@ async def use(ctx: lightbulb.Context):
             re = "You tried to dig..."
             if ctx.options.user != None:
                 try:
-                    comm.user_id_check(ctx.options.user)
+                    comm.user_id_check(ctx.options.user.id)
                     re += " but WHOAWHOAWHOA WHAT ARE YOU DOING? YOU WOULDN'T... you killed them... YOU BASTARD YOU KILLED THEM!"
                     p = random.randint(0,2)
                     if p == 0:
@@ -193,14 +194,14 @@ async def use(ctx: lightbulb.Context):
             ammo, = ammo
         if ctx.options.user != None:
             try:
-                u = comm.user_id_check(ctx.options.user)
+                u = ctx.options.user.id
                 curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (u, 3))
                 oppGun = curinv.fetchone()
                 if oppGun in [None, (0,)]:
                     oppGun = False
                 else:
                     oppGun = True
-                u = comm.user_id_check(ctx.options.user)
+                u = ctx.options.user.id
                 curinv.execute("SELECT amount FROM inv_" + str(ctx.guild_id) + " WHERE uid=? and item=?", (u, 4))
                 oppAmmo = curinv.fetchone()
                 if oppAmmo in [None, (0,)]:
@@ -208,11 +209,8 @@ async def use(ctx: lightbulb.Context):
                 else:
                     oppAmmo = True
                 if oppAmmo and oppGun:
-                    p = random.randint(0,2)
-                    if p == 0:
-                        await ctx.respond("<@" + str(u) + "> was aware of the incoming attempt on their life and took yours away instead.")
-                    else:
-                        await ctx.respond("You shot them, dead! DEAD I TELL YOU! WHY.. WHY?")
+                    gunresponses = ["<@" + str(u) + "> was aware of the incoming attempt on their life and took yours away instead.", "You shot them, dead! DEAD I TELL YOU! WHY.. WHY?", "You lost the duel, <@" + str(u) + "> wins.", "You won the duel, you win!"]
+                    await ctx.respond(random.choice(gunresponses))
                 else:
                     await ctx.respond("Your enemy <@" + str(u) + "> couldn't defend themselves and perished")
                 curinv.execute("UPDATE inv_" + str(ctx.guild_id) + " SET amount=? WHERE uid=? and item=?", (ammo-1, ctx.author.id, 4))

@@ -1,0 +1,118 @@
+{
+    "rarity": [
+        "common",
+        "uncommon",
+        "rare",
+        "epic",
+        "legendary",
+        "mythic",
+        "unique"
+    ],
+    "materials": {
+        "common": ["Copper", "Bronze", "Tungsten", "Lead", "Iron", "Steel"],
+        "uncommon": [
+            "Damascus Steel",
+            "Silver",
+            "Gold",
+            "Platinum",
+            "Titanium",
+            "Crystal",
+            "Diamond"
+        ],
+        "rare": [
+            "Obsidian",
+            "Uraninite",
+            "Scarletite",
+            "Cobalt",
+            "Adamantite",
+            "Orichalcum",
+            "Palladium",
+            "Mythril",
+            "Chlorophyte",
+            "Lumenite"
+        ],
+        "epic": [
+            "Celestial Bronze",
+            "Celestial Silver",
+            "Celestial Gold",
+            "Celestial Platinum",
+            "Celestial Titanium",
+            "Celestial Crystal",
+            "Celestial Diamond"
+        ],
+        "legendary": ["Neutronium", "Unobtainium"],
+        "mythic": ["Voidium", "Dark Matter"],
+		"unique": ["Trosinium", "Xaspunum"]
+    },
+    "weapons": {
+        "common": [
+            "Great Axe",
+            "Battle Axe",
+            "Pickaxe",
+            "Dagger",
+            "Spear",
+            "Pike",
+            "Axe",
+            "Battleaxe",
+            "Broadaxe",
+            "Longbow",
+            "Shortbow",
+            "Crossbow",
+            "Sword",
+            "Shortsword",
+            "Broadsword",
+            "Longsword",
+            "Greatsword",
+            "Cudgel",
+            "Hatchet",
+            "Handaxe"
+        ],
+        "uncommon": [
+            "War Axe",
+            "Hand Axe",
+            "Throwing Axe",
+            "Throwing Knife",
+            "War Pick",
+            "Battle Pick",
+            "Cutlass",
+            "Staff",
+            "Javelin",
+            "Mattock",
+            "Shortspear",
+            "Scythe",
+            "Mace",
+            "Hammer",
+            "Machete"
+        ],
+        "rare": [
+            "Shuriken",
+            "Kunai",
+            "Cleaver",
+            "War Scythe",
+            "Great Scythe",
+            "Recurve Bow",
+            "Compound Bow",
+            "Battle Mace",
+            "Pegged Mace",
+            "Spiked Mace",
+            "Warhammer",
+            "Katana",
+            "Rapier",
+            "Claymore",
+            "Sabre"
+        ],
+        "epic": [
+            "Scimitar",
+            "Spetum",
+            "Halberd",
+            "Lance",
+            "Glaive",
+            "Khatana",
+            "Sagaris",
+            "Double Axe"
+        ],
+        "legendary": ["Trident", "Spatha", "Gladius", "Falchion"],
+        "mythic": ["Zweihander"],
+        "unique": ["Sceptre", "Quarterstaff", "Flamberge", "Morning Star"]
+    }
+}

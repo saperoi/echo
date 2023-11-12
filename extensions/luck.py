@@ -17,7 +17,7 @@ def unload(bot):
 @lightbulb.option("amount", "Amount of dice", type=int)
 @lightbulb.set_help("Rolls a set amount of dice with some amount of sides. Example command: a//dice 2 d6 (the d is optional)")
 @lightbulb.command("dice", "Rolls a dice", aliases=["roll"])
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def dice(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if list(str(ctx.options.dx))[0] == "d":
@@ -30,6 +30,9 @@ async def dice(ctx: lightbulb.Context):
         _g = (random.randint(1, dx))
         sum += _g
         rolls.append(_g)
+    if dx == 6:
+        dice_unicode = {1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅"}
+        rolls = [dice_unicode[x] for x in rolls]
     mm = "You rolled " + str(ctx.options.amount) + " d" + str(dx) + " for a sum of **" + str(sum) + "**, with the following rolls: **" + str(rolls) + "**"
     if ctx.options.bonus != None:
         mm += "\nWith the bonus of " + str(ctx.options.bonus) + ", the resulting total is: **" + str(sum+ctx.options.bonus) +"**"
@@ -46,7 +49,7 @@ async def dice_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.add_cooldown(5, 1, lightbulb.UserBucket)
 @lightbulb.set_help("Flips a coin, 1 in 6K chance of landing on its side.")
 @lightbulb.command("coin", "Flips an American nickel", aliases=["flip"])
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def coin(ctx: lightbulb.Context):
     comm.log_com(ctx)
     r = random.randint(0,6000)
@@ -62,10 +65,33 @@ async def coin(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("question", "Your question")
 @lightbulb.command("8ball", "See the fortune")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def eightball(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    await comm.send_msg(ctx,random.choice(["Yes", "No", "Maybe :wink:", "I Honestly Have No Idea :neutral_face:", "Highly Unlikely", "Very Likely"]))
+    ball = [
+        "It is certain.",
+        "It is decidedly so.",
+        "Without a doubt.",
+        "Yes – definitely.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Outlook good.",
+        "Yes.",
+        "Signs point to yes.",
+        "Reply hazy, try again.",
+        "Ask again later.",
+        "Better not tell you now.",
+        "Cannot predict now.",
+        "Concentrate and ask again.",
+        "Don’t count on it.",
+        "My reply is no.",
+        "My sources say no.",
+        "Outlook not so good.",
+        "Very doubtful.",
+    ]
+
+    await comm.send_msg(ctx,random.choice(ball))
 
 @eightball.set_error_handler
 async def eightball_error_handler(event: lightbulb.CommandErrorEvent):
@@ -77,7 +103,7 @@ async def eightball_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("shoe", "Your hand", modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("You can only throw 'rock', 'paper', or 'scissors'")
 @lightbulb.command("rps", "ROCK, PAPER, SCISSORS")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def rps(ctx: lightbulb.Context):
     comm.log_com(ctx)
     ms = ""
@@ -120,30 +146,32 @@ async def rps_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.set_help("Existing commands:\n- dndalign - D&D Alignment\n- twunkscale - Rates on the Twink-Hunk-Bear Scale\n- smash_or_pass - Pass, Smass or Smash someone")
 @lightbulb.command("rtg", "Random text generator")
-@lightbulb.implements(lightbulb.PrefixCommandGroup, lightbulb.SlashCommandGroup)
+@lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def rtg(ctx: lightbulb.Context):
     comm.log_com(ctx)
 
 @rtg.child
-@lightbulb.option("who", "Who to put on the D&D Alignment scale", type=str, required=True)
-@lightbulb.set_help("D&D Alignment")
-@lightbulb.command("dndalign", "D&D Alignment")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
-async def dndalign(ctx: lightbulb.Context):
+@lightbulb.option("who", "Who to determine the classpect of", type=str, required=True)
+@lightbulb.set_help("HOMESTUCK SBURB Classpects")
+@lightbulb.command("classpect", "HOMESTUCK SBURB Classpects")
+@lightbulb.implements(lightbulb.PrefixSubCommand)
+async def classpect(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    arr = ["Chaotic Evil", "Chaotic Neutral", "Chaotic Good", "Neutral Evil", "True Neutral", "Neutral Good", "Lawful Evil", "Lawful Neutral", "Lawful Good"]
+    classes =  ["Knight", "Prince", "Thief", "Mage", "Witch", "Maid", "Page", "Bard", "Rogue", "Seer", "Heir", "Sylph"]
+    aspects = ["Space", "Time", "Mind", "Heart", "Hope", "Rage", "Breath", "Blood", "Life", "Doom", "Light", "Void"]
+    classpects = random.choice(classes) + " of " + random.choice(aspects)
     if ctx.options.who in ["you", "You", "YOU"]:
-        await ctx.respond("I am a " + random.choice(arr))
+        await ctx.respond("I am a " + classpects)
     elif ctx.options.who in ["me", "Me", "I", "ME"]:
-        await ctx.respond(ctx.author.mention + " is a " + random.choice(arr))
+        await ctx.respond(ctx.author.mention + " is a " + classpects)
     else:
-        await comm.send_msg(ctx, ctx.options.who + " is a " + random.choice(arr))
+        await comm.send_msg(ctx, ctx.options.who + " is a " + classpects)
 
 @rtg.child
 @lightbulb.option("who", "Who to put on the twunkscale", type=str, required=True)
 @lightbulb.set_help("Rates on the Twink-Hunk-Bear Scale")
 @lightbulb.command("twunkscale", "Rates on the Twink-Hunk-Bear Scale")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def twunkscale(ctx: lightbulb.Context):
     comm.log_com(ctx)
     arr = ["Twink", "Twinkish", "Hunkish Twink", "Twunk", "Twinkish Hunk", "Hunkish", "Hunk", "Bearish Twink", "Cub", "No Leaning", "Bunk", "Bearish Hunk", "Twinkish Bear", "Bearish", "Hunkish Bear", "Bear"]
@@ -158,7 +186,7 @@ async def twunkscale(ctx: lightbulb.Context):
 @lightbulb.option("who", "Who to put on the futchscale", type=str, required=True)
 @lightbulb.set_help("Rates on the Femme-Butch Scale")
 @lightbulb.command("futchscale", "Rates on the Femme-Butch Scale")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def futchscale(ctx: lightbulb.Context):
     comm.log_com(ctx)
     arr = ["High Femme", "Femme", "Butchy Femme", "Futch", "Soft Butch", "Butch", "Stone Butch"]
@@ -173,7 +201,7 @@ async def futchscale(ctx: lightbulb.Context):
 @lightbulb.option("who", "Who to S/P", type=str, required=True)
 @lightbulb.set_help("Pass, Smass or Smash someone")
 @lightbulb.command("smash_or_pass", "Pass, Smass or Smash someone", aliases=["sop"])
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def smash_or_pass(ctx: lightbulb.Context):
     comm.log_com(ctx)
     arr = ["Smash", "Pass", "Smass"]
@@ -188,12 +216,41 @@ async def smash_or_pass(ctx: lightbulb.Context):
 @lightbulb.option("who", "Who to measure", type=str, required=True)
 @lightbulb.set_help("Measure someone's sussiness")
 @lightbulb.command("susmeter", "Measure someone's sussiness")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def susmeter(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if ctx.options.who in ["you", "You", "YOU"]:
-        await ctx.respond("I am " + random.randint(0,101) + "% sus.")
+        await ctx.respond("I am " + str(random.randint(0,101)) + "% sus.")
     elif ctx.options.who in ["me", "Me", "I", "ME"]:
-        await ctx.respond(ctx.author.mention + " is " + random.randint(0,101) + "% sus.")
+        await ctx.respond(ctx.author.mention + " is " + str(random.randint(0,100)) + "% sus.")
     else:
-        await comm.send_msg(ctx, ctx.options.who + " is " + random.randint(0,101) + "% sus.")
+        await comm.send_msg(ctx, ctx.options.who + " is " + str(random.randint(0,100)) + "% sus.")
+
+@rtg.child
+@lightbulb.option("who", "Who to measure", type=str, required=True)
+@lightbulb.set_help("Measure someone's waifuness")
+@lightbulb.command("ratewaifu", "Measure someone's waifuness")
+@lightbulb.implements(lightbulb.PrefixSubCommand)
+async def ratewaifu(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    if ctx.options.who in ["you", "You", "YOU"]:
+        await ctx.respond("I am " + str(random.randint(0,100)) + "% waifu.")
+    elif ctx.options.who in ["me", "Me", "I", "ME"]:
+        await ctx.respond(ctx.author.mention + " is " + str(random.randint(0,100)) + "% waifu.")
+    else:
+        await comm.send_msg(ctx, ctx.options.who + " is " + str(random.randint(0,100)) + "% waifu.")
+
+@rtg.child
+@lightbulb.option("who", "Who to measure", type=str, required=True)
+@lightbulb.set_help("Measure someone's PP")
+@lightbulb.command("ppmeter", "Measure someone's PP")
+@lightbulb.implements(lightbulb.PrefixSubCommand)
+async def ppmeter(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    pp = "c" + "".join("=" for _ in range(random.randint(0,15))) + "3"
+    if ctx.options.who in ["you", "You", "YOU"]:
+        await ctx.respond("I have a: " + pp)
+    elif ctx.options.who in ["me", "Me", "I", "ME"]:
+        await ctx.respond(ctx.author.mention + " has a: " + pp)
+    else:
+        await comm.send_msg(ctx, ctx.options.who + " has a: " + pp)

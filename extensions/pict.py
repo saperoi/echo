@@ -23,7 +23,7 @@ def unload(bot):
 @lightbulb.option("color", "The color you want to display", modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Supported formats: RRR BBB GGG, RBG (hex!) (websafe), RGBA (hex!) (websafe), RRBBGG, RRBBGGAA, #RRBBGG, #RRBBGGAA, 0xRRBBGG, 0xRRBBGGAA")
 @lightbulb.command("show_color", "Show a color code")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def show_color(ctx: lightbulb.Context):
     comm.log_com(ctx)
     co = ctx.options.color
@@ -55,4 +55,245 @@ async def show_color(ctx: lightbulb.Context):
     img.close()
     embed = hikari.Embed(title=str(c), color=c)
     embed.set_image(data_url)
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to waste.", type=hikari.User, required=False)
+@lightbulb.command("wasted", "Wastedeeznuts")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def wasted(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/overlay/wasted?avatar="
+    embed = hikari.Embed(title="WASTED", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to trigger.", type=hikari.User, required=False)
+@lightbulb.command("triggered", "I will not enter a description so you will get triggered ")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def triggered(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/overlay/triggered?avatar="
+    embed = hikari.Embed(title="TRIGGERED", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to pass.", type=hikari.User, required=False)
+@lightbulb.command("passed", "Mission passed ")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def passed(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/overlay/passed?avatar="
+    embed = hikari.Embed(title="MISSION PASSED", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to jail.", type=hikari.User, required=False)
+@lightbulb.command("jail", "Go to horny jail")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def jail(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/overlay/jail?avatar="
+    embed = hikari.Embed(title="[[BONK!]]", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to glass.", type=hikari.User, required=False)
+@lightbulb.command("glass", "Give your avatar a glass effect overlay ")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def glass(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/overlay/glass?avatar="
+    embed = hikari.Embed(title="glass!!", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to make fruity.", type=hikari.User, required=False)
+@lightbulb.command("gay", "Give your avatar a rainbow overlay ")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def wasted(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/overlay/gay?avatar="
+    embed = hikari.Embed(title=":rainbow:", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to make a comrade.", type=hikari.User, required=False)
+@lightbulb.command("comrade", "Yes")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def comrade(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/overlay/comrade?avatar="
+    embed = hikari.Embed(title="SOYUZ NERUSHIMI RESPUNLIK SVOBODNYKH", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to Blurplify.", type=hikari.User, required=False)
+@lightbulb.command("horny_license", "Horny card")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def comrade(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/misc/horny?avatar="
+    embed = hikari.Embed(title="I have a license", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to Blurplify.", type=hikari.User, required=False)
+@lightbulb.command("blurple", "Blurplify your avatar ")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def wasted(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://some-random-api.com/canvas/filter/blurple?avatar="
+    embed = hikari.Embed(title="Blurple!!", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to pet.", type=hikari.User, required=False)
+@lightbulb.command("petpet", "Pet a user, and turn them into a gif!")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def passed(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    url = "https://suffxr.discloud.app/gif/petpet?image_url="
+    embed = hikari.Embed(title="-w-", color=comm.color())
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
+            else:
+                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments][0])))
+    else:
+        if ctx.options.user.avatar_url == None:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
+        else:
+            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
+    embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)

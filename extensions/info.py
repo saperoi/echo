@@ -2,7 +2,6 @@ import lightbulb
 import comm
 import math
 import hikari
-import random
 
 plugin = lightbulb.Plugin('info', 'Kowalski, analysis')
 
@@ -15,7 +14,7 @@ def unload(bot):
 @plugin.command
 @lightbulb.set_help("Checks latency time in ms")
 @lightbulb.command("ping", "Says pong!")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def ping(ctx: lightbulb.Context):
     comm.log_com(ctx)
     await comm.send_msg(ctx,"Pong! 🏓\t\tIt took " + str(math.floor(1000*plugin.bot.heartbeat_latency)) + " ms to arrive")
@@ -23,7 +22,7 @@ async def ping(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.set_help("Checks if the bot is functioning (sees command and can reply)")
 @lightbulb.command("check", "For debugging")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def check(ctx: lightbulb.Context):
     comm.log_com(ctx)
     await comm.send_msg(ctx,"Was registered and could send message")
@@ -32,7 +31,7 @@ async def check(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.set_help("Only gets your user ID")
 @lightbulb.command("uid", "Gets User ID")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def uid(ctx: lightbulb.Context):
     comm.log_com(ctx)
     await comm.send_msg(ctx,"Your User ID is: " + str(ctx.author.id))
@@ -40,24 +39,24 @@ async def uid(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.set_help("Only gets the current server ID")
 @lightbulb.command("sid", "Gets Server ID")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def sid(ctx: lightbulb.Context):
     comm.log_com(ctx)
     await comm.send_msg(ctx,"The Server ID is: " + str(ctx.guild_id))
 
 @plugin.command
-@lightbulb.option("user", "The user to get their avatar.", required=False)
+@lightbulb.option("user", "The user to get their avatar.", type=hikari.User, required=False)
 @lightbulb.set_help("Gets a user's avatar. Can be ping or user ID")
 @lightbulb.command("avatar", "Gets someone's avatar", aliases=["av"])
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def avatar(ctx: lightbulb.Context):
     comm.log_com(ctx)
     try:
-        u = comm.user_id_check(ctx.options.user)
+        u = ctx.options.user.id
     except:
         u = int(ctx.author.id)
     ru = await ctx.app.rest.fetch_user(u)
-    embed = hikari.Embed(title=str(ru.username) + "'s Avatar", description="", color=random.randint(0x0, 0xffffff))
+    embed = hikari.Embed(title=str(ru.username) + "'s Avatar", description="", color=comm.color())
     if ru.avatar_url == None:
         embed.set_image(comm.url2uri(ru.default_avatar_url))
     else:
@@ -74,14 +73,14 @@ async def avatar_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("This user does not EXIST")
 
 @plugin.command
-@lightbulb.option("user", "The user to get their info.", required=False)
+@lightbulb.option("user", "The user to get their info.", type=hikari.User, required=False)
 @lightbulb.set_help("The usual userinfo command. Can be ping or user ID")
-@lightbulb.command("userinfo", "Gets someone's avatar", aliases=["whois"])
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.command("userinfo", "Pulls information about a user", aliases=["whois"])
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def userinfo(ctx: lightbulb.Context):
     comm.log_com(ctx)
     try:
-        u = comm.user_id_check(ctx.options.user)
+        u = ctx.options.user.id
     except:
         u = int(ctx.author.id)
     ru = await ctx.app.rest.fetch_user(u)
@@ -107,7 +106,7 @@ async def userinfo(ctx: lightbulb.Context):
     description += "**Created at**: " + str(ru.created_at)[:16] + "\n"
     if join != None:
         description += "**Joined at**: " + join + "\n"
-    embed = hikari.Embed(title=str(ru.username) + "#" + str(ru.discriminator), description=description, color=random.randint(0x0, 0xffffff))
+    embed = hikari.Embed(title=str(ru.username) + "#" + str(ru.discriminator), description=description, color=comm.color())
     if ru.avatar_url == None:
         embed.set_thumbnail(comm.url2uri(ru.default_avatar_url))
     else:
@@ -128,8 +127,8 @@ async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.option("server", "The server to get their info.", type=int, required=False)
 @lightbulb.set_help("The usual serverinfo command. Can be ping or user ID")
-@lightbulb.command("serverinfo", "Gets someone's avatar")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.command("serverinfo", "Pulls information about a server")
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def serverinfo(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if ctx.options.server == None:
@@ -141,7 +140,7 @@ async def serverinfo(ctx: lightbulb.Context):
     description += "**ServerID**: " + str(su.id) + "\n"
     description += "**Created at**: " + str(su.created_at)[:16] + "\n"
     description += "**Owner**: " + str(su.owner_id) + " <@" + str(su.owner_id) + ">\n"
-    embed = hikari.Embed(title=str(su.name), description=description, color=random.randint(0x0, 0xffffff))
+    embed = hikari.Embed(title=str(su.name), description=description, color=comm.color())
     embed.set_thumbnail(comm.url2uri(su.icon_url))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)

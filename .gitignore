@@ -2,5 +2,3 @@ bk_db.db
 log.txt
 *.pyc
 .env
-start.bat
-*.db

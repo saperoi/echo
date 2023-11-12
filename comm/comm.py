@@ -1,4 +1,6 @@
 from datetime import datetime
+from dataclasses import dataclass
+
 import lightbulb
 import hikari
 import textwrap
@@ -7,12 +9,18 @@ import codecs
 import sqlite3
 import requests
 import base64
+import json
 
-#block = [260485255297761280]
-block = []
+bot_id = [1039988982253092926, 1045057369085841458]
+owner_id = [738772518441320460]
 
 conmisc = sqlite3.connect("./db/misc.db")
 curmisc = conmisc.cursor()
+
+with open("data/item_data.json", 'r', encoding = "utf-8") as file:
+    item_data = json.load(file)
+with open("data/name_data.json", 'r', encoding = "utf-8") as file:
+    name_data = json.load(file)
 
 def cookies_table():
     curmisc.execute("CREATE TABLE IF NOT EXISTS misc_vars(key TEXT, value TEXT)")
@@ -29,23 +37,9 @@ def cookies_table():
     conmisc.commit()
 
 def log_com(ctx: lightbulb.Context):
-    if ctx.author.id in block:
-        raise NameError('Blocked User')
     cookies_table()
     commlog = codecs.open("log.txt", "a", "utf_16")
-    ms = datetime.now().strftime("%H:%M:%S") + " : " + str(ctx.guild_id) + " : " + ctx.author.username + "#" + str(ctx.author.discriminator) +  " - " + str(ctx.author.id) + " : "
-    try:
-        ms += str(ctx.event.content)
-    except:
-        ms += "/" + ctx.interaction.command_name + " "
-        if ctx.interaction.options != None:
-            for opt in ctx.interaction.options:
-                if opt.options != None:
-                    ms += opt.name + " "
-                    for opt2 in opt.options:
-                        ms += opt2.name + "='" + str(opt2.value) + "' "
-                else:
-                    ms += opt.name + "='" + str(opt.value) + "' "
+    ms = datetime.now().strftime("%H:%M:%S") + " : " + str(ctx.guild_id) + " : " + ctx.author.username + "#" + str(ctx.author.discriminator) +  " - " + str(ctx.author.id) + " : " + str(ctx.event.content).replace("\n", "\\n")
     print(ms)
     commlog.write(ms + "\n")
     commlog.close()
@@ -76,59 +70,55 @@ def rndm_name():
         name += chars[i]
     return name
 
-def rai(arr:list): #Random Array Item
-    n = random.randint(0, len(arr))
-    return arr[n]
+def random_name(category = "deity"):
+    global name_data
+    if category == "anime":
+        name_type = random.choices(["male", "neutral", "female"], weights = [0.33, 0.33, 0.34], k = 1)[0]
+        random_3 = random.choice(name_data["anime"]["pt5"])
+        random_4 = random.choice(name_data["anime"]["pt6"])
+        if name_type == "male":
+            random_1 = random.choice(name_data["anime"]["pt3"])
+            random_2 = random.choice(name_data["anime"]["pt4"])
+            return random_1 + random_2 + " " + random_3 + random_4
+        elif name_type == "neutral":
+            random_1 = random.choice(name_data["anime"]["pt7"])
+            random_2 = random.choice(name_data["anime"]["pt8"])
+            return random_1 + random_2 + " " + random_3 + random_4
+        else:
+            random_1 = random.choice(name_data["anime"]["pt1"])
+            random_2 = random.choice(name_data["anime"]["pt2"])
+            return random_1 + random_2 + " " + random_3 + random_4
+    elif category == "deity":
+        name_type = random.choices(["male", "neutral", "female"], weights = [0.33, 0.33, 0.34], k = 1)[0]
+        random_2 = random.choice(name_data["deity"]["pt2"])
+        random_3 = random.choice(name_data["deity"]["pt3"])
+        if name_type == "male":
+            random_1 = random.choice(name_data["deity"]["pt1"])
+            random_5 = random.choice(name_data["deity"]["pt5"])
+            return random_1 + random_2 + random_3 + random_5
+        elif name_type == "neutral":
+            random_1 = random.choice(name_data["deity"]["pt1b"])
+            random_4 = random.choice(name_data["deity"]["pt6"])
+            return random_1 + random_2 + random_3 + random_4
+        else:
+            random_1 = random.choice(name_data["deity"]["pt1a"])
+            random_4 = random.choice(name_data["deity"]["pt4"])
+            return random_1 + random_2 + random_3 + random_4
 
-rarity = ["[Common]", "[UNCOMMON]", "[RARE]", "[EPIC]", "[LEGENDARY]", "[MYTHIC]"]
+def random_rarity():
+    global item_data
+    rarity = random.choices(item_data["rarity"], weights = [0.5, 0.25, 0.15, 0.05, 0.02, 0.02, 0.01], k = 1)[0]
+    return rarity.upper()
 
-mats0 = ["Copper","Bronze","Steel","Iron","Gold"]
-mats1 = ["Diamond","Crystal"]
-mats2 = ["Carbon","Damascus Steel"]
-mats3 = ["Adamantite","Cobaltite","Perovskite","Millerite"]
-mats4 = ["Uraninite","Scarletite","Mythril","Oricalchum"]
-mats5 = ["Dark Matter","Unobtanium"]
+def random_material(rarity = "common"):
+    global item_data
+    material = random.choice(item_data["materials"][rarity.lower()])
+    return material.title()
 
-weapons = [
-"Scythe",
-"Sword", "Longsword", "Sabre", "Rapier", "Dagger", "Khatana", "Claymore", "Spatha", "Cutlass", "Scimitar", "Gladius", "Falchion", "Katana", "Cleaver", "Machete", "Greatsword", "Kunai",
-"Axe", "Battleaxe", "Hatchet", "Handaxe", "Mattock", "Sagaris", "Broadaxe", "Double Axe",
-"Spear", "Shortspear", "Trident", "Spetum", "Pike", "Halberd", "Lance", "Sceptre", "Staff", "Javelin", "Glaive",
-"Hammer",
-"Mace", "Battle Mace", "Pegged Mace", "Spiked Mace"
-]
-
-def rndm_mat():
-    m = random.randint(1,21)
-    if 1 <= m <= 6:
-        mat = random.choice(mats0)
-    elif 7 <= m <= 11:
-        mat = random.choice(mats1)
-    elif 12  <= m <= 15:
-        mat = random.choice(mats2)
-    elif 16 <= m <= 18:
-        mat = random.choice(mats3)
-    elif 19 <= m <= 20:
-        mat = random.choice(mats4)
-    elif 21 <= m <= 21:
-        mat = random.choice(mats5)
-    return m, mat
-
-def rndm_rar(q):
-    m = random.randint(q,21)
-    if 1 <= m <= 6:
-        n = 0
-    elif 7 <= m <= 11:
-        n = 1
-    elif 12  <= m <= 15:
-        n = 2
-    elif 16 <= m <= 18:
-        n = 3
-    elif 19 <= m <= 20:
-        n = 4
-    elif 21 <= m <= 21:
-        n = 5
-    return rarity[n]
+def random_item_type(rarity = "common"):
+    global item_data
+    item_type = random.choice(item_data["weapons"][rarity.lower()])
+    return item_type.title()
 
 # https://stackoverflow.com/questions/35772848/python-retrieve-a-file-from-url-and-generate-data-uri
 def url2uri(url):
@@ -136,3 +126,12 @@ def url2uri(url):
     content_type = response.headers["content-type"]
     encoded_body = base64.b64encode(response.content)
     return "data:{};base64,{}".format(content_type, encoded_body.decode())
+
+def color():
+    return random.randint(0x0, 0xffffff)
+
+async def webhook_send(ctx, user, content):
+    member = await ctx.app.rest.fetch_member(ctx.guild_id, user)
+    hook = await ctx.app.rest.create_webhook(channel=ctx.channel_id, name="ATMOS: " + str(member.id), avatar=member.display_avatar_url)
+    await hook.execute(content=content, username=member.display_name if ctx.author.id == user else "\"" + member.display_name + "\"")
+    await hook.delete()

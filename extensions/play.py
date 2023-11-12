@@ -5,6 +5,8 @@ import random
 import miru
 import sqlite3
 import chess
+import time
+import requests
 
 plugin = lightbulb.Plugin('play', 'Me when I play a role:')
 
@@ -25,22 +27,33 @@ def maze_table_check(s):
     conmisc.commit()
 
 @plugin.command
-@lightbulb.option("phrase", "write '§' where the item needs to come.", modifier=lightbulb.OptionModifier.CONSUME_REST, type=str, required=False)
+@lightbulb.option("phrase", "write '§' where the item needs to come.", modifier=lightbulb.OptionModifier.CONSUME_REST, type = str, required = False)
+@lightbulb.option("count", "how many items to generate", type=int, required=False, min_value=1, max_value=100)
 @lightbulb.command("weapon", "Generates a random weapon")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def weapon(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    n, mat = comm.rndm_mat()
-    rar = comm.rndm_rar(n)
-    weap = random.choice(comm.weapons)
-    res = rar + " " + mat + " " + weap
+    gen_list = []
+    for _ in range(ctx.options.count):
+        rarity = comm.random_rarity()
+        material = comm.random_material(rarity)
+        weapon = comm.random_item_type(rarity)
+        result = "[" + rarity + "] " + material + " " + weapon
+        gen_list.append(result)
+    result = "\n".join(gen_list)
     if ctx.options.phrase == None:
-        await ctx.respond(res)
+        await comm.send_msg(ctx,result)
     elif "§" in ctx.options.phrase:
-        await comm.send_msg(ctx, ctx.options.phrase.replace("§", res))
+        p = ctx.options.phrase.split("§")
+        msg = ""
+        for i in range(ctx.options.phrase.count("§")):
+            msg += p[i]
+            msg += gen_list[i % ctx.options.count]
+        if len(p) > 1:
+            msg += p[-1]
+        await comm.send_msg(ctx, msg)
     else:
-        await comm.send_msg(ctx, ctx.options.phrase + " " + res)
-
+        await comm.send_msg(ctx, ctx.options.phrase + " " + result)
 
 """
 4/13 at trap, enc or heal. 1/13 for chest
@@ -73,7 +86,7 @@ wire: 1d8 dmg, you trip
 
 @plugin.command
 @lightbulb.command("ninemaze", "A small original game where you try to find a treasure.", aliases=["9maze"])
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def ninemaze(ctx: lightbulb.Context):
     comm.log_com(ctx)
 
@@ -89,6 +102,8 @@ async def ninemaze(ctx: lightbulb.Context):
     left = [1,2,4,5,7,8]
     right = [0,1,3,4,6,7]
     exit = [0]
+
+    await ctx.respond("Ninemaze!")
 
     class move_up(miru.Button):
         def __init__(self, *args, **kwargs) -> None:
@@ -131,7 +146,10 @@ async def ninemaze(ctx: lightbulb.Context):
             self.view.direction = "LEAVE"
             self.view.stop()
     def room_buttons(i, leave_unlock):
-        view = miru.View()
+        class ChecksView(miru.View):
+            async def view_check(self, mctx: miru.ViewContext) -> bool:
+                return mctx.user.id == ctx.author.id
+        view = ChecksView()
         if i in up:
             view.add_item(move_up())
         if i in down:
@@ -173,7 +191,10 @@ async def ninemaze(ctx: lightbulb.Context):
             self.view.action = "spare"
             self.view.stop()
     def fight_system():
-        view = miru.View()
+        class ChecksView(miru.View):
+            async def view_check(self, mctx: miru.ViewContext) -> bool:
+                return mctx.user.id == ctx.author.id
+        view = ChecksView()
         view.add_item(fight_attack())
         view.add_item(fight_flee())
         view.add_item(fight_heal())
@@ -182,9 +203,9 @@ async def ninemaze(ctx: lightbulb.Context):
 
     while (exited == False):
         if room == -1:
-            embed = hikari.Embed(title="[[you win!]]", description="Amazing job! You have left the infamous 9-maze in one piece? Great job even! You now go home, 1000 gold pieces richer.", color=random.randint(0x0, 0xffffff))
+            embed = hikari.Embed(title="[[you win!]]", description="Amazing job! You have left the infamous 9-maze in one piece? Great job even! You now go home, 1000 gold pieces richer.", color=comm.color())
             embed.set_footer("Ordered by: " + str(ctx.author))
-            await ctx.respond(embed)
+            await ctx.edit_last_response(embed, components=None)
             exited = True
             break
         if hp < 0:
@@ -212,16 +233,16 @@ async def ninemaze(ctx: lightbulb.Context):
             desc += "\n\nServer Skull Count: " + str(server_skull_count)
             desc += "\nGlobal Skull Count: " + str(global_skull_count)
 
-            embed = hikari.Embed(title="[[bad end]]", description=desc, color=random.randint(0x0, 0xffffff))
+            embed = hikari.Embed(title="[[bad end]]", description=desc, color=comm.color())
             embed.set_footer("Ordered by: " + str(ctx.author))
-            await ctx.respond(embed)
+            await ctx.edit_last_response(embed, components=None)
             break
 
         # MOVEMENT
         room_move = room_buttons(room, found_treasure)
-        embed = hikari.Embed(title="[[movement]]", description="To what room would you like to move?\n\tYour HP: " + str(hp), color=random.randint(0x0, 0xffffff))
+        embed = hikari.Embed(title="[[movement]]", description="To what room would you like to move?\n\tYour HP: " + str(hp), color=comm.color())
         embed.set_footer("Ordered by: " + str(ctx.author))
-        room_movement = await ctx.respond(embed, components=room_move)
+        room_movement = await ctx.edit_last_response(embed, components=room_move)
         await room_move.start(room_movement)
         await room_move.wait()
         if hasattr(room_move, "exist"):
@@ -254,23 +275,23 @@ async def ninemaze(ctx: lightbulb.Context):
             trap = random.randint(1,8)
             hp -= trap
             traps = ["You got stuck in a tripwire and fell on the floor. ", "You stepped on some spikes! Ouch! "]
-            embed = hikari.Embed(title="[[trapped]]", description=random.choice(traps) + "You took " + str(trap) + " damage. Your HP is now " + str(hp), color=random.randint(0x0, 0xffffff))
+            embed = hikari.Embed(title="[[trapped]]", description=random.choice(traps) + "You took " + str(trap) + " damage. Your HP is now " + str(hp), color=comm.color())
             embed.set_footer("Ordered by: " + str(ctx.author))
-            await ctx.respond(embed)
+            await ctx.edit_last_response(embed, components=None)
 
         elif event == "heal":
             heal = max(5, random.randint(1,6) + random.randint(1,6))
             hp += heal
             if hp > 100:
                 hp = 100
-            embed = hikari.Embed(title="[[healed]]", description="You got healed magically by the maze! Your HP is now " + str(hp), color=random.randint(0x0, 0xffffff))
+            embed = hikari.Embed(title="[[healed]]", description="You got healed magically by the maze! Your HP is now " + str(hp), color=comm.color())
             embed.set_footer("Ordered by: " + str(ctx.author))
-            await ctx.respond(embed)
+            await ctx.edit_last_response(embed, components=None)
         elif event == "treasure":
-            embed = hikari.Embed(title="[[TREASURE]]", description="You have found the secret treasure chest hidden in this maze. You now have to find the exit again so you can leave!", color=random.randint(0x0, 0xffffff))
+            embed = hikari.Embed(title="[[TREASURE]]", description="You have found the secret treasure chest hidden in this maze. You now have to find the exit again so you can leave!", color=comm.color())
             embed.set_footer("Ordered by: " + str(ctx.author))
             found_treasure = True
-            await ctx.respond(embed)
+            await ctx.edit_last_response(embed, components=None)
 
         elif event == "encounter":
             encounter = random.randint(1,10)
@@ -289,27 +310,27 @@ async def ninemaze(ctx: lightbulb.Context):
                 desc = "You encountered some slimes! They've surrounded you!\n"
                 while fight_finish == False:
                     if hp < 0:
-                        embed = hikari.Embed(title="[[slime]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        embed = hikari.Embed(title="[[slime]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        await ctx.respond(embed)
+                        await ctx.edit_last_response(embed, components=None)
                         fight_finish = True
                     elif hp_enemy <= 0 or fled == 1:
                         desc += "You escaped from the slimes! Well done!\nRemaining HP: " + str(hp)
-                        embed = hikari.Embed(title="[[slime]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        embed = hikari.Embed(title="[[slime]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        await ctx.respond(embed)
+                        await ctx.edit_last_response(embed, components=None)
                         fight_finish = True
                     elif hp_enemy > 0:
                         desc += "What would you like to do?\n\tYour HP: " + str(hp) + "\t\t Enemy HP: " + str(hp_enemy)
-                        fight_system = fight_system(encounter)
-                        embed = hikari.Embed(title="[[slime]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        fight_system_comp = fight_system()
+                        embed = hikari.Embed(title="[[slime]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        fight_embed = await ctx.respond(embed, components=fight_system)
-                        await fight_system.start(fight_embed)
-                        await fight_system.wait()
-                        if hasattr(fight_system, "exist"):
+                        fight_embed = await ctx.edit_last_response(embed, components=fight_system_comp)
+                        await fight_system_comp.start(fight_embed)
+                        await fight_system_comp.wait()
+                        if hasattr(fight_system_comp, "exist"):
                             desc = ""
-                            if fight_system.action == "attack":
+                            if fight_system_comp.action == "attack":
                                 damage_dealt = random.randint(1,12) + random.randint(1,12)
                                 hp_enemy -= damage_dealt
                                 desc += "You charged at the slimes and dealt " + str(damage_dealt) + "HP worth of damage!\n"
@@ -317,14 +338,14 @@ async def ninemaze(ctx: lightbulb.Context):
                                     damage_recieved = random.randint(1,5) + random.randint(1,5)
                                     hp -= damage_recieved
                                     desc += "The slimes attacked you for " + str(damage_recieved) + "HP!\n"
-                            elif fight_system.action == "flee":
+                            elif fight_system_comp.action == "flee":
                                 fled = random.randint(1,2)
                                 if fled == 1:
                                     desc += "You managed to flee from the slimes and can move on to the next room!\n"
                                 elif fled == 2:
                                     desc += "The slimes caught you. They attempted to encase you but you broke free. However, you took 10 damage from this.\n"
                                     hp -= 10
-                            elif fight_system.action == "heal":
+                            elif fight_system_comp.action == "heal":
                                 if heals > 0:
                                     heals -= 1
                                     hpRestored = max(5, random.randint(1,10) + random.randint(1,10))
@@ -335,7 +356,7 @@ async def ninemaze(ctx: lightbulb.Context):
                                 damage_recieved = random.randint(1,5) + random.randint(1,5)
                                 hp -= damage_recieved
                                 desc += "The slimes attacked you for " + str(damage_recieved) + "HP!\n"
-                            elif fight_system.action == "spare":
+                            elif fight_system_comp.action == "spare":
                                 desc += "You tried sparing the slimes. This doesn't work!\nThe slimes didn't attack you however.\n"
                         else:
                             await ctx.respond("Did not receive an answer in time!")
@@ -351,27 +372,27 @@ async def ninemaze(ctx: lightbulb.Context):
                 hp -= damage_surprise
                 while fight_finish == False:
                     if hp < 0:
-                        embed = hikari.Embed(title="[[goblin]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        embed = hikari.Embed(title="[[goblin]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        await ctx.respond(embed)
+                        await ctx.edit_last_response(embed, components=None)
                         fight_finish = True
                     elif hp_enemy <= 0 or fled == 1:
                         desc += "You escaped from the goblins! Well done!\nRemaining HP: " + str(hp)
-                        embed = hikari.Embed(title="[[goblin]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        embed = hikari.Embed(title="[[goblin]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        await ctx.respond(embed)
+                        await ctx.edit_last_response(embed, components=None)
                         fight_finish = True
                     elif hp_enemy > 0:
                         desc += "What would you like to do?\n\tYour HP: " + str(hp) + "\t\t Enemy HP: " + str(hp_enemy)
-                        fight_system = fight_system(encounter)
-                        embed = hikari.Embed(title="[[goblin]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        fight_system_comp = fight_system()
+                        embed = hikari.Embed(title="[[goblin]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        fight_embed = await ctx.respond(embed, components=fight_system)
-                        await fight_system.start(fight_embed)
-                        await fight_system.wait()
-                        if hasattr(fight_system, "exist"):
+                        fight_embed = await ctx.edit_last_response(embed, components=fight_system_comp)
+                        await fight_system_comp.start(fight_embed)
+                        await fight_system_comp.wait()
+                        if hasattr(fight_system_comp, "exist"):
                             desc = ""
-                            if fight_system.action == "attack":
+                            if fight_system_comp.action == "attack":
                                 damage_dealt = random.randint(1,12) + random.randint(1,12)
                                 hp_enemy -= damage_dealt
                                 desc += "You charged at the goblins and dealt " + str(damage_dealt) + "HP worth of damage!\n"
@@ -379,7 +400,7 @@ async def ninemaze(ctx: lightbulb.Context):
                                     damage_recieved = random.randint(1,18) + 3
                                     hp -= damage_recieved
                                     desc += "The goblins attacked you for " + str(damage_recieved) + "HP!\n"
-                            elif fight_system.action == "flee":
+                            elif fight_system_comp.action == "flee":
                                 fled = random.randint(1,3)
                                 if fled == 1:
                                     desc += "You managed to flee from the goblins and can move on to the next room!\n"
@@ -387,7 +408,7 @@ async def ninemaze(ctx: lightbulb.Context):
                                     damage_recieved = random.randint(10,18)
                                     desc += "The goblins caught you. They stomp you and deal " + str(damage_recieved) + " damage.\n"
                                     hp -= damage_recieved
-                            elif fight_system.action == "heal":
+                            elif fight_system_comp.action == "heal":
                                 if heals > 0:
                                     heals -= 1
                                     hpRestored = max(5, random.randint(1,10) + random.randint(1,10))
@@ -398,7 +419,7 @@ async def ninemaze(ctx: lightbulb.Context):
                                 damage_recieved = random.randint(1,18) + 3
                                 hp -= damage_recieved
                                 desc += "The goblins attacked you for " + str(damage_recieved) + "HP!\n"
-                            elif fight_system.action == "spare":
+                            elif fight_system_comp.action == "spare":
                                 damage_recieved = random.randint(1,18) + 6
                                 desc += "You tried sparing the goblins. They take offense!\nThey beat you up for " + str(damage_recieved) + " damage!\n"
                                 hp -= damage_recieved
@@ -413,42 +434,42 @@ async def ninemaze(ctx: lightbulb.Context):
                 spare_count = 0
                 while fight_finish == False:
                     if hp < 0:
-                        embed = hikari.Embed(title="[[yourself]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        embed = hikari.Embed(title="[[yourself]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        await ctx.respond(embed)
+                        await ctx.edit_last_response(embed, components=None)
                         fight_finish = True
                     elif hp_enemy <= 0:
                         desc += "You managed to slay.. yourself? ***You will never remain the same***\nRemaining HP: " + str(hp)
-                        embed = hikari.Embed(title="[[yourself]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        embed = hikari.Embed(title="[[yourself]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        await ctx.respond(embed)
+                        await ctx.edit_last_response(embed, components=None)
                         fight_finish = True
                     elif spare_count == 7:
                         desc += "You have accepted peace with yourself. You can move on!\nRemaining HP: " + str(hp)
-                        embed = hikari.Embed(title="[[yourself]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        embed = hikari.Embed(title="[[yourself]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        await ctx.respond(embed)
+                        await ctx.edit_last_response(embed, components=None)
                         fight_finish = True
                     elif hp_enemy > 0:
                         desc += "What would you like to do?\n\tYour HP: " + str(hp) + "\t\t Enemy HP: " + str(hp_enemy)
-                        fight_system = fight_system(encounter)
-                        embed = hikari.Embed(title="[[yourself]]", description=desc, color=random.randint(0x0, 0xffffff))
+                        fight_system_comp = fight_system()
+                        embed = hikari.Embed(title="[[yourself]]", description=desc, color=comm.color())
                         embed.set_footer("Ordered by: " + str(ctx.author))
-                        fight_embed = await ctx.respond(embed, components=fight_system)
-                        await fight_system.start(fight_embed)
-                        await fight_system.wait()
-                        if hasattr(fight_system, "exist"):
+                        fight_embed = await ctx.edit_last_response(embed, components=fight_system_comp)
+                        await fight_system_comp.start(fight_embed)
+                        await fight_system_comp.wait()
+                        if hasattr(fight_system_comp, "exist"):
                             desc = ""
-                            if fight_system.action == "attack":
+                            if fight_system_comp.action == "attack":
                                 damage_dealt = random.randint(1,12) + random.randint(1,12)
                                 hp_enemy -= damage_dealt
                                 desc += "You charged at yourself and dealt " + str(damage_dealt) + "HP worth of damage!\n"
                                 if hp_enemy > 0:
                                     hp -= damage_dealt
                                     desc += "You also recieved that amount of damage?! What is going on..?\n"
-                            elif fight_system.action == "flee":
+                            elif fight_system_comp.action == "flee":
                                 desc += "You cannot flee! The walls have closed and no entrances nor exists can be found!"
-                            elif fight_system.action == "heal":
+                            elif fight_system_comp.action == "heal":
                                 if heals > 0:
                                     heals -= 1
                                     hpRestored = max(5, random.randint(1,10) + random.randint(1,10))
@@ -459,7 +480,7 @@ async def ninemaze(ctx: lightbulb.Context):
                                 damage_recieved = random.randint(1,10) + 1
                                 hp -= damage_recieved
                                 desc += "You got damaged for " + str(damage_recieved) + "HP!\n"
-                            elif fight_system.action == "spare":
+                            elif fight_system_comp.action == "spare":
                                 damage_recieved = random.randint(1,10) + 1
                                 desc += "You tried accepting yourself! You feel something change. However, you recieve " + str(damage_recieved) + " damage due to... ??\n"
                                 hp -= damage_recieved
@@ -467,19 +488,25 @@ async def ninemaze(ctx: lightbulb.Context):
                         else:
                             await ctx.respond("Did not receive an answer in time!")
                             break
+        asyncio.sleep(3)
 
 @plugin.command
 @lightbulb.set_help("You play a bad chess bot. It priorititzes en passent, checkmate, then check, then capture, then stalemate and then move. It has a depth of one!")
 @lightbulb.command("chess", "Play a fun game of chess against a very bad bot!")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def chessBot(ctx: lightbulb.Context):
     comm.log_com(ctx)
     side = random.choice(["white", "black"])
     game_finish = False
     board = chess.Board()
 
+    await ctx.respond("Chess!")
+
     def move_view(moves):
-        view = miru.View()
+        class ChecksView(miru.View):
+            async def view_check(self, mctx: miru.ViewContext) -> bool:
+                return mctx.user.id == ctx.author.id
+        view = ChecksView()
         big_moves = []
         move_list = []
         for i in range(len(moves)):
@@ -504,10 +531,10 @@ async def chessBot(ctx: lightbulb.Context):
         async def player_move():
             moves = list(board.legal_moves)
             chess_view = move_view(moves)
-            embed = hikari.Embed(title="[[chess board]]", description="```\n" + str(board) + "\n```", color=random.randint(0x0, 0xffffff))
+            embed = hikari.Embed(title="[[chess board]]", description="```\n" + str(board) + "\n```", color=comm.color())
             embed.set_image("https://backscattering.de/web-boardimage/board.png?orientation=" + side + "&fen=" + board.fen().split(" ")[0])
             embed.set_footer("Ordered by: " + str(ctx.author))
-            chess_msg = await ctx.respond(embed, components=chess_view)
+            chess_msg = await ctx.edit_last_response(embed, components=chess_view)
             await chess_view.start(chess_msg)
             await chess_view.wait()
             if hasattr(chess_view, "exist"):
@@ -519,23 +546,28 @@ async def chessBot(ctx: lightbulb.Context):
             moves = list(board.legal_moves)
 
             checkmate = []
+            promote = []
             check = []
             capture = []
             for i in moves:
                 if "#" in board.san(i):
                     checkmate.append(i)
+                if "=" in board.san(i):
+                    promote.append(i)
                 if "+" in board.san(i):
                     capture.append(i)
                 if "x" in board.san(i):
                     capture.append(i)
 
-            embed = hikari.Embed(title="[[chess board]]", description="```\n" + str(board) + "\n```", color=random.randint(0x0, 0xffffff))
+            embed = hikari.Embed(title="[[chess board]]", description="```\n" + str(board) + "\n```", color=comm.color())
             embed.set_image("https://backscattering.de/web-boardimage/board.png?orientation=" + side + "&fen=" + board.fen().split(" ")[0])
             embed.set_footer("Ordered by: " + str(ctx.author))
-            await ctx.respond(embed)
+            await ctx.edit_last_response(embed, components=None)
 
             if checkmate != []:
                 board.push(random.choice(checkmate))
+            elif promote != []:
+                board.push(random.choice(promote))
             elif check != []:
                 board.push(random.choice(check))
             elif capture != []:
@@ -552,3 +584,534 @@ async def chessBot(ctx: lightbulb.Context):
 
         elif (board.turn == chess.WHITE and side == "black") or (board.turn == chess.BLACK and side == "white"):
             await computer_move()
+
+@chessBot.set_error_handler
+async def chessBot_error_handler(event: lightbulb.CommandErrorEvent):
+    exception = event.exception.__cause__ or event.exception
+    pass
+
+@plugin.command
+@lightbulb.set_help("Standard Wordle rules.")
+@lightbulb.command("wordle", "Play a neat game of Wordle!")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def wordle(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    alpha = requests.get("https://cdn.discordapp.com/attachments/947100010959470595/954346459283734528/nyt_words_alpha.txt").text.replace("\r","").split("\n")
+    gamma = requests.get("https://cdn.discordapp.com/attachments/947100010959470595/954784115444547634/nyt_words_gamma.txt").text.replace("\r","").split("\n")
+    secret = random.choice(alpha)
+    starttime = time.time()
+
+    embed_desc = ""
+    embed = hikari.Embed(title="[[WORDLE | GUESS 1/6]]", description=embed_desc, color=comm.color())
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+    def nCopies(n, copy):
+        res = []
+        for _ in range(n):
+            res.append(copy)
+        return res
+
+    async def await_answer(iss = ""):
+        await ctx.edit_last_response(iss + " What is your guess?")
+        event = await ctx.app.event_manager.wait_for(hikari.GuildMessageCreateEvent, predicate=lambda e: e.message.author == ctx.author, timeout=30)
+        try:
+            answer = await ctx.app.rest.fetch_message(event.message.channel_id, event.message.id)
+            answer = answer.content
+        except:
+            await ctx.respond("Didn't recieve response in time")
+            raise Exception
+        return answer
+
+    async def getGuess(guesslist):
+        flagChar = False
+        flagLen = False
+        flagDict = False
+        flagDeja = False
+        word = await await_answer()
+
+        while False in [flagChar, flagLen, flagDict, flagDeja]:
+            flagChar = False
+            flagLen = False
+            flagDict = False
+            flagDeja = False
+            word = word.lower()
+
+            # flagLen
+
+            if len(word) == 5:
+                flagLen = True
+            else:
+                l = list(word)
+                flagLen = False
+                if len(word) > 5:
+                    word = await await_answer("Guess is too long, please try again.")
+                if len(word) < 5:
+                    word = await await_answer("Guess is too short, please try again.")
+                pass
+
+            # flagChar
+
+            if not word.isalpha():
+                flagChar = False
+                word = await await_answer("Guess contains invalid characters, please try again.")
+                pass
+            else:
+                flagChar = True
+
+            # flagDict
+
+            if word in gamma:
+                flagDict = True
+            else:
+                flagDict = False
+                word = await await_answer("Invalid guess, please try again.")
+                pass
+
+            # flagDeja
+
+            if guesslist == []:
+                flagDeja = True
+            else:
+                tempflagdeja = False
+                for i in range(len(guesslist)):
+                    if word == guesslist[i]:
+                        tempflagdeja = True
+                if tempflagdeja == False:
+                    flagDeja = True
+                else:
+                    flagDeja = False
+                    word = await await_answer("Already guessed this word.")
+                    pass
+
+        return word
+
+    def getVerdict(guess, seca):
+        sec = seca
+        guessl = list(guess)
+        verdict = []
+        arrverdict = []
+
+        sect = sec
+        secl = list(sect)
+        tempverdict = nCopies(len(sect), "")
+        greens = nCopies(len(sect), False)
+
+        for j in range(len(sect)):
+            if guessl[j] == secl[j]:
+                tempverdict[j] = "G"
+                secl[j] = "-"
+                greens[j] = True
+        for j in range(len(sect)):
+            if greens[j] == True:
+                continue
+            elif guessl[j] in sect:
+                for k in range(len(sect)):
+                    if guessl[j] == secl[k]:
+                        tempverdict[j] = "y"
+                        secl[k] = "-"
+                        sect = "".join(secl)
+                        secl = list(sect)
+        for j in range(len(tempverdict)):
+            if tempverdict[j] == "":
+                tempverdict[j] = "-"
+        arrverdict.append("".join(tempverdict))
+        tempverdict = "".join(tempverdict)
+        verdict.append(tempverdict)
+        verdict = " ".join(verdict)
+        return verdict, arrverdict
+
+    def guessEmoji(guess):
+        s = list(guess)
+        for i in range(len(s)):
+            s[i] = ":regional_indicator_" + s[i].lower() + ":"
+        return "".join(s)
+    def verdictEmoji(verdict):
+        s = list(verdict)
+        for i in range(len(s)):
+            if s[i] == "-":
+                s[i] = ":black_large_square:"
+            elif s[i] == "y":
+                s[i] = ":yellow_square:"
+            elif s[i] == "G":
+                s[i] = ":green_square:"
+        return "".join(s)
+
+    sec = secret
+    starttime = time.time()
+    lasttime = starttime
+    i = 1
+
+    lastguess = ("", "")
+    guesslist = []
+    emojis = []
+    while i <= 6:
+        word = await getGuess(guesslist)
+        if word == None:
+            return
+        word = word.lower()
+        guesslist.append(word)
+        word = list(word)
+
+        verdict, arrverdict = getVerdict(word, sec)
+        lastguess = (word, verdict)
+        embed_desc += guessEmoji(word) + "\n" + verdictEmoji(verdict) + "\n"
+        emojis.append(verdictEmoji(verdict))
+
+        vflag = False
+
+        if verdict == "GGGGG":
+            sec = "-----"
+
+        if sec == "-----":
+            vflag = True
+
+        i+=1
+        embed = hikari.Embed(title="[[WORDLE | GUESS " + str(i if i != 7 else 6) + "/6]]", description=embed_desc, color=comm.color())
+        embed.set_footer("Ordered by: " + str(ctx.author))
+        await ctx.edit_last_response(embed)
+        if vflag == True:
+            guesscount = i-1
+            i = 7
+    if vflag == False:
+        timespent = round((time.time() - lasttime), 2)
+        msg = "You lost :( The word was: " + secret + "\n"
+        embed_title = "[[WORDLE: LOSS]]"
+    elif vflag == True:
+        msg = "You won! The word was: " + secret
+        timespent = round((time.time() - starttime), 2)
+        msg += "\nYou guessed it in " + str(guesscount) + " guesses, and took " + str(timespent) + " seconds.\n"
+        embed_title = "[[WORDLE: WIN]]"
+    msg += "\n".join(emojis)
+    embed = hikari.Embed(title=embed_title, description=msg, color=comm.color())
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@wordle.set_error_handler
+async def wordle_error_handler(event: lightbulb.CommandErrorEvent):
+    exception = event.exception.__cause__ or event.exception
+    pass
+
+
+@plugin.command
+@lightbulb.set_help("You have .")
+@lightbulb.command("pushthebox", "Play a game where you have to push a box around!")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def pushthebox(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    await ctx.respond("Push The Box!")
+    """
+    0  1  2  3  4  5  6  7  8
+    9  10 11 12 13 14 15 16 17
+    18 19 20 21 22 23 24 25 26
+    27 28 29 30 31 32 33 34 35
+    36 37 38 39 40 41 42 43 44
+    45 46 47 48 49 50 51 52 53
+    54 55 56 57 58 59 60 61 62
+    """
+    win = False
+    goal = random.choice([10, 11, 12, 14, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43, 46, 47, 48, 49, 50, 51, 52])
+    box = [20, 21, 22, 23, 24, 29, 30, 31, 32, 33, 38, 39, 40, 41, 42]
+    try:
+        box.remove(goal)
+    except:
+        pass
+    box = random.choice(box)
+    player = [10, 11, 12, 14, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43, 46, 47, 48, 49, 50, 51, 52]
+    player.remove(box)
+    player = random.choice(player)
+    rim = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62]
+    def desc(b, p, win):
+        grid = [":black_large_square:" for _ in range(63)]
+        for i in rim:
+            grid[i] = ":red_square:"
+        grid[goal] = ":negative_squared_cross_mark:"
+        grid[b] = ":brown_square:"
+        grid[p] = ":white_square_button:"
+        if win == True:
+            grid[goal] = ":triangular_flag_on_post:"
+        d = ""
+        for i in range(len(grid)):
+            if i % 9 == 0:
+                d += "\n"
+            d += grid[i]
+        return d
+
+    class move_up(miru.Button):
+        def __init__(self, *args, **kwargs) -> None:
+            super().__init__(style=hikari.ButtonStyle.PRIMARY, label="North")
+        async def callback(self, ctx: miru.ViewContext) -> None:
+            self.view.exist = True
+            self.view.cardinal = -9
+            self.view.direction = "North"
+            self.view.stop()
+    class move_down(miru.Button):
+        def __init__(self, *args, **kwargs) -> None:
+            super().__init__(style=hikari.ButtonStyle.PRIMARY, label="South")
+        async def callback(self, ctx: miru.ViewContext) -> None:
+            self.view.exist = True
+            self.view.cardinal = +9
+            self.view.direction = "South"
+            self.view.stop()
+    class move_left(miru.Button):
+        def __init__(self, *args, **kwargs) -> None:
+            super().__init__(style=hikari.ButtonStyle.PRIMARY, label="West")
+        async def callback(self, ctx: miru.ViewContext) -> None:
+            self.view.exist = True
+            self.view.cardinal = -1
+            self.view.direction = "West"
+            self.view.stop()
+    class move_right(miru.Button):
+        def __init__(self, *args, **kwargs) -> None:
+            super().__init__(style=hikari.ButtonStyle.PRIMARY, label="East")
+        async def callback(self, ctx: miru.ViewContext) -> None:
+            self.view.exist = True
+            self.view.cardinal = 1
+            self.view.direction = "East"
+            self.view.stop()
+    def move_buttons(i):
+        class ChecksView(miru.View):
+            async def view_check(self, mctx: miru.ViewContext) -> bool:
+                return mctx.user.id == ctx.author.id
+        view = ChecksView()
+        northbound = [10, 11, 12, 13, 14, 15, 16]
+        southbound = [46, 47, 48, 49, 50, 51, 52]
+        westbound = [10, 19, 28, 37, 46]
+        eastbound = [16, 25, 34, 43, 52]
+        if i not in northbound and (i-9) != goal and (False if (i-9 == box and box-9 in rim) else True):
+            view.add_item(move_up())
+        if i not in southbound and (i+9) != goal and (False if (i+9 == box and box+9 in rim) else True):
+            view.add_item(move_down())
+        if i not in westbound and (i-1) != goal and (False if (i-1 == box and box-1 in rim) else True):
+            view.add_item(move_left())
+        if i not in eastbound and (i+1) != goal and (False if (i+1 == box and box+1 in rim) else True):
+            view.add_item(move_right())
+        return view
+
+    game_finish = False
+    while game_finish == False:
+        if win == True:
+            game_finish = True
+            embed = hikari.Embed(title="[[push the box | WIN]]", description=desc(box, player, win), color=comm.color())
+            embed.set_footer("Ordered by: " + str(ctx.author))
+            await ctx.edit_last_response(embed, components=None)
+            return
+        embed = hikari.Embed(title="[[push the box]]", description=desc(box, player, win), color=comm.color())
+        embed.set_footer("Ordered by: " + str(ctx.author))
+        move_view = move_buttons(player)
+        movement = await ctx.edit_last_response(embed, components=move_view)
+        await move_view.start(movement)
+        await move_view.wait()
+        if hasattr(move_view, "exist"):
+            if player + move_view.cardinal == box:
+                box += move_view.cardinal
+            player += move_view.cardinal
+            if box == goal:
+                win = True
+        else:
+            raise ValueError
+
+@pushthebox.set_error_handler
+async def pushthebox_error_handler(event: lightbulb.CommandErrorEvent):
+    exception = event.exception.__cause__ or event.exception
+    pass
+
+dictf = open("./data/dict.txt", "r", encoding = "utf-8")
+dictionary = dictf.read().splitlines()
+
+@plugin.command
+@lightbulb.set_help("Regular hangman")
+@lightbulb.command("hangman", "Play a neat game of Hangman!")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def hangman(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    word = random.choice(dictionary)
+    workword = ["-" for i in range(len(word))]
+    hangdraw = [
+"""```
+.....
+.....
+.....
+.....
+.....
+.....
+.....
+```""",
+
+"""```
+.....
+.....
+.....
+.....
+.....
+.....
+-----
+```""",
+
+"""```
+.....
+|....
+|....
+|....
+|....
+|....
+-----
+```""",
+
+"""```
+.___.
+|....
+|....
+|....
+|....
+|....
+-----
+```""",
+
+"""```
+.___.
+|/...
+|....
+|....
+|....
+|....
+-----
+```""",
+
+"""```
+.___.
+|/.|.
+|....
+|....
+|....
+|....
+-----
+```""",
+
+"""```
+.___.
+|/.|.
+|..O.
+|....
+|....
+|....
+-----
+```""",
+
+"""```
+.___.
+|/.|.
+|..O.
+|..|.
+|....
+|....
+-----
+```""",
+
+"""```
+.___.
+|/.|.
+|..O.
+|..|.
+|./..
+|....
+-----
+```""",
+
+"""```
+.___.
+|/.|.
+|..O.
+|..|.
+|./.\\
+|....
+-----
+```""",
+
+"""```
+.___.
+|/.|.
+|..O.
+|./|.
+|./.\\
+|....
+-----
+```""",
+
+"""```
+.___.
+|/.|.
+|..O.
+|./|\\
+|./.\\
+|....
+-----
+```"""]
+    used_letters = []
+    bad_letters = []
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    starttime = time.time()
+
+    async def await_answer(iss = ""):
+        await ctx.edit_last_response(iss + " What is your guess?")
+        event = await ctx.app.event_manager.wait_for(hikari.GuildMessageCreateEvent, predicate=lambda e: e.message.author == ctx.author, timeout=30)
+        try:
+            answer = await ctx.app.rest.fetch_message(event.message.channel_id, event.message.id)
+            answer = answer.content
+        except:
+            await ctx.respond("Didn't recieve response in time")
+            raise Exception
+        return answer
+
+    async def getGuess(used):
+        letter = await await_answer()
+        flagAlphabet = False
+        while flagAlphabet == False:
+            if letter.upper() not in alphabet:
+                letter = await await_answer("This isn't a letter! Please try again!")
+            else:
+                return letter.lower()
+
+    embed = hikari.Embed(title="[[HANGMAN]]", description="", color=comm.color())
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+    complete = False
+    while complete == False:
+        desc = hangdraw[len(bad_letters)] + "\n" + "".join(workword) + "\nUsed Letters: " + "".join(used_letters)
+        embed = hikari.Embed(title="[[HANGMAN]]", description=desc, color=comm.color())
+        embed.set_footer("Ordered by: " + str(ctx.author))
+        await ctx.edit_last_response(embed)
+        if "".join(workword) == word:
+            complete = True
+            success = True
+            break
+        letter = await getGuess(used_letters)
+        used_letters.append(letter)
+        if letter not in word:
+            bad_letters.append(letter)
+        else:
+            for i in range(len(word)):
+                if word[i] == letter:
+                    workword[i] = letter
+
+        if len(bad_letters) >= len(hangdraw):
+            complete = True
+            success = False
+
+    if success == False:
+        msg = "You lost :( The word was: " + word + "\n"
+        embed_title = "[[HANGMAN: LOSS]]"
+    elif success == True:
+        msg = "You won! The word was: " + word
+        timespent = round((time.time() - starttime), 2)
+        msg += "\nYou guessed it in " + str(len(used_letters)) + " guesses, and took " + str(timespent) + " seconds.\n"
+        embed_title = "[[HANGMAN: WIN]]"
+    embed = hikari.Embed(title=embed_title, description=msg, color=comm.color())
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@hangman.set_error_handler
+async def hangman_error_handler(event: lightbulb.CommandErrorEvent):
+    exception = event.exception.__cause__ or event.exception
+    pass

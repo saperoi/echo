@@ -1,6 +1,7 @@
 import lightbulb
 import hikari
 import comm
+import miru
 
 plugin = lightbulb.Plugin('ownr', "Owner only commands")
 
@@ -43,11 +44,28 @@ async def leave(ctx: lightbulb.Context):
     print("Left server")
 
 @plugin.command
+@lightbulb.add_checks(lightbulb.owner_only)
+@lightbulb.command("bancount", "Count bans in a server", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def bancount(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
+    await ctx.respond("This server has " + str(len(bans)) + " bans.")
+
+"""
+@plugin.command
+@lightbulb.command("test", "test 'em")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def test(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    print(ctx.event.message.attachments)
+
+@plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.add_checks(lightbulb.owner_only)
 @lightbulb.option("channel", "The channel to read.", required=True)
-@lightbulb.command("readmsg", "Reads messages")
-@lightbulb.implements(lightbulb.PrefixCommand, lightbulb.SlashCommand)
+@lightbulb.command("readmsg", "Reads messages", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
 async def readmsg(ctx: lightbulb.Context):
     comm.log_com(ctx)
     messages = ( await ctx.app.rest.fetch_messages(int(ctx.options.channel)).limit(100) )
@@ -58,38 +76,5 @@ async def readmsg(ctx: lightbulb.Context):
         s += t
         print(t)
 
-@bot.command
-@lightbulb.add_checks(lightbulb.owner_only)
-@lightbulb.option("server", "The server to create an invite for.", required=True, type=int)
-@lightbulb.command("inv", "Make a server invite")
-@lightbulb.implements(lightbulb.PrefixCommand)
-async def inv(ctx: lightbulb.Context):
-    comm.log_com(ctx)
-    g = await ctx.app.rest.fetch_my_guilds()
-    gr = [item for item in g]
-    gre = []
-    for i in range(len(gr)):
-        gre.append(int(gr[i].id))
-    if ctx.options.server not in gre:
-        re = "I am not a member of that guild"
-    else:
-        s = await ctx.app.rest.fetch_guild(ctx.options.server)
-        print(s)
-        print(s.id)
-        c = await ctx.app.rest.fetch_guild_channels(s.id)
-        re = ""
-        print(c)
-        f = True
-        i = 0
-        while f:
-            try:
-                t = type(c[i])
-                print(t)
-                if str(t) != "<class 'hikari.channels.GuildTextChannel'>":
-                    raise Exception
-                invite = await ctx.app.rest.create_invite(c[i])
-                re = str(invite)
-                f = False
-            except:
-                i += 1
-    await ctx.respond(re)
+
+"""

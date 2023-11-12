@@ -3,6 +3,7 @@ import re
 import sqlite3
 import comm
 import hikari
+import json
 
 plugin = lightbulb.Plugin('tags', 'Store some text and retrieve it')
 
@@ -25,7 +26,7 @@ def table_exist_check(s):
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("tag", "Tags command group")
-@lightbulb.implements(lightbulb.PrefixCommandGroup, lightbulb.SlashCommandGroup)
+@lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def tag(ctx: lightbulb.Context):
     comm.log_com(ctx)
 
@@ -33,7 +34,7 @@ async def tag(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_GUILD) | lightbulb.owner_only)
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("ena", "Enables tags")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def ena(ctx: lightbulb.Context):
     comm.log_com(ctx)
     excstr = "CREATE TABLE IF NOT EXISTS tag_" + str(ctx.guild_id) + "(name TEXT PRIMARY KEY, id INTEGER, content TEXT)"
@@ -45,7 +46,7 @@ async def ena(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_GUILD) | lightbulb.owner_only)
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("dis", "Disables tags")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def dis(ctx: lightbulb.Context):
     comm.log_com(ctx)
     excstr = "DROP TABLE IF EXISTS tag_" + str(ctx.guild_id)
@@ -56,7 +57,7 @@ async def dis(ctx: lightbulb.Context):
 @tag.child
 @lightbulb.option("name", "Name", required=True)
 @lightbulb.command("rec", "Recalls a tag")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def rec(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if table_exist_check(str(ctx.guild_id)):
@@ -70,7 +71,7 @@ async def rec(ctx: lightbulb.Context):
 @lightbulb.option("content", "Content", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.option("name", "Name", required=True)
 @lightbulb.command("crt", "Creates a tag")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def crt(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if table_exist_check(str(ctx.guild_id)):
@@ -86,7 +87,7 @@ async def crt(ctx: lightbulb.Context):
 @tag.child
 @lightbulb.option("name", "Name", required=True)
 @lightbulb.command("dlt", "Removes a tag")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def dlt(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if table_exist_check(str(ctx.guild_id)):
@@ -103,7 +104,7 @@ async def dlt(ctx: lightbulb.Context):
 
 @tag.child
 @lightbulb.command("lst", "Lists all tags")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def lst(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if table_exist_check(str(ctx.guild_id)):
@@ -116,34 +117,28 @@ async def lst(ctx: lightbulb.Context):
     else:
         await comm.send_msg(ctx,"Tags need to be enabled. To do that, a user with the MANAGE_GUILD permission must run this command: '" + ctx.prefix + "tag ena'")
 
+with open("data/global_tags.json", "r", encoding = "utf-8") as f:
+    glob = json.load(f)
+
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("g_tag", "Global tags command group (requires normal tags to be enabled)")
-@lightbulb.implements(lightbulb.PrefixCommandGroup, lightbulb.SlashCommandGroup)
+@lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def g_tag(ctx: lightbulb.Context):
     comm.log_com(ctx)
 
 @g_tag.child
-@lightbulb.option("name", "Name", required=True)
+@lightbulb.option("name", "Name", choices=list(glob.keys()), required=True)
 @lightbulb.command("rec", "Recalls a tag")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def rec(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    if table_exist_check(str(ctx.guild_id)):
-        curtag.execute("SELECT content FROM global WHERE name=?", (re.sub(r'[^a-zA-Z0-9_ ]', '',ctx.options.name),))
-        r, = curtag.fetchone()
-        await comm.send_msg(ctx,str(r))
-    else:
-        await comm.send_msg(ctx,"Tags need to be enabled. To do that, a user with the MANAGE_GUILD permission must run this command: '" + ctx.prefix + "tag ena'")
+    await comm.send_msg(ctx,glob[ctx.options.name])
 
 @g_tag.child
 @lightbulb.command("lst", "Lists all tags")
-@lightbulb.implements(lightbulb.PrefixSubCommand, lightbulb.SlashSubCommand)
+@lightbulb.implements(lightbulb.PrefixSubCommand)
 async def lst(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    if table_exist_check(str(ctx.guild_id)):
-        curtag.execute("SELECT name FROM global")
-        r = str(curtag.fetchall()).replace("[", "").replace("]", "").replace("(", "").replace(")", "").replace("',", "'")
-        await comm.send_msg(ctx,str(r))
-    else:
-        await comm.send_msg(ctx,"Tags need to be enabled. To do that, a user with the MANAGE_GUILD permission must run this command: '" + ctx.prefix + "tag ena'")
+    r = str(list(glob.keys())).replace("[", "").replace("]", "").replace("(", "").replace(")", "")
+    await comm.send_msg(ctx,str(r))
