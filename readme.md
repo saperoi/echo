@@ -2,7 +2,7 @@
 
 Prefix: e//
 
-Invite link: https://discord.com/api/oauth2/authorize?client_id=1039988982253092926&permissions=8&scope=applications.commands%20bot
+[Invite link](https://discord.com/oauth2/authorize?client_id=1039988982253092926&scope=bot&permissions=275683601487)
 
 # USING
 
