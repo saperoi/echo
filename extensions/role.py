@@ -476,7 +476,7 @@ async def set(ctx: lightbulb.Context):
 @plugin.listener(hikari.GuildReactionAddEvent, bind=True)
 async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
     user = event.user_id
-    if user in comm.bot_id or user in comm.block:
+    if user in comm.bot_id:
         return
     guild = event.guild_id
     channel = event.channel_id
@@ -571,7 +571,7 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
         for roleid in roles:
             if roleid not in member.role_ids:
                 count += 1
-        if count >= int(mode[5:]):
+        if count > int(mode[5:]):
             await message_obj.remove_reaction(emoji=emoji, user=event.user_id)
             u = await plugin.app.rest.fetch_user(user)
             await u.send("You cannot get more than " + mode[5:] + " roles from this message.")
@@ -606,7 +606,7 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
 @plugin.listener(hikari.GuildReactionDeleteEvent, bind=True)
 async def on_rmv_reaction(plugin, event: hikari.GuildReactionDeleteEvent):
     user = event.user_id
-    if user in comm.bot_id or user in comm.block:
+    if user in comm.bot_id:
         return
     guild = event.guild_id
     channel = event.channel_id

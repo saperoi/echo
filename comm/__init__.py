@@ -5,6 +5,8 @@ from .comm import url2uri
 from .comm import color
 from .comm import webhook_send
 
+from .comm import texthasher
+
 from .comm import bot_id
 from .comm import owner_id
 

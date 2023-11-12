@@ -2,6 +2,7 @@ import lightbulb
 import comm
 import math
 import random
+import itertools
 
 plugin = lightbulb.Plugin('luck', 'Test fate')
 
@@ -159,7 +160,10 @@ async def classpect(ctx: lightbulb.Context):
     comm.log_com(ctx)
     classes =  ["Knight", "Prince", "Thief", "Mage", "Witch", "Maid", "Page", "Bard", "Rogue", "Seer", "Heir", "Sylph"]
     aspects = ["Space", "Time", "Mind", "Heart", "Hope", "Rage", "Breath", "Blood", "Life", "Doom", "Light", "Void"]
-    classpects = random.choice(classes) + " of " + random.choice(aspects)
+    classp = list(itertools.product(classes,aspects))
+    random.seed(comm.texthasher(ctx.options.who))
+    classp = random.choice(classp)
+    classpects = classp[0] + " of " + classp[1]
     if ctx.options.who in ["you", "You", "YOU"]:
         await ctx.respond("I am a " + classpects)
     elif ctx.options.who in ["me", "Me", "I", "ME"]:
@@ -175,6 +179,7 @@ async def classpect(ctx: lightbulb.Context):
 async def twunkscale(ctx: lightbulb.Context):
     comm.log_com(ctx)
     arr = ["Twink", "Twinkish", "Hunkish Twink", "Twunk", "Twinkish Hunk", "Hunkish", "Hunk", "Bearish Twink", "Cub", "No Leaning", "Bunk", "Bearish Hunk", "Twinkish Bear", "Bearish", "Hunkish Bear", "Bear"]
+    random.seed(comm.texthasher(ctx.options.who))
     if ctx.options.who in ["you", "You", "YOU"]:
         await ctx.respond("I am a " + random.choice(arr))
     elif ctx.options.who in ["me", "Me", "I", "ME"]:
@@ -190,6 +195,7 @@ async def twunkscale(ctx: lightbulb.Context):
 async def futchscale(ctx: lightbulb.Context):
     comm.log_com(ctx)
     arr = ["High Femme", "Femme", "Butchy Femme", "Futch", "Soft Butch", "Butch", "Stone Butch"]
+    random.seed(comm.texthasher(ctx.options.who))
     if ctx.options.who in ["you", "You", "YOU"]:
         await ctx.respond("I am a " + random.choice(arr))
     elif ctx.options.who in ["me", "Me", "I", "ME"]:
@@ -205,6 +211,7 @@ async def futchscale(ctx: lightbulb.Context):
 async def smash_or_pass(ctx: lightbulb.Context):
     comm.log_com(ctx)
     arr = ["Smash", "Pass", "Smass"]
+    random.seed(comm.texthasher(ctx.options.who))
     if ctx.options.who in ["you", "You", "YOU"]:
         await ctx.respond("I would " + random.choice(arr) + " myself")
     elif ctx.options.who in ["me", "Me", "I", "ME"]:
@@ -219,6 +226,7 @@ async def smash_or_pass(ctx: lightbulb.Context):
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def susmeter(ctx: lightbulb.Context):
     comm.log_com(ctx)
+    random.seed(comm.texthasher(ctx.options.who))
     if ctx.options.who in ["you", "You", "YOU"]:
         await ctx.respond("I am " + str(random.randint(0,101)) + "% sus.")
     elif ctx.options.who in ["me", "Me", "I", "ME"]:
@@ -233,6 +241,7 @@ async def susmeter(ctx: lightbulb.Context):
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def ratewaifu(ctx: lightbulb.Context):
     comm.log_com(ctx)
+    random.seed(comm.texthasher(ctx.options.who))
     if ctx.options.who in ["you", "You", "YOU"]:
         await ctx.respond("I am " + str(random.randint(0,100)) + "% waifu.")
     elif ctx.options.who in ["me", "Me", "I", "ME"]:

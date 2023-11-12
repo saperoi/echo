@@ -10,6 +10,7 @@ import sqlite3
 import requests
 import base64
 import json
+import hashlib
 
 bot_id = [1039988982253092926, 1045057369085841458]
 owner_id = [738772518441320460]
@@ -135,3 +136,6 @@ async def webhook_send(ctx, user, content):
     hook = await ctx.app.rest.create_webhook(channel=ctx.channel_id, name="ATMOS: " + str(member.id), avatar=member.display_avatar_url)
     await hook.execute(content=content, username=member.display_name if ctx.author.id == user else "\"" + member.display_name + "\"")
     await hook.delete()
+
+def texthasher(text):
+    return int(hashlib.sha256(str(text).encode('utf-8')).hexdigest(), 16)

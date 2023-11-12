@@ -13,11 +13,12 @@ try:
 except:
     mode = "echo"
 mode = mode.lower()
-if mode == "somni":
+if mode == "ache":
     __tok = os.getenv("ACHE_TOKEN")
     __prf = os.getenv("ACHE_PREFIX")
     __uid = os.getenv("ACHE_ID")
 if mode == "echo":
+    print('here')
     __tok = os.getenv("ECHO_TOKEN")
     __prf = os.getenv("ECHO_PREFIX")
     __uid = os.getenv("ECHO_ID")
