@@ -292,6 +292,18 @@ async def facepalm(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
+@lightbulb.option("user", "The user to bite.", type=hikari.Member, required=True)
+@lightbulb.command("bite", "Bite 'em")
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def feed(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    u = ctx.options.user.id
+    embed = hikari.Embed(title="*CHOMP*", description="<@" + str(ctx.author.id) + "> bit <@" + str(u) + ">", color=comm.color())
+    embed.set_image(random.choice(urls["bite"]))
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
 @lightbulb.command("floof", "floofy :)")
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def floofy(ctx: lightbulb.Context):
