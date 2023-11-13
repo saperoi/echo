@@ -26,7 +26,7 @@ if mode == "echo":
 bot = lightbulb.BotApp(token=__tok, prefix=[__prf, __prf.replace("/", "\/"), "<@" + __uid + ">"], intents=hikari.Intents.ALL_UNPRIVILEGED | hikari.Intents.MESSAGE_CONTENT)
 miru.install(bot)
 
-if mode.lower() == "atmos":
+if mode.lower() == "echo":
     @bot.listen(lightbulb.CommandErrorEvent)
     async def on_error(event):
         if isinstance(event.exception, lightbulb.errors.CommandIsOnCooldown):
