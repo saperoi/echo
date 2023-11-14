@@ -13,7 +13,7 @@ def unload(bot):
 
 @plugin.command
 @lightbulb.set_help("Checks latency time in ms")
-@lightbulb.command("ping", "Says pong!")
+@lightbulb.command("ping", "Says pong!", aliases=["PING"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def ping(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -21,7 +21,7 @@ async def ping(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.set_help("Checks if the bot is functioning (sees command and can reply)")
-@lightbulb.command("check", "For debugging")
+@lightbulb.command("check", "For debugging", aliases=["CHECK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def check(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -30,7 +30,7 @@ async def check(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.set_help("Only gets your user ID")
-@lightbulb.command("uid", "Gets User ID")
+@lightbulb.command("uid", "Gets User ID", aliases=["UID"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def uid(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -38,7 +38,7 @@ async def uid(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.set_help("Only gets the current server ID")
-@lightbulb.command("sid", "Gets Server ID")
+@lightbulb.command("sid", "Gets Server ID", aliases=["SID"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def sid(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -47,7 +47,7 @@ async def sid(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("user", "The user to get their avatar.", type=hikari.User, required=False)
 @lightbulb.set_help("Gets a user's avatar. Can be ping or user ID")
-@lightbulb.command("avatar", "Gets someone's avatar", aliases=["av"])
+@lightbulb.command("avatar", "Gets someone's avatar", aliases=["av", "AVATAR", "AV"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def avatar(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -75,7 +75,7 @@ async def avatar_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.option("user", "The user to get their info.", type=hikari.User, required=False)
 @lightbulb.set_help("The usual userinfo command. Can be ping or user ID")
-@lightbulb.command("userinfo", "Pulls information about a user", aliases=["whois"])
+@lightbulb.command("userinfo", "Pulls information about a user", aliases=["whois", "USERINFO", "WHOIS"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def userinfo(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -127,7 +127,7 @@ async def userinfo_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.option("server", "The server to get their info.", type=int, required=False)
 @lightbulb.set_help("The usual serverinfo command. Can be ping or user ID")
-@lightbulb.command("serverinfo", "Pulls information about a server")
+@lightbulb.command("serverinfo", "Pulls information about a server", aliases=["SERVERINFO"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def serverinfo(ctx: lightbulb.Context):
     comm.log_com(ctx)

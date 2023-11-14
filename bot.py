@@ -23,7 +23,7 @@ if mode == "echo":
     __prf = os.getenv("ECHO_PREFIX")
     __uid = os.getenv("ECHO_ID")
 
-bot = lightbulb.BotApp(token=__tok, prefix=[__prf, __prf.replace("/", "\/"), "<@" + __uid + ">"], intents=hikari.Intents.ALL_UNPRIVILEGED | hikari.Intents.MESSAGE_CONTENT)
+bot = lightbulb.BotApp(token=__tok, prefix=[__prf, __prf.upper(), __prf.replace("/", "\/"), __prf.upper().replace("/", "\/"), "<@" + __uid + ">"], intents=hikari.Intents.ALL_UNPRIVILEGED | hikari.Intents.MESSAGE_CONTENT)
 miru.install(bot)
 
 if mode.lower() == "echo":

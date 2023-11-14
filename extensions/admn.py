@@ -21,7 +21,7 @@ def unload(bot):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
 @lightbulb.option("data", "Data for banning. First user mention/id, then the reason (optional). Seperate users with at least one whiteline, if no reason is given, the one from the previous user will be used. If it's the first listed, the reason defaults to 'Banned by <your user>'", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.set_help("Bans users")
-@lightbulb.command("ban", "Ban users from the server.")
+@lightbulb.command("ban", "Ban users from the server.", aliases=["BAN"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def ban(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -55,7 +55,7 @@ async def ban_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.ADMINISTRATOR))
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_ROLES))
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.command("ban_export", "Exports bans in server to a JSON.")
+@lightbulb.command("ban_export", "Exports bans in server to a JSON.", aliases=["BAN_EXPORT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def ban_export(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -72,7 +72,7 @@ async def ban_export(ctx: lightbulb.Context):
 @lightbulb.option("reason", "Reason for the kick", modifier=lightbulb.OptionModifier.CONSUME_REST, required=False)
 @lightbulb.option("user", "The user to kick.", type=hikari.Member)
 @lightbulb.set_help("Kick a user. May use user ID or ping")
-@lightbulb.command("kick", "Kick a user from the server.")
+@lightbulb.command("kick", "Kick a user from the server.", aliases=["KICK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def kick(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -97,7 +97,7 @@ async def kick_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
 @lightbulb.option("user", "The user to unban.", type=hikari.User)
 @lightbulb.set_help("Unban a user. May use user ID or ping")
-@lightbulb.command("unban", "Unban a user from the server.")
+@lightbulb.command("unban", "Unban a user from the server.", aliases=["UNBAN"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def unban(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -123,7 +123,7 @@ async def unban_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
 @lightbulb.option("amount", "The amount of messages to remove.", required=True, type=int)
 @lightbulb.set_help("Purges an amount of messages. Must be between 0 and 100. Messages cannot be older than 14 days.")
-@lightbulb.command("purge", "Purges a set amount of messages.", aliases=["clear"])
+@lightbulb.command("purge", "Purges a set amount of messages.", aliases=["clear", "PURGE", "CLEAR"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def purge(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -152,7 +152,7 @@ def table_check(s):
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
-@lightbulb.command("warn", "Warning command group")
+@lightbulb.command("warn", "Warning command group", aliases=["WARN"])
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def warn(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -164,7 +164,7 @@ async def warn(ctx: lightbulb.Context):
 @lightbulb.option("reason", "Reason for the kick", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.option("user", "The user to warn.", type=hikari.Member)
 @lightbulb.set_help("Warn a user. May use user ID or ping")
-@lightbulb.command("add", "Warning command group")
+@lightbulb.command("add", "Warning command group", aliases=["ADD"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def add(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -188,7 +188,7 @@ async def add_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("timestamp", "Time stamp of the warn (used in place of an ID).", type=int)
 @lightbulb.option("user", "The user to unwarn.", type=hikari.Member)
 @lightbulb.set_help("Unwarn a user. May use user ID or ping")
-@lightbulb.command("rmv", "Warning command group")
+@lightbulb.command("rmv", "Warning command group", aliases=["RMV"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def rmv(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -211,7 +211,7 @@ async def rmv_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_MESSAGES))
 @lightbulb.option("user", "The user to list warns from.", type=hikari.Member)
 @lightbulb.set_help("Lists a user's warns. May use user ID or ping")
-@lightbulb.command("lst", "List warnings")
+@lightbulb.command("lst", "List warnings", aliases=["LST"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def lst(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -246,7 +246,7 @@ async def lst_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
-@lightbulb.command("vibe_check", "Activity Check", aliases=["activity_check"])
+@lightbulb.command("vibe_check", "Activity Check", aliases=["activity_check", "activitycheck", "vibecheck", "VIBE_CHECK", "VIBECHECK", "ACTIVITYCHECK", "ACTIVITY_CHECK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def vibe_check(ctx: lightbulb.Context):
     comm.log_com(ctx)

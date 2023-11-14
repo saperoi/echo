@@ -26,7 +26,7 @@ async def gifs_error_handler(event: lightbulb.CommandErrorEvent):
 
 @plugin.command
 @lightbulb.option("user", "The user to kill.", type=hikari.Member, required=True)
-@lightbulb.command("kill", "Kill 'em")
+@lightbulb.command("kill", "Kill 'em", aliases=["KILL"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def kill(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -38,7 +38,7 @@ async def kill(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to slap.", type=hikari.Member, required=True)
-@lightbulb.command("slap", "Slap 'em")
+@lightbulb.command("slap", "Slap 'em", aliases=["SLAP"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def slap(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -50,7 +50,7 @@ async def slap(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to bonk.", type=hikari.Member, required=True)
-@lightbulb.command("bonk", "bonk 'em")
+@lightbulb.command("bonk", "bonk 'em", aliases=["BONK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def bonk(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -62,7 +62,7 @@ async def bonk(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to bonk and send to jail.", type=hikari.Member, required=True)
-@lightbulb.command("hbonk", "bonk 'em and send 'em to horny jail", aliases=["hbonk"])
+@lightbulb.command("hbonk", "bonk 'em and send 'em to horny jail", aliases=["HBONK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def hbonk(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -74,7 +74,7 @@ async def hbonk(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to boop.", type=hikari.Member, required=True)
-@lightbulb.command("boop", "Boop 'em")
+@lightbulb.command("boop", "Boop 'em", aliases=["BOOP"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def boop(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -86,7 +86,7 @@ async def boop(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to pass the jonko to.", type=hikari.Member, required=True)
-@lightbulb.command("boof", "Pass it to 'em")
+@lightbulb.command("boof", "Pass it to 'em", aliases=["BOOF"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def boof(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -98,7 +98,7 @@ async def boof(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to pat.", type=hikari.Member, required=True)
-@lightbulb.command("pat", "Pat 'em")
+@lightbulb.command("pat", "Pat 'em", aliases=["PAT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def pat(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -110,7 +110,7 @@ async def pat(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to hug.", type=hikari.Member, required=True)
-@lightbulb.command("hug", "Hug 'em")
+@lightbulb.command("hug", "Hug 'em", aliases=["HUG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def hug(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -122,7 +122,7 @@ async def hug(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to cuddle.", type=hikari.Member, required=True)
-@lightbulb.command("cuddle", "Cuddle with 'em")
+@lightbulb.command("cuddle", "Cuddle with 'em", aliases=["CUDDLE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def cuddle(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -134,7 +134,7 @@ async def cuddle(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to tickle.", type=hikari.Member, required=True)
-@lightbulb.command("tickle", "Tickle 'em")
+@lightbulb.command("tickle", "Tickle 'em", aliases=["TICKLE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def tickle(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -146,7 +146,7 @@ async def tickle(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to kiss.", type=hikari.Member, required=True)
-@lightbulb.command("kiss", "Kiss 'em", aliases=["smooch"])
+@lightbulb.command("kiss", "Kiss 'em", aliases=["smooch", "KISS", "SMOOCH"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def kiss(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -158,7 +158,7 @@ async def kiss(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to give a cookie.", type=hikari.Member, required=True)
-@lightbulb.command("give_cookie", "Give 'em a cookie")
+@lightbulb.command("give_cookie", "Give 'em a cookie", aliases=["GIVE_COOKIE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def give_cookie(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -170,7 +170,7 @@ async def give_cookie(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to dap up.", type=hikari.Member, required=True)
-@lightbulb.command("handshake", "Give 'em a good handshake")
+@lightbulb.command("handshake", "Give 'em a good handshake", aliases=["HANDSHAKE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def handshake(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -182,7 +182,7 @@ async def handshake(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to spank.", type=hikari.Member, required=True)
-@lightbulb.command("spank", "Spank 'em", nsfw=True)
+@lightbulb.command("spank", "Spank 'em", aliases=["SPANK"], nsfw=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def spank(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -211,7 +211,7 @@ async def spank(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to feed.", type=hikari.Member, required=True)
-@lightbulb.command("feed", "Feed 'em")
+@lightbulb.command("feed", "Feed 'em", aliases=["FEED"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def feed(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -223,7 +223,7 @@ async def feed(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to bark at.", type=hikari.Member, required=False)
-@lightbulb.command("bark", "Bark at 'em", aliases=["woof"])
+@lightbulb.command("bark", "Bark at 'em", aliases=["woof", "BARK", "WOOF"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def bark(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -237,7 +237,7 @@ async def bark(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to wag at.", type=hikari.Member, required=False)
-@lightbulb.command("wag", "Wag at 'em")
+@lightbulb.command("wag", "Wag at 'em", aliases=["WAG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def wag(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -251,7 +251,7 @@ async def wag(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to smug.", type=hikari.Member, required=False)
-@lightbulb.command("smug", "Look smug at 'em")
+@lightbulb.command("smug", "Look smug at 'em", aliases=["SMUG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def smug(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -265,7 +265,7 @@ async def smug(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to wink.", type=hikari.Member, required=False)
-@lightbulb.command("wink", "Wink at 'em")
+@lightbulb.command("wink", "Wink at 'em", aliases=["WINK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def wink(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -279,7 +279,7 @@ async def wink(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to facepalm.", type=hikari.Member, required=False)
-@lightbulb.command("facepalm", "Facepalm at 'em")
+@lightbulb.command("facepalm", "Facepalm at 'em", aliases=["FACEPALM"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def facepalm(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -293,7 +293,7 @@ async def facepalm(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("user", "The user to bite.", type=hikari.Member, required=True)
-@lightbulb.command("bite", "Bite 'em")
+@lightbulb.command("bite", "Bite 'em", aliases=["BITE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def feed(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -304,7 +304,7 @@ async def feed(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("floof", "floofy :)")
+@lightbulb.command("floof", "floofy :)", aliases=["FLOOF"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def floofy(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -315,7 +315,7 @@ async def floofy(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("doggo", "pupper :)")
+@lightbulb.command("doggo", "pupper :)", aliases=["DOGGO"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def doggo(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -331,7 +331,7 @@ async def doggo(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("ducky", "quack :)")
+@lightbulb.command("ducky", "quack :)", aliases=["DUCKY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def ducky(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -342,7 +342,7 @@ async def ducky(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("otter", "kapapapapa :>")
+@lightbulb.command("otter", "kapapapapa :>", aliases=["OTTER"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def otter(ctx: lightbulb.Context):
     comm.log_com(ctx)

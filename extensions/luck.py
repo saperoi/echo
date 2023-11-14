@@ -17,7 +17,7 @@ def unload(bot):
 @lightbulb.option("dx", "Type of dice (e.g. 6 for d6, 20 for d20)")
 @lightbulb.option("amount", "Amount of dice", type=int)
 @lightbulb.set_help("Rolls a set amount of dice with some amount of sides. Example command: a//dice 2 d6 (the d is optional)")
-@lightbulb.command("dice", "Rolls a dice", aliases=["roll"])
+@lightbulb.command("dice", "Rolls a dice", aliases=["roll", "DICE", "ROLL"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def dice(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -44,12 +44,12 @@ async def dice(ctx: lightbulb.Context):
 async def dice_error_handler(event: lightbulb.CommandErrorEvent):
     exception = event.exception.__cause__ or event.exception
     if isinstance(exception, lightbulb.NotEnoughArguments):
-        await event.context.respond("You did not provide enough arguments.\nThe command is structured like so: \t\t" + ctx.prefix + "dice <n> <dx>\n*<n>* is the amount of dice you want to roll.\t\t\t*<dx>* is the amount of faces on the die.")
+        await event.context.respond("You did not provide enough arguments.\nThe command is structured like so: \t\t" + event.context.prefix + "dice <n> <dx>\n*<n>* is the amount of dice you want to roll.\t\t\t*<dx>* is the amount of faces on the die.")
 
 @plugin.command
 @lightbulb.add_cooldown(5, 1, lightbulb.UserBucket)
 @lightbulb.set_help("Flips a coin, 1 in 6K chance of landing on its side.")
-@lightbulb.command("coin", "Flips an American nickel", aliases=["flip"])
+@lightbulb.command("coin", "Flips an American nickel", aliases=["flip", "COIN", "FLIP"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def coin(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -65,7 +65,7 @@ async def coin(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("question", "Your question")
-@lightbulb.command("8ball", "See the fortune")
+@lightbulb.command("8ball", "See the fortune", aliases=["eightball", "8BALL", "EIGHTBALL"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def eightball(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -103,7 +103,7 @@ async def eightball_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.option("shoe", "Your hand", modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("You can only throw 'rock', 'paper', or 'scissors'")
-@lightbulb.command("rps", "ROCK, PAPER, SCISSORS")
+@lightbulb.command("rps", "ROCK, PAPER, SCISSORS", aliases=["RPS"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def rps(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -146,7 +146,7 @@ async def rps_error_handler(event: lightbulb.CommandErrorEvent):
 
 @plugin.command
 @lightbulb.set_help("Existing commands:\n- dndalign - D&D Alignment\n- twunkscale - Rates on the Twink-Hunk-Bear Scale\n- smash_or_pass - Pass, Smass or Smash someone")
-@lightbulb.command("rtg", "Random text generator")
+@lightbulb.command("rtg", "Random text generator", aliases=["RTG"])
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def rtg(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -154,7 +154,7 @@ async def rtg(ctx: lightbulb.Context):
 @rtg.child
 @lightbulb.option("who", "Who to determine the classpect of", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("HOMESTUCK SBURB Classpects")
-@lightbulb.command("classpect", "HOMESTUCK SBURB Classpects")
+@lightbulb.command("classpect", "HOMESTUCK SBURB Classpects", aliases=["CLASSPECT"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def classpect(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -174,7 +174,7 @@ async def classpect(ctx: lightbulb.Context):
 @rtg.child
 @lightbulb.option("who", "Who to put on the twunkscale", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Rates on the Twink-Hunk-Bear Scale")
-@lightbulb.command("twunkscale", "Rates on the Twink-Hunk-Bear Scale")
+@lightbulb.command("twunkscale", "Rates on the Twink-Hunk-Bear Scale", aliases=["TWUNKSCALE"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def twunkscale(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -190,7 +190,7 @@ async def twunkscale(ctx: lightbulb.Context):
 @rtg.child
 @lightbulb.option("who", "Who to put on the futchscale", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Rates on the Femme-Butch Scale")
-@lightbulb.command("futchscale", "Rates on the Femme-Butch Scale")
+@lightbulb.command("futchscale", "Rates on the Femme-Butch Scale", aliases=["FUTCHSCALE"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def futchscale(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -206,7 +206,7 @@ async def futchscale(ctx: lightbulb.Context):
 @rtg.child
 @lightbulb.option("who", "Who to S/P", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Pass, Smass or Smash someone")
-@lightbulb.command("smash_or_pass", "Pass, Smass or Smash someone", aliases=["sop"])
+@lightbulb.command("smash_or_pass", "Pass, Smass or Smash someone", aliases=["sop", "SMASH_OR_PASS", "SOP"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def smash_or_pass(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -222,7 +222,7 @@ async def smash_or_pass(ctx: lightbulb.Context):
 @rtg.child
 @lightbulb.option("who", "Who to measure", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Measure someone's sussiness")
-@lightbulb.command("susmeter", "Measure someone's sussiness")
+@lightbulb.command("susmeter", "Measure someone's sussiness", aliases=["SUSMETER"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def susmeter(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -237,7 +237,7 @@ async def susmeter(ctx: lightbulb.Context):
 @rtg.child
 @lightbulb.option("who", "Who to measure", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Measure someone's waifuness")
-@lightbulb.command("ratewaifu", "Measure someone's waifuness")
+@lightbulb.command("ratewaifu", "Measure someone's waifuness", aliases=["waifu", "RATEWAIFU", "WAIFU"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def ratewaifu(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -252,7 +252,7 @@ async def ratewaifu(ctx: lightbulb.Context):
 @rtg.child
 @lightbulb.option("who", "Who to measure", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Measure someone's PP")
-@lightbulb.command("ppmeter", "Measure someone's PP")
+@lightbulb.command("ppmeter", "Measure someone's PP", aliases=["PPMETER"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def ppmeter(ctx: lightbulb.Context):
     comm.log_com(ctx)

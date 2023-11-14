@@ -39,7 +39,7 @@ def inv_table_check(s, uid, iid):
 
 @plugin.command
 @lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
-@lightbulb.command("shop", "Shows you all items", aliases=["store", "market"])
+@lightbulb.command("shop", "Shows you all items", aliases=["store", "market", "SHOP", "STORE", "MARKET"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def shop(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -60,7 +60,7 @@ async def shop(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("item", "The item you want (USE THE ID SHOWN IN THE SHOP)", type=int, default=1)
-@lightbulb.command("buy", "Shows you all items")
+@lightbulb.command("buy", "Shows you all items", aliases=["BUY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def buy(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -93,7 +93,7 @@ async def buy(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
-@lightbulb.command("inv", "Shows you all items", aliases=["inventory"])
+@lightbulb.command("inv", "Shows you all items", aliases=["inventory", "INV", "INVENTORY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def inv(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -122,7 +122,7 @@ async def inv(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("user", "The user to use something on.", type=hikari.Member, required=False)
 @lightbulb.option("item", "The item you want to use (USE THE ID SHOWN IN THE SHOP)", type=int, required=True)
-@lightbulb.command("use", "Use an item of yours")
+@lightbulb.command("use", "Use an item of yours", aliases=["USE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def use(ctx: lightbulb.Context):
     comm.log_com(ctx)

@@ -1,6 +1,6 @@
 from datetime import datetime
 from dataclasses import dataclass
-
+from PIL import Image
 import lightbulb
 import hikari
 import textwrap
@@ -11,6 +11,7 @@ import requests
 import base64
 import json
 import hashlib
+import io
 
 bot_id = [1039988982253092926, 1045057369085841458]
 owner_id = [738772518441320460]
@@ -127,6 +128,18 @@ def url2uri(url):
     content_type = response.headers["content-type"]
     encoded_body = base64.b64encode(response.content)
     return "data:{};base64,{}".format(content_type, encoded_body.decode())
+
+# https://stackoverflow.com/questions/60676893/converting-pil-pillow-image-to-data-url
+def pillow_image_to_base64_string(img):
+    buffered = io.BytesIO()
+    img.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode("utf-8")
+
+# https://stackoverflow.com/questions/7391945/how-do-i-read-image-data-from-a-url-in-python
+def url2pil(url):
+    response = requests.get(url)
+    img = Image.open(io.BytesIO(response.content))
+    return img
 
 def color():
     return random.randint(0x0, 0xffffff)

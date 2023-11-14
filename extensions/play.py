@@ -29,7 +29,7 @@ def maze_table_check(s):
 @plugin.command
 @lightbulb.option("phrase", "write '§' where the item needs to come.", modifier=lightbulb.OptionModifier.CONSUME_REST, type = str, required = False)
 @lightbulb.option("count", "how many items to generate", type=int, required=False, min_value=1, max_value=100, default=1)
-@lightbulb.command("weapon", "Generates a random weapon")
+@lightbulb.command("weapon", "Generates a random weapon", aliases=["WEAPON"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def weapon(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -85,7 +85,7 @@ wire: 1d8 dmg, you trip
 """
 
 @plugin.command
-@lightbulb.command("ninemaze", "A small original game where you try to find a treasure.", aliases=["9maze"])
+@lightbulb.command("ninemaze", "A small original game where you try to find a treasure.", aliases=["9maze", "NINEMAZE", "9MAZE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def ninemaze(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -492,7 +492,7 @@ async def ninemaze(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.set_help("You play a bad chess bot. It priorititzes en passent, checkmate, then check, then capture, then stalemate and then move. It has a depth of one!")
-@lightbulb.command("chess", "Play a fun game of chess against a very bad bot!")
+@lightbulb.command("chess", "Play a fun game of chess against a very bad bot!", aliases=["CHESS"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def chessBot(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -592,7 +592,7 @@ async def chessBot_error_handler(event: lightbulb.CommandErrorEvent):
 
 @plugin.command
 @lightbulb.set_help("Standard Wordle rules.")
-@lightbulb.command("wordle", "Play a neat game of Wordle!")
+@lightbulb.command("wordle", "Play a neat game of Wordle!", aliases=["WORLDE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def wordle(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -795,7 +795,7 @@ async def wordle_error_handler(event: lightbulb.CommandErrorEvent):
 
 @plugin.command
 @lightbulb.set_help("You have .")
-@lightbulb.command("pushthebox", "Play a game where you have to push a box around!")
+@lightbulb.command("pushthebox", "Play a game where you have to push a box around!", aliases=["ptb", "PUSHTHEBOX", "PTB"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def pushthebox(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -921,7 +921,7 @@ dictionary = dictf.read().splitlines()
 
 @plugin.command
 @lightbulb.set_help("Regular hangman")
-@lightbulb.command("hangman", "Play a neat game of Hangman!")
+@lightbulb.command("hangman", "Play a neat game of Hangman!", aliases=["HANGMAN"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def hangman(ctx: lightbulb.Context):
     comm.log_com(ctx)

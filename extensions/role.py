@@ -19,7 +19,7 @@ def unload(bot):
 @lightbulb.option("role", "Role to add/remove", type=hikari.Role)
 @lightbulb.option("user", "The user to add/remove roles to/from.", type=hikari.Member)
 @lightbulb.set_help("Adds or removes a role if the user already or doesn't already have said role")
-@lightbulb.command("role", "Adds/removes roles")
+@lightbulb.command("role", "Adds/removes roles", aliases=["ROLE"])
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def role(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -52,7 +52,7 @@ async def role_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("role", "Role to add", type=hikari.Role)
 @lightbulb.option("user", "The user to add roles to.", type=hikari.Member)
 @lightbulb.set_help("Adds a role if the user doesn't already have said role")
-@lightbulb.command("add", "Adds roles to member")
+@lightbulb.command("add", "Adds roles to member", aliases=["ADD"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def add(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -74,7 +74,7 @@ async def add(ctx: lightbulb.Context):
 @lightbulb.option("role", "Role to remove", type=hikari.Role)
 @lightbulb.option("user", "The user to add roles to.", type=hikari.Member)
 @lightbulb.set_help("Removes a role if the user doesn't already have said role")
-@lightbulb.command("rmv", "Removes roles from member")
+@lightbulb.command("rmv", "Removes roles from member", aliases=["rm", "dlt", "RMV", "RM", "DLT"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def rmv(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -94,7 +94,7 @@ async def rmv(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_ROLES))
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.option("role", "The role to look in", type=hikari.Role)
-@lightbulb.command("in", "Shows users that are members of a role.")
+@lightbulb.command("in", "Shows users that are members of a role.", aliases=["IN"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def in_role(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -130,7 +130,7 @@ async def in_role(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.option("role_2", "Role to remove from.", default=None, type=hikari.Role)
 @lightbulb.option("role_1", "Role to remove.", type=hikari.Role)
-@lightbulb.command("purge_role_members", "Removes a role from a group of members.", aliases=["prm"])
+@lightbulb.command("purge_role_members", "Removes a role from a group of members.", aliases=["prm", "PURGE_ROLE_MEMBERS", "PRM"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def purge_role_members(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -166,7 +166,7 @@ async def purge_role_members(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.option("role_2", "Role to add from.", default=None, type=hikari.Role)
 @lightbulb.option("role_1", "Role to add.", type=hikari.Role)
-@lightbulb.command("add_role_members", "Adds a role to a group of people.", aliases=["arm"])
+@lightbulb.command("add_role_members", "Adds a role to a group of people.", aliases=["arm", "ADD_ROLE_MEMBERS", "ARM"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def add_role_members(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -201,7 +201,7 @@ async def add_role_members(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.ADMINISTRATOR))
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_ROLES))
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.command("list", "Lists roles in server.")
+@lightbulb.command("list", "Lists roles in server.", aliases=["lst", "LIST", "LST"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def role_list(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -217,7 +217,7 @@ async def role_list(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_ROLES))
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.option("role", "Role to add.", type=hikari.Role)
-@lightbulb.command("info", "Lists info on a role in server.")
+@lightbulb.command("info", "Lists info on a role in server.", aliases=["INFO"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def info(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -242,7 +242,7 @@ async def info(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.ADMINISTRATOR))
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_ROLES))
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.command("export", "Exports roles in server to a JSON.")
+@lightbulb.command("export", "Exports roles in server to a JSON.", aliases=["EXPORT"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def role_list(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -254,42 +254,6 @@ async def role_list(ctx: lightbulb.Context):
     j = j[:-1] + "\n}"
     await ctx.respond(attachment = "data:application/json;base64,{}".format(base64.b64encode(str.encode(j)).decode() ))
 
-@role.child
-@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.ADMINISTRATOR))
-@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_ROLES))
-@lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.option("role", "Role to add (NAME!)", type=str)
-@lightbulb.option("user", "User to add role to")
-@lightbulb.command("global_add", "Lists info on a role in server.", aliases = ["g_add", "gadd"])
-@lightbulb.implements(lightbulb.PrefixSubCommand)
-async def g_add(ctx: lightbulb.Context):
-    comm.log_com(ctx)
-    u = ctx.options.user.id
-    if ctx.guild_id not in comm.atheria_guilds:
-        await ctx.respond("Only available for ATHERIA")
-        return
-    roles = []
-    for sid in comm.atheria_guilds:
-        roles.append(await ctx.app.rest.fetch_roles(sid))
-    role_names = []
-    for i in range(len(roles)):
-        s = roles[i]
-        k = []
-        for j in range(len(s)):
-            k.append(s[j].name)
-        role_names.append(k)
-
-    for k in range(len(roles)):
-        s = []
-        try:
-            i = role_names[k].index(ctx.options.role)
-            j = roles[k]
-            await ctx.app.rest.add_role_to_member(comm.atheria_guilds[k], u, j[i])
-            s.append(comm.atheria_guilds[k])
-        except:
-            pass
-    await ctx.respond("Added role to user in following servers: " + str(s))
-
 conrol = sqlite3.connect("./db/role.db")
 currol = conrol.cursor()
 
@@ -297,7 +261,7 @@ currol = conrol.cursor()
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_ROLES))
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.set_help("Reaction Role command group")
-@lightbulb.command("reactionrole", "Reaction role command group", aliases=["rr"])
+@lightbulb.command("reactionrole", "Reaction role command group", aliases=["rr", "REACTIONROLE", "RR"])
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def reactionrole(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -328,7 +292,7 @@ You can put multiple roles on one emoji, but these must be done in the same mess
 @lightbulb.option("emoji", "The emoji to click", type=hikari.Emoji)
 @lightbulb.option("message", "The message to listen to", type=hikari.Message)
 @lightbulb.set_help("Adds a role if the user doesn't already have said role.\nYou must be in the same channel as the message")
-@lightbulb.command("add", "Adds roles to member")
+@lightbulb.command("add", "Adds roles to member", aliases=["ADD"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def add(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -367,7 +331,7 @@ async def add(ctx: lightbulb.Context):
 @lightbulb.option("emoji", "The emoji to remove", type=hikari.Emoji)
 @lightbulb.option("message", "The message to listen to", type=hikari.Message)
 @lightbulb.set_help("Removes a reaction role from a message.\nYou must be in the same channel as the message")
-@lightbulb.command("rmv", "Removes roles from a member")
+@lightbulb.command("rmv", "Removes roles from a member", aliases=["rm", "RMV", "RM"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def rmv(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -395,7 +359,7 @@ async def rmv(ctx: lightbulb.Context):
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.option("message", "The message to list from", type=hikari.Message)
 @lightbulb.set_help("Lists the reaction roles of a message.\nYou must be in the same channel as the message")
-@lightbulb.command("lst", "Lists reaction roles of a message")
+@lightbulb.command("lst", "Lists reaction roles of a message", aliases=["LST"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def lst(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -436,7 +400,7 @@ modes = ["free", "verification", "remove", "unique", "limit", "binding"]
 @lightbulb.option("mode", "The mode for the reaction role", choices=modes, default="free")
 @lightbulb.option("message", "The message to listen to", type=hikari.Message)
 @lightbulb.set_help("Edit the settings of a reaction rule.\nYou must be in the same channel as the message")
-@lightbulb.command("set", "Edit the settings of a reaction role")
+@lightbulb.command("set", "Edit the settings of a reaction role", aliases=["SET"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def set(ctx: lightbulb.Context):
     comm.log_com(ctx)

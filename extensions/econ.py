@@ -28,7 +28,7 @@ def table_check(s, i):
 @plugin.command
 @lightbulb.option("user", "The user to check balance from.", type=hikari.Member, required=False)
 @lightbulb.set_help("Checks a user's balance (yours if user is not specified). Can use mention or user ID")
-@lightbulb.command("balance", "See the balances of a user", aliases=["bal", "b"])
+@lightbulb.command("balance", "See the balances of a user", aliases=["bal", "BALANCE", "BAL"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def balance(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -52,7 +52,7 @@ async def balance(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("amount", "The amount of money to deposit.", required=True, type=int)
 @lightbulb.set_help("Deposits a set amount of money in the bank. 10% of your net worth must remain in your wallet when depositing.")
-@lightbulb.command("deposit", "Put the money in the bank", aliases=["dep"])
+@lightbulb.command("deposit", "Put the money in the bank", aliases=["dep", "DEPOSIT", "DEP"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def deposit(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -84,7 +84,7 @@ async def deposit_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.option("amount", "The amount of money to withdraw.", required=True, type=int)
 @lightbulb.set_help("Withdraws a set of money from your bank")
-@lightbulb.command("withdraw", "Put the money in the bag", aliases=["wd", "with", "w"])
+@lightbulb.command("withdraw", "Put the money in the bag", aliases=["wd", "with", "WITHDRAW", "WD", "WITH"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def withdraw(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -113,7 +113,7 @@ async def withdraw_error_handler(event: lightbulb.CommandErrorEvent):
 @plugin.command
 @lightbulb.option("amount", "The amount of money to gamble.", required=True, type=int)
 @lightbulb.set_help("Almost 50% odds! 5/11 chance to win.")
-@lightbulb.command("gamble", "Spin away!")
+@lightbulb.command("gamble", "Spin away!", aliases=["GAMBLE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def gamble(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -139,7 +139,7 @@ async def gamble(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("page", "The page you want (1 page = 10)", type=int, default=1)
 @lightbulb.set_help("See the top 10 richest folks")
-@lightbulb.command("leaderboard", "Check the top 10 users", aliases=["lb"])
+@lightbulb.command("leaderboard", "Check the top 10 users", aliases=["lb", "LEADERBOARD", "LB"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def leaderboard(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -170,7 +170,7 @@ async def leaderboard(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.add_cooldown(3600, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 hour cooldown. Get between Ξ20 and Ξ120.")
-@lightbulb.command("work", "Get money nicely", aliases=["job"])
+@lightbulb.command("work", "Get money nicely", aliases=["job", "WORK", "JOB"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def work(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -186,7 +186,7 @@ async def work(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.add_cooldown(3600*24, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 day cooldown.")
-@lightbulb.command("daily", "Get cash yo")
+@lightbulb.command("daily", "Get cash yo", aliases=["DAILY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def daily(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -201,7 +201,7 @@ async def daily(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.add_cooldown(3600*24*7, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 week cooldown.")
-@lightbulb.command("weekly", "Get cash yo")
+@lightbulb.command("weekly", "Get cash yo", aliases=["WEEKLY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def weekly(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -212,12 +212,13 @@ async def weekly(ctx: lightbulb.Context):
     cureco.execute("UPDATE eco_" + str(ctx.guild_id) + " SET wallet=? WHERE uid=?", (wallet + p, ctx.author.id))
     coneco.commit()
     await comm.send_msg(ctx,"You earned Ξ" + str(p) + " for existing.")
+"""
 
 @plugin.command
 @lightbulb.add_cooldown(3600, 1, lightbulb.UserBucket)
 @lightbulb.set_help("1 hour cooldown. Ξ100 fine if caught (50%).")
 @lightbulb.option("user", "The user to rob.", type=hikari.Member, required=True)
-@lightbulb.command("rob", "Put their money in the bag")
+@lightbulb.command("rob", "Put their money in the bag", aliases=["ROB"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def rob(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -266,7 +267,7 @@ async def rob_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.option("amount", "The amount of money to pay.", required=True, type=int)
 @lightbulb.option("user", "The user to pay.", type=hikari.Member, required=True)
 @lightbulb.set_help("Give a user money, may use ping or user ID.")
-@lightbulb.command("pay", "Put your money in the bag")
+@lightbulb.command("pay", "Put your money in the bag", aliases=["PAY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def pay(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -297,7 +298,6 @@ async def pay_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("You did not provide a user (ID) to give cash to.")
     elif isinstance(exception, hikari.errors.NotFoundError):
         await event.context.respond("This user does not EXIST")
-"""
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.owner_only)

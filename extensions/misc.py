@@ -21,7 +21,7 @@ def unload(bot):
 @plugin.command
 @lightbulb.option("emoji", "The emoji to enlarge.", type=hikari.Emoji)
 @lightbulb.set_help("Enlarge an emoji")
-@lightbulb.command("emoji", "Emoji enlarger", aliases=["emoji_enlarge"])
+@lightbulb.command("emoji", "Emoji enlarger", aliases=["emoji_enlarge", "EMOJI", "EMOJI_ENLARGE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def emoji_enlarge(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -32,7 +32,7 @@ async def emoji_enlarge(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("word", "The word to search for.", type=str, required=True)
-@lightbulb.command("urban", "Look up a word on Urban Dictionary")
+@lightbulb.command("urban", "Look up a word on Urban Dictionary", aliases=["URBAN"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def urban(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -52,7 +52,7 @@ async def urban(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("word", "The word to search for.", type=str, required=True)
-@lightbulb.command("dict", "Look up a word on DictionaryAPI.dev")
+@lightbulb.command("dict", "Look up a word on DictionaryAPI.dev", aliases=["dictionary", "DICT", "DICTIONARY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def dict(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -86,7 +86,7 @@ async def dict(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("comic", "The comic to pull.", type=int, required=False)
-@lightbulb.command("xkcd", "Look up an XKCD comic")
+@lightbulb.command("xkcd", "Look up an XKCD comic", aliases=["XKCD"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def xkcd(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -105,7 +105,7 @@ async def xkcd(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("joke", "Pull a random joke")
+@lightbulb.command("joke", "Pull a random joke", aliases=["JOKE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def joke(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -118,7 +118,7 @@ async def joke(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("search", "Search terms", modifier=lightbulb.OptionModifier.CONSUME_REST)
-@lightbulb.command("google", "Let me Google that for you...", aliases=["lmgtfy"])
+@lightbulb.command("google", "Let me Google that for you...", aliases=["lmgtfy", "GOOGLE", "LMGTFY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def lmgtfy(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -129,7 +129,7 @@ async def lmgtfy(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("search", "Search terms", modifier=lightbulb.OptionModifier.CONSUME_REST)
-@lightbulb.command("duckduckgo", "Let me Duck Duck Go that for you...", aliases=["ddg", "lmddgtfy"])
+@lightbulb.command("duckduckgo", "Let me Duck Duck Go that for you...", aliases=["ddg", "lmddgtfy", "DUCKDUCKGO", "DDG", "LMDDGTFY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def lmddgtfy(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -140,7 +140,7 @@ async def lmddgtfy(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("url", "The URL to shorten", modifier=lightbulb.OptionModifier.CONSUME_REST)
-@lightbulb.command("linkshortener", "Shorten a URL", aliases=["url", "link", "urlshortener", "isgd"])
+@lightbulb.command("linkshortener", "Shorten a URL", aliases=["url", "link", "urlshortener", "isgd", "LINKSHORTENER", "URL", "LINK", "URLSHORTENER", "ISGD"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def linkshort(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -149,7 +149,7 @@ async def linkshort(ctx: lightbulb.Context):
     await ctx.respond(r)
 
 @plugin.command
-@lightbulb.command("meme", "Pull a random meme")
+@lightbulb.command("meme", "Pull a random meme", aliases=["MEME"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def meme(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -161,7 +161,7 @@ async def meme(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("numfact", "Pull a fact about a random number", aliases=["mathfact", "numberfact"])
+@lightbulb.command("numfact", "Pull a fact about a random number", aliases=["mathfact", "numberfact", "NUMFACT", "MATHFACT", "NUMBERFACT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def numfact(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -173,7 +173,7 @@ async def numfact(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("yearfact", "Pull a fact about a random year")
+@lightbulb.command("yearfact", "Pull a fact about a random year", aliases=["YEARFACT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def yearfact(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -185,7 +185,7 @@ async def yearfact(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("datefact", "Pull a fact about a random date")
+@lightbulb.command("datefact", "Pull a fact about a random date", aliases=["DATEFACT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def datefact(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -196,7 +196,7 @@ async def datefact(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.command("inspirobot", "Generate a random inspirational quote")
+@lightbulb.command("inspirobot", "Generate a random inspirational quote", aliases=["INSPIROBOT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def inspirobot(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -209,7 +209,7 @@ async def inspirobot(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("text", "Text to repeat", modifier=lightbulb.OptionModifier.CONSUME_REST, type=str, required=True)
-@lightbulb.command("echo", "Repeats what you say", aliases=["parrot"])
+@lightbulb.command("echo", "Repeats what you say", aliases=["parrot", "ECHO", "PARROT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def echo(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -217,7 +217,7 @@ async def echo(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("text", "text to repeat", modifier=lightbulb.OptionModifier.CONSUME_REST, type=str, required=True)
-@lightbulb.command("qr", "Generate a QR code", aliases=["qrcode"])
+@lightbulb.command("qr", "Generate a QR code", aliases=["qrcode", "QR", "QRCODE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def qr(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -229,7 +229,7 @@ async def qr(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("text", "Text to repeat", modifier=lightbulb.OptionModifier.CONSUME_REST, type=str, required=True)
 @lightbulb.option("user", "The user to spoof as.", type=hikari.Member, required=True)
-@lightbulb.command("spoof", "Repeats what you say as someone else")
+@lightbulb.command("spoof", "Repeats what you say as someone else", aliases=["SPOOF"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def spoof(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -239,7 +239,7 @@ async def spoof(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("text", "Text to emojify", modifier=lightbulb.OptionModifier.CONSUME_REST, type=str, required=True)
-@lightbulb.command("emojify", "Emojifies what you say", aliases=["emoji_echo"])
+@lightbulb.command("emojify", "Emojifies what you say", aliases=["emoji_echo", "EMOJIFY", "EMOJI_ECHO"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def emojify(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -256,7 +256,7 @@ async def emojify(ctx: lightbulb.Context):
 @plugin.command
 @lightbulb.option("text", "Text to emojify", modifier=lightbulb.OptionModifier.CONSUME_REST, type=str, required=True)
 @lightbulb.option("hard", "Hard or soft LEETCODE (Soft replaces A, E, I and O, hard replaces all)", type=bool, default=False, choices=[True, False])
-@lightbulb.command("leet", "Emojifies what you say", aliases=["leetcode"])
+@lightbulb.command("leet", "Emojifies what you say", aliases=["leetcode", "LEET", "LEETCODE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def leet(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -276,7 +276,7 @@ async def leet(ctx: lightbulb.Context):
         await ctx.app.rest.delete_message(ctx.event.message.channel_id, ctx.event.message.id)
 
 @plugin.command
-@lightbulb.command("cookie", "Shows the official count of cookies <@738772518441320460> has! And give them one more!", aliases=["cookies", "cookie_count"])
+@lightbulb.command("cookie", "Shows the official count of cookies <@738772518441320460> has! And give them one more!", aliases=["cookies", "cookie_count", "COOKIE", "COOKIE_COUNT", "COOKIES"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def cookie(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -302,7 +302,7 @@ async def ascii(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.option("text", "Text to Uwuify", modifier=lightbulb.OptionModifier.CONSUME_REST, type=str, required=True)
-@lightbulb.command("uwuify", "UwUfies what you say", aliases=["uwu"])
+@lightbulb.command("uwuify", "UwUfies what you say", aliases=["uwu", "UWUIFY", "UWU"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def uwuify(ctx: lightbulb.Context):
     comm.log_com(ctx)

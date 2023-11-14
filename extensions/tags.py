@@ -25,7 +25,7 @@ def table_exist_check(s):
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.command("tag", "Tags command group")
+@lightbulb.command("tag", "Tags command group", aliases=["TAG"])
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def tag(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -33,7 +33,7 @@ async def tag(ctx: lightbulb.Context):
 @tag.child
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_GUILD) | lightbulb.owner_only)
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.command("ena", "Enables tags")
+@lightbulb.command("ena", "Enables tags", aliases=["ENA"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def ena(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -45,7 +45,7 @@ async def ena(ctx: lightbulb.Context):
 @tag.child
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_GUILD) | lightbulb.owner_only)
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.command("dis", "Disables tags")
+@lightbulb.command("dis", "Disables tags", aliases=["DIS"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def dis(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -56,7 +56,7 @@ async def dis(ctx: lightbulb.Context):
 
 @tag.child
 @lightbulb.option("name", "Name", required=True)
-@lightbulb.command("rec", "Recalls a tag")
+@lightbulb.command("rec", "Recalls a tag", aliases=["REC"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def rec(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -70,7 +70,7 @@ async def rec(ctx: lightbulb.Context):
 @tag.child
 @lightbulb.option("content", "Content", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.option("name", "Name", required=True)
-@lightbulb.command("crt", "Creates a tag")
+@lightbulb.command("crt", "Creates a tag", aliases=["CRT"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def crt(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -86,9 +86,9 @@ async def crt(ctx: lightbulb.Context):
 
 @tag.child
 @lightbulb.option("name", "Name", required=True)
-@lightbulb.command("dlt", "Removes a tag")
+@lightbulb.command("rmv", "Removes a tag", aliases=["rm", "dlt", "RMV", "RM", "DLT"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
-async def dlt(ctx: lightbulb.Context):
+async def rmv(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if table_exist_check(str(ctx.guild_id)):
         curtag.execute("SELECT id FROM tag_" + str(ctx.guild_id) + " WHERE name=?", (re.sub(r'[^a-zA-Z0-9_ ]', '',ctx.options.name),))
@@ -103,7 +103,7 @@ async def dlt(ctx: lightbulb.Context):
         await comm.send_msg(ctx,"Tags need to be enabled. To do that, a user with the MANAGE_GUILD permission must run this command: '" + ctx.prefix + "tag ena'")
 
 @tag.child
-@lightbulb.command("lst", "Lists all tags")
+@lightbulb.command("lst", "Lists all tags", aliases=["LST"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def lst(ctx: lightbulb.Context):
     comm.log_com(ctx)
@@ -122,21 +122,21 @@ with open("data/global_tags.json", "r", encoding = "utf-8") as f:
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.command("g_tag", "Global tags command group (requires normal tags to be enabled)")
+@lightbulb.command("g_tag", "Global tags command group (requires normal tags to be enabled)", aliases=["G_TAG"])
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def g_tag(ctx: lightbulb.Context):
     comm.log_com(ctx)
 
 @g_tag.child
 @lightbulb.option("name", "Name", choices=list(glob.keys()), required=True)
-@lightbulb.command("rec", "Recalls a tag")
+@lightbulb.command("rec", "Recalls a tag", aliases=["REC"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def rec(ctx: lightbulb.Context):
     comm.log_com(ctx)
     await comm.send_msg(ctx,glob[ctx.options.name])
 
 @g_tag.child
-@lightbulb.command("lst", "Lists all tags")
+@lightbulb.command("lst", "Lists all tags", aliases=["LST"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def lst(ctx: lightbulb.Context):
     comm.log_com(ctx)
