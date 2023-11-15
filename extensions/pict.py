@@ -6,19 +6,6 @@ from PIL import ImageFilter
 from PIL import ImageEnhance
 import random
 
-# https://github.com/nyancrimew/SAINT
-# A quite random filter, and I actually dont know what this really does.
-class WHAT_AM_I_DOING(ImageFilter.BuiltinFilter):
-    name = "god stop me please"
-    filterargs = (5, 5), 250, 0, (
-        1,  10,  5,  6,  1, 
-        1,  5, 50,  55,  1, 
-        1,  1,  69,  1,  0, 
-        1,  3,  1,  1,  1, 
-        6,  30,  30,  5,  20, 
-    )
-
-
 plugin = lightbulb.Plugin('pict', "Because esmBot doesn't work")
 
 def load(bot):
@@ -65,6 +52,18 @@ async def show_color(ctx: lightbulb.Context):
     embed.set_image(data_url)
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
+
+# https://github.com/nyancrimew/SAINT
+# A quite random filter, and I actually dont know what this really does.
+class WHAT_AM_I_DOING(ImageFilter.BuiltinFilter):
+    name = "god stop me please"
+    filterargs = (5, 5), 250, 0, (
+        1,  10,  5,  6,  1, 
+        1,  5, 50,  55,  1, 
+        1,  1,  69,  1,  0, 
+        1,  3,  1,  1,  1, 
+        6,  30,  30,  5,  20, 
+    )
 
 @plugin.command
 @lightbulb.option("user", "The user to deepfry.", type=hikari.User, required=False)

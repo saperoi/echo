@@ -256,6 +256,7 @@ async def ratewaifu(ctx: lightbulb.Context):
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def ppmeter(ctx: lightbulb.Context):
     comm.log_com(ctx)
+    random.seed(comm.texthasher(ctx.options.who))
     pp = "c" + "".join("=" for _ in range(random.randint(0,15))) + "3"
     if ctx.options.who in ["you", "You", "YOU"]:
         await ctx.respond("I have a: " + pp)
