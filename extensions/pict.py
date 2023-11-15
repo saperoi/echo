@@ -71,8 +71,6 @@ class WHAT_AM_I_DOING(ImageFilter.BuiltinFilter):
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def nuke(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    url = "https://some-random-api.com/canvas/overlay/wasted?avatar="
-    embed = hikari.Embed(title="WASTED", color=comm.color())
     if ctx.options.user == None:
         if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
             if ctx.author.avatar_url == None:
@@ -101,6 +99,87 @@ async def nuke(ctx: lightbulb.Context):
     data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(img)
     img.close()
     embed = hikari.Embed(title=":boom:", color=comm.color())
+    embed.set_image(data_url)
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+# https://gist.github.com/adx59/193d22af7e3b2b7feef4290bb0a3ef5f
+
+def blurplefy(img, colors):
+    img = img.convert('RGBA')
+    size = img.size
+
+    thresholds = [m*255/len(colors) for m in range(1, len(colors)+1)]
+
+    for x in range(size[0]):
+        for y in range(size[1]):
+            r, g, b, a = img.getpixel((x, y))
+            gval = 0.299*r + 0.587*g + 0.114*b
+
+            for t in list(enumerate(thresholds))[::-1]:
+                lower = thresholds[t[0]-1] if t[0]-1 >= 0 else -1
+                if lower < gval <= thresholds[t[0]]:
+                    px = colors[list(enumerate(thresholds))[::-1][t[0]][0]]
+                    img.putpixel((x,y), (px[0], px[1], px[2], a))
+
+    return img
+
+@plugin.command
+@lightbulb.option("user", "The user to Blurplify.", type=hikari.User, required=False)
+@lightbulb.command("blurple", "Blurplify your avatar", aliases=["BLURPLE"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def blurple(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                img = comm.url2pil(str(ctx.author.default_avatar_url))
+            else:
+                img = comm.url2pil(str(ctx.author.avatar_url))
+        else:
+            img = comm.url2pil(str([a.url for a in ctx.event.message.attachments if "image" in a.media_type][0]))
+            if img.size[0]*img.size[1] > 1024*1024:
+                await ctx.respond("Your image is too big (bigger than the amount of pixels in a 1024x1024 image). Please use a smaller image.")
+                return
+    else:
+        if ctx.options.user.avatar_url == None:
+            img = comm.url2pil(str(ctx.options.user.default_avatar_url))
+        else:
+            img = comm.url2pil(str(ctx.options.user.avatar_url))
+    img = blurplefy(img, [(255,255,255), (114,137,218), (78,93,148)])
+    data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(img)
+    img.close()
+    embed = hikari.Embed(title="Blurple!!", color=comm.color())
+    embed.set_image(data_url)
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+
+@plugin.command
+@lightbulb.option("user", "The user to ourplify.", type=hikari.User, required=False)
+@lightbulb.command("ourple", "Ourplify your avatar", aliases=["OURPLE"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def ourple(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                img = comm.url2pil(str(ctx.author.default_avatar_url))
+            else:
+                img = comm.url2pil(str(ctx.author.avatar_url))
+        else:
+            img = comm.url2pil(str([a.url for a in ctx.event.message.attachments if "image" in a.media_type][0]))
+            if img.size[0]*img.size[1] > 1024*1024:
+                await ctx.respond("Your image is too big (bigger than the amount of pixels in a 1024x1024 image). Please use a smaller image.")
+                return
+    else:
+        if ctx.options.user.avatar_url == None:
+            img = comm.url2pil(str(ctx.options.user.default_avatar_url))
+        else:
+            img = comm.url2pil(str(ctx.options.user.avatar_url))
+    img = blurplefy(img, [(255,255,255), (228,31,180), (156, 21, 122)])
+    data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(img)
+    img.close()
+    embed = hikari.Embed(title="Ourple!!", color=comm.color())
     embed.set_image(data_url)
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
@@ -243,7 +322,7 @@ async def glass(ctx: lightbulb.Context):
 @lightbulb.option("user", "The user to make fruity.", type=hikari.User, required=False)
 @lightbulb.command("gay", "Give your avatar a rainbow overlay", aliases=["rainbow", "GAY", "RAINBOW"])
 @lightbulb.implements(lightbulb.PrefixCommand)
-async def wasted(ctx: lightbulb.Context):
+async def gay(ctx: lightbulb.Context):
     comm.log_com(ctx)
     url = "https://some-random-api.com/canvas/overlay/gay?avatar="
     embed = hikari.Embed(title=":rainbow:", color=comm.color())
@@ -291,7 +370,7 @@ async def comrade(ctx: lightbulb.Context):
 @lightbulb.option("user", "The user to Blurplify.", type=hikari.User, required=False)
 @lightbulb.command("horny_license", "Horny card", aliases=["HORNY_LICENSE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
-async def comrade(ctx: lightbulb.Context):
+async def horny_license(ctx: lightbulb.Context):
     comm.log_com(ctx)
     url = "https://some-random-api.com/canvas/misc/horny?avatar="
     embed = hikari.Embed(title="I have a license", color=comm.color())
@@ -312,34 +391,10 @@ async def comrade(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to Blurplify.", type=hikari.User, required=False)
-@lightbulb.command("blurple", "Blurplify your avatar", aliases=["BLURPLE"])
-@lightbulb.implements(lightbulb.PrefixCommand)
-async def wasted(ctx: lightbulb.Context):
-    comm.log_com(ctx)
-    url = "https://some-random-api.com/canvas/filter/blurple?avatar="
-    embed = hikari.Embed(title="Blurple!!", color=comm.color())
-    if ctx.options.user == None:
-        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
-            if ctx.author.avatar_url == None:
-                embed.set_image(comm.url2uri(url + str(ctx.author.default_avatar_url)))
-            else:
-                embed.set_image(comm.url2uri(url + str(ctx.author.avatar_url)))
-        else:
-            embed.set_image(comm.url2uri(url + str([a.url for a in ctx.event.message.attachments if "image" in a.media_type][0])))
-    else:
-        if ctx.options.user.avatar_url == None:
-            embed.set_image(comm.url2uri(url + str(ctx.options.user.default_avatar_url)))
-        else:
-            embed.set_image(comm.url2uri(url + str(ctx.options.user.avatar_url)))
-    embed.set_footer("Ordered by: " + str(ctx.author))
-    await ctx.respond(embed)
-
-@plugin.command
 @lightbulb.option("user", "The user to pet.", type=hikari.User, required=False)
 @lightbulb.command("petpet", "Pet a user, and turn them into a gif!", aliases=["PETPET"])
 @lightbulb.implements(lightbulb.PrefixCommand)
-async def passed(ctx: lightbulb.Context):
+async def petpet(ctx: lightbulb.Context):
     comm.log_com(ctx)
     url = "https://suffxr.discloud.app/gif/petpet?image_url="
     embed = hikari.Embed(title="-w-", color=comm.color())
