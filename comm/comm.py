@@ -40,7 +40,7 @@ def cookies_table():
 
 def log_com(ctx: lightbulb.Context):
     cookies_table()
-    commlog = codecs.open("log.txt", "a", "utf_16")
+    commlog = codecs.open("logs/" + tr(ctx.guild_id) + ".txt", "a", "utf_16")
     ms = datetime.now().strftime("%H:%M:%S") + " : " + str(ctx.guild_id) + " : " + ctx.author.username + "#" + str(ctx.author.discriminator) +  " - " + str(ctx.author.id) + " : " + str(ctx.event.content).replace("\n", "\\n")
     print(ms)
     commlog.write(ms + "\n")
