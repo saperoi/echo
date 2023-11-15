@@ -46,7 +46,7 @@ if mode.lower() == "echo":
         elif isinstance(event.exception, lightbulb.errors.CheckFailure):
             await event.context.respond("You cannot run this command. It may be server-locked.")
         else:
-            print(event)
+            print(event.exception)
 
 bot.load_extensions_from("./extensions")
 bot.run(activity=hikari.Activity(name="the " + __prf + "help command", type=hikari.presences.ActivityType.WATCHING), status=hikari.presences.Status.ONLINE)

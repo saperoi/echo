@@ -13,6 +13,36 @@ def unload(bot):
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.owner_only)
+@lightbulb.option("extension_name", "The name of the extension to reload.")
+@lightbulb.command("reload", "Reload an extension", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def reload_cmd(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    ctx.app.reload_extensions("extensions." + ctx.options.extension_name)
+    await ctx.respond("Reloaded " + ctx.options.extension_name)
+
+@plugin.command
+@lightbulb.add_checks(lightbulb.owner_only)
+@lightbulb.option("extension_name", "The name of the extension to load.")
+@lightbulb.command("load", "Load an extension", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def load_cmd(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    ctx.app.load_extensions("extensions." + ctx.options.extension_name)
+    await ctx.respond("Loaded " + ctx.options.extension_name)
+
+@plugin.command
+@lightbulb.add_checks(lightbulb.owner_only)
+@lightbulb.option("extension_name", "The name of the extension to unload.")
+@lightbulb.command("unload", "Unload an extension", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def unload_cmd(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    ctx.app.unload_extensions("extensions." + ctx.options.extension_name)
+    await ctx.respond("Unloaded " + ctx.options.extension_name)
+
+@plugin.command
+@lightbulb.add_checks(lightbulb.owner_only)
 @lightbulb.command("shutdown", "Shuts down the bot", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def shutdown(ctx: lightbulb.Context):

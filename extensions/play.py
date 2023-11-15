@@ -7,6 +7,7 @@ import sqlite3
 import chess
 import time
 import requests
+import asyncio
 
 plugin = lightbulb.Plugin('play', 'Me when I play a role:')
 
