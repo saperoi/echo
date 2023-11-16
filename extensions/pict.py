@@ -146,11 +146,9 @@ async def colorify(ctx: lightbulb.Context):
             img = comm.url2pil(str(ctx.options.user.default_avatar_url))
         else:
             img = comm.url2pil(str(ctx.options.user.avatar_url))
-    print(img)
     co = ctx.options.color
     try:
         if len(co.split(' ')) == 3:
-            print("yes")
             a = co.split(' ')
             r, g, b = (int(a[0]), int(a[1]), int(a[2]))
             c = (r, g, b)
@@ -166,7 +164,6 @@ async def colorify(ctx: lightbulb.Context):
             raise Exception
     except:
         await ctx.respond("You provided an incorrect color code.")
-    print(c)
     img = colorfy(img, c)
     data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(img)
     img.close()
