@@ -169,8 +169,8 @@ async def colorify(ctx: lightbulb.Context):
     except:
         await ctx.respond("You provided an incorrect color code.")
     print(c)
-    returnimg = colorfy(img, c)
-    data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(returnimg)
+    img = colorfy(img, c)
+    data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(img)
     img.close()
     embed = hikari.Embed(title="COLORED!!", color=c)
     embed.set_image(data_url)
@@ -237,19 +237,45 @@ async def ourple(ctx: lightbulb.Context):
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
-
-
+@plugin.command
+@lightbulb.option("user", "The user to sepia.", type=hikari.User, required=False)
+@lightbulb.command("sepia", "Sepia your avatar", aliases=["SEPIA"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def sepia(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                img = comm.url2pil(str(ctx.author.default_avatar_url))
+            else:
+                img = comm.url2pil(str(ctx.author.avatar_url))
+        else:
+            img = comm.url2pil(str([a.url for a in ctx.event.message.attachments if "image" in a.media_type][0]))
+            if img.size[0]*img.size[1] > 1024*1024:
+                await ctx.respond("Your image is too big (bigger than the amount of pixels in a 1024x1024 image). Please use a smaller image.")
+                return
+    else:
+        if ctx.options.user.avatar_url == None:
+            img = comm.url2pil(str(ctx.options.user.default_avatar_url))
+        else:
+            img = comm.url2pil(str(ctx.options.user.avatar_url))
+    img = img.convert('RGBA')
+    size = img.size
+    for x in range(size[0]):
+        for y in range(size[1]):
+            r, g, b, a = img.getpixel((x, y))
+            m = lambda h: 255 if round(h) > 255 else round(h)
+            img.putpixel((x,y), (m((r * .393) + (g *.769) + (b * .189)), m((r * .349) + (g *.686) + (b * .168)), m((r * .272) + (g *.534) + (b * .131)), a))
+    data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(img)
+    img.close()
+    embed = hikari.Embed(title="Sepia!!", color=0x704214)
+    embed.set_image(data_url)
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
+    
 """
-
-
-AVATAR FUCKERY
-
-
-
-
-
+API AVATAR FUCKERY
 """
-
 
 @plugin.command
 @lightbulb.option("user", "The user to waste.", type=hikari.User, required=False)
