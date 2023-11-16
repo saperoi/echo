@@ -111,8 +111,6 @@ async def nuke(ctx: lightbulb.Context):
 End of licensed code
 """
 
-# https://gist.github.com/adx59/193d22af7e3b2b7feef4290bb0a3ef5f
-
 def colorfy(img, hexd):
     img = img.convert('RGBA')
     size = img.size
