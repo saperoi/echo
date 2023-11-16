@@ -5,6 +5,7 @@ from PIL import Image
 from PIL import ImageFilter
 from PIL import ImageEnhance
 import random
+import math
 
 plugin = lightbulb.Plugin('pict', "Because esmBot doesn't work")
 
@@ -53,8 +54,12 @@ async def show_color(ctx: lightbulb.Context):
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
-# https://github.com/nyancrimew/SAINT
-# A quite random filter, and I actually dont know what this really does.
+
+"""  
+https://github.com/nyancrimew/SAINT
+This code is licensed under the MIT License.
+The full version of this license can be found at /used_licenses/SAINT_LICENSE
+"""
 class WHAT_AM_I_DOING(ImageFilter.BuiltinFilter):
     name = "god stop me please"
     filterargs = (5, 5), 250, 0, (
@@ -102,27 +107,75 @@ async def nuke(ctx: lightbulb.Context):
     embed.set_image(data_url)
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
+"""
+End of licensed code
+"""
 
 # https://gist.github.com/adx59/193d22af7e3b2b7feef4290bb0a3ef5f
 
-def blurplefy(img, colors):
+def colorfy(img, hexd):
     img = img.convert('RGBA')
     size = img.size
-
-    thresholds = [m*255/len(colors) for m in range(1, len(colors)+1)]
-
     for x in range(size[0]):
         for y in range(size[1]):
             r, g, b, a = img.getpixel((x, y))
-            gval = 0.299*r + 0.587*g + 0.114*b
-
-            for t in list(enumerate(thresholds))[::-1]:
-                lower = thresholds[t[0]-1] if t[0]-1 >= 0 else -1
-                if lower < gval <= thresholds[t[0]]:
-                    px = colors[list(enumerate(thresholds))[::-1][t[0]][0]]
-                    img.putpixel((x,y), (px[0], px[1], px[2], a))
-
+            lum = math.sqrt(0.241*(r**2) + 0.691*(g**2) + 0.068*(b**2))
+            m = lambda h: round((lum*h)/255)
+            img.putpixel((x,y), (m(hexd[0]), m(hexd[1]), m(hexd[2]), a))
     return img
+
+@plugin.command
+@lightbulb.option("color", "The color you want to display", modifier=lightbulb.OptionModifier.CONSUME_REST)
+@lightbulb.option("user", "The user to Blurplify.", type=hikari.User, required=False)
+@lightbulb.set_help("Supported formats: RRR BBB GGG, RBG (hex!) (websafe), RGBA (hex!) (websafe), RRBBGG, RRBBGGAA, #RRBBGG, #RRBBGGAA, 0xRRBBGG, 0xRRBBGGAA")
+@lightbulb.command("colorify", "Show a color code", aliases=["COLORIFY"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def colorify(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    if ctx.options.user == None:
+        if ctx.event.message.attachments == [] or "image" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+            if ctx.author.avatar_url == None:
+                img = comm.url2pil(str(ctx.author.default_avatar_url))
+            else:
+                img = comm.url2pil(str(ctx.author.avatar_url))
+        else:
+            img = comm.url2pil(str([a.url for a in ctx.event.message.attachments if "image" in a.media_type][0]))
+            if img.size[0]*img.size[1] > 1024*1024:
+                await ctx.respond("Your image is too big (bigger than the amount of pixels in a 1024x1024 image). Please use a smaller image.")
+                return
+    else:
+        if ctx.options.user.avatar_url == None:
+            img = comm.url2pil(str(ctx.options.user.default_avatar_url))
+        else:
+            img = comm.url2pil(str(ctx.options.user.avatar_url))
+    print(img)
+    co = ctx.options.color
+    try:
+        if len(co.split(' ')) == 3:
+            print("yes")
+            a = co.split(' ')
+            r, g, b = (int(a[0]), int(a[1]), int(a[2]))
+            c = (r, g, b)
+        elif len(co) == 3:
+            c = int((str(co)[0] + str(co)[0]), 16), int((str(co)[1] + str(co)[1]), 16), int((str(co)[2] + str(co)[2]), 16)
+        elif len(co) == 6:
+            c = (int(co[:2], 16), int(co[2:][:2], 16), int(co[-2:], 16))
+        elif len(co) == 7 and co[0] == "#":
+            c = (int(co[1:][:2], 16), int(co[1:][2:][:2], 16), int(co[1:][-2:], 16))
+        elif len(co) == 8 and co[1] == "x":
+            c = (int(co[2:][:2], 16), int(co[2:][2:][:2], 16), int(co[2:][-2:], 16))
+        else:
+            raise Exception
+    except:
+        await ctx.respond("You provided an incorrect color code.")
+    print(c)
+    returnimg = colorfy(img, c)
+    data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(returnimg)
+    img.close()
+    embed = hikari.Embed(title="COLORED!!", color=c)
+    embed.set_image(data_url)
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)
 
 @plugin.command
 @lightbulb.option("user", "The user to Blurplify.", type=hikari.User, required=False)
@@ -146,10 +199,10 @@ async def blurple(ctx: lightbulb.Context):
             img = comm.url2pil(str(ctx.options.user.default_avatar_url))
         else:
             img = comm.url2pil(str(ctx.options.user.avatar_url))
-    img = blurplefy(img, [(255,255,255), (114,137,218), (78,93,148)])
+    img = colorfy(img, (114,137,218))
     data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(img)
     img.close()
-    embed = hikari.Embed(title="Blurple!!", color=comm.color())
+    embed = hikari.Embed(title="Blurple!!", color=(114,137,218))
     embed.set_image(data_url)
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
@@ -176,10 +229,10 @@ async def ourple(ctx: lightbulb.Context):
             img = comm.url2pil(str(ctx.options.user.default_avatar_url))
         else:
             img = comm.url2pil(str(ctx.options.user.avatar_url))
-    img = blurplefy(img, [(255,255,255), (228,31,180), (156, 21, 122)])
+    img = colorfy(img, (228,31,180))
     data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(img)
     img.close()
-    embed = hikari.Embed(title="Ourple!!", color=comm.color())
+    embed = hikari.Embed(title="Ourple!!", color=(228,31,180))
     embed.set_image(data_url)
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
