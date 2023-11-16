@@ -128,7 +128,7 @@ def colorfy(img, hexd):
 @lightbulb.option("color", "The color you want to display", modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.option("user", "The user to Blurplify.", type=hikari.User, required=False)
 @lightbulb.set_help("Supported formats: RRR BBB GGG, RBG (hex!) (websafe), RGBA (hex!) (websafe), RRBBGG, RRBBGGAA, #RRBBGG, #RRBBGGAA, 0xRRBBGG, 0xRRBBGGAA")
-@lightbulb.command("colorify", "Show a color code", aliases=["COLORIFY"])
+@lightbulb.command("colorify", "Recolor an image!", aliases=["COLORIFY"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def colorify(ctx: lightbulb.Context):
     comm.log_com(ctx)
