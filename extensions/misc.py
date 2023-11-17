@@ -372,3 +372,29 @@ async def uwuify(ctx: lightbulb.Context):
     await comm.webhook_send(ctx, ctx.author.id, s)
     if str(type(ctx.event)) == "<class 'hikari.events.message_events.GuildMessageCreateEvent'>":
         await ctx.app.rest.delete_message(ctx.event.message.channel_id, ctx.event.message.id)
+
+@plugin.command
+@lightbulb.option("text", "Text with the words that may or may not be in the bible.", modifier=lightbulb.OptionModifier.CONSUME_REST, type=str, required=True, max_length=1000)
+@lightbulb.option("bible", "The bible to pull from.", type=str, required=True, choices=["nasb", "kjv", "NASB", "KJV"])
+@lightbulb.command("inbible", "ARE YOUR WORDS EVEN IN THE BIBLE?", aliases=["INBIBLE"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def inbible(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    bibletext = open(f"./data/inbible/{ctx.options.bible.lower()}.txt", "r", encoding = "utf-8").read().splitlines()
+    text = list(filter(None, re.sub(r"[^a-z0-9\- ]", " ", ctx.options.text.lower()).split(" ")))
+    words_in = []
+    incount = 0
+    words_not = []
+    for word in text:
+        if word in bibletext:
+            words_in.append(word)
+            incount += 1
+        else:
+            words_not.append(word)
+    embed = hikari.Embed(title=f"{(incount/len(text)*100):.1f}% of your words are in the bible", color=comm.color())
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    if words_in != []:
+        embed.add_field(name="**IN**", value=f"```diff\n+ {' '.join(words_in)}\n```")
+    if words_not != []:
+        embed.add_field(name="**NOT**", value=f"```diff\n- {' '.join(words_not)}\n```")
+    await ctx.respond(embed)

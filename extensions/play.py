@@ -917,8 +917,7 @@ async def pushthebox_error_handler(event: lightbulb.CommandErrorEvent):
     exception = event.exception.__cause__ or event.exception
     pass
 
-dictf = open("./data/dict.txt", "r", encoding = "utf-8")
-dictionary = dictf.read().splitlines()
+dictionary = open("./data/dict.txt", "r", encoding = "utf-8").read().splitlines()
 
 @plugin.command
 @lightbulb.set_help("Regular hangman")
