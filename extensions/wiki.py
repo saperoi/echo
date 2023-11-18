@@ -93,8 +93,6 @@ async def fandom(ctx: lightbulb.Context):
 
     nonTextChecker = lambda x: bool([noni for noni in ["extratex", "group", "gallery", "hardness", "caption", ".png", "image", "link", "alt"] if (noni in x.lower())])
 
-    print(maybebox)
-
     for x in maybebox:
         try:
             if "=" not in x or nonTextChecker(x):
@@ -103,7 +101,6 @@ async def fandom(ctx: lightbulb.Context):
             x[1] = re.sub(r"<([a-z]+)([^>]*>)[^>]*>", "", x[1])
             if x[1].strip() == None:
                 continue
-            print(x)
             embed.add_field(name=x[0].strip(), value=x[1])
         except:
             pass
