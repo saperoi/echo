@@ -98,9 +98,11 @@ async def fandom(ctx: lightbulb.Context):
             if "=" not in x or nonTextChecker(x):
                 continue
             x = x.split("=")
-            x[1] = re.sub(r"<([a-z]+)([^>]*>)[^>]*>", "", x[1])
-            if x[1].strip() == None:
+            x[1] = x[1].replace("<nowiki>", "").replace("</nowiki>", "")
+            x[1] = re.sub(r"<([a-z]+)([^>]*>)[^>]*>", "", x[1]).replace("\n", "").strip()
+            if x[1] == "":
                 continue
+            x[1] = x[1].replace("''", "*").replace("<br/>", "\n")
             embed.add_field(name=x[0].strip(), value=x[1])
         except:
             pass
