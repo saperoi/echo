@@ -81,6 +81,7 @@ async def fandom(ctx: lightbulb.Context):
             current += unparsed_text[x]
     
     non_infobox = lambda x: bool([noni for noni in ["redirect"] if (noni in x.lower())])
+    print(enclosed)
     maybebox = next((s for s in enclosed if '|' in s and '=' in s and not non_infobox(s)), None)[2:-2]
     if maybebox == None:
         await ctx.respond(f"Could not find a valid infobox! If you find it, DM it to <@{comm.owner_id[0]}>.")

@@ -25,169 +25,211 @@ async def gifs_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("This user does not EXIST")
 
 @plugin.command
-@lightbulb.option("user", "The user to kill.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to kill.", required=True)
 @lightbulb.command("kill", "Kill 'em", aliases=["KILL"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def kill(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="FATALITY!", description="<@" + str(ctx.author.id) + "> killed <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="FATALITY!", description="<@" + str(ctx.author.id) + "> killed " + u, color=comm.color())
     embed.set_image(random.choice(urls["kill"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to slap.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to slap.", required=True)
 @lightbulb.command("slap", "Slap 'em", aliases=["SLAP"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def slap(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="Splapp!", description="<@" + str(ctx.author.id) + "> slapped <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="Splapp!", description="<@" + str(ctx.author.id) + "> slapped " + u, color=comm.color())
     embed.set_image(random.choice(urls["slap"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to bonk.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to bonk.", required=True)
 @lightbulb.command("bonk", "bonk 'em", aliases=["BONK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def bonk(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="BONK!", description="<@" + str(ctx.author.id) + "> bonked <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="BONK!", description="<@" + str(ctx.author.id) + "> bonked " + u, color=comm.color())
     embed.set_image(random.choice(urls["bonk"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to bonk and send to jail.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to bonk and send to jail.", required=True)
 @lightbulb.command("hbonk", "bonk 'em and send 'em to horny jail", aliases=["HBONK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def hbonk(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="BONK!", description="<@" + str(ctx.author.id) + "> bonked <@" + str(u) + "> and sent them to horny jail!", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="BONK!", description="<@" + str(ctx.author.id) + "> bonked <@" + u + "> and sent them to horny jail!", color=comm.color())
     embed.set_image(random.choice(urls["hbonk"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to boop.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to boop.", required=True)
 @lightbulb.command("boop", "Boop 'em", aliases=["BOOP"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def boop(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="boop!", description="<@" + str(ctx.author.id) + "> booped <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="boop!", description="<@" + str(ctx.author.id) + "> booped " + u, color=comm.color())
     embed.set_image(random.choice(urls["boop"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to pass the jonko to.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to pass the jonko to.", required=True)
 @lightbulb.command("boof", "Pass it to 'em", aliases=["BOOF"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def boof(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="¿Quieres?", description="<@" + str(ctx.author.id) + "> passed it to <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="¿Quieres?", description="<@" + str(ctx.author.id) + "> passed it to " + u, color=comm.color())
     embed.set_image(random.choice(urls["boof"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to pat.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to pat.", required=True)
 @lightbulb.command("pat", "Pat 'em", aliases=["PAT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def pat(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="Pat pat!", description="<@" + str(ctx.author.id) + "> patted <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="Pat pat!", description="<@" + str(ctx.author.id) + "> patted " + u, color=comm.color())
     embed.set_image(random.choice(urls["pat"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to hug.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to hug.", required=True)
 @lightbulb.command("hug", "Hug 'em", aliases=["HUG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def hug(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="Hug!", description="<@" + str(ctx.author.id) + "> hugged <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="Hug!", description="<@" + str(ctx.author.id) + "> hugged " + u, color=comm.color())
     embed.set_image(random.choice(urls["hug"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to cuddle.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to cuddle.", required=True)
 @lightbulb.command("cuddle", "Cuddle with 'em", aliases=["CUDDLE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def cuddle(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="Cuddle!", description="<@" + str(ctx.author.id) + "> cuddled with <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="Cuddle!", description="<@" + str(ctx.author.id) + "> cuddled with " + u, color=comm.color())
     embed.set_image(random.choice(urls["cuddle"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to tickle.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to tickle.", required=True)
 @lightbulb.command("tickle", "Tickle 'em", aliases=["TICKLE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def tickle(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="TICKLE MONSTER!", description="<@" + str(ctx.author.id) + "> tickled <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="TICKLE MONSTER!", description="<@" + str(ctx.author.id) + "> tickled " + u, color=comm.color())
     embed.set_image(random.choice(urls["tickle"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to kiss.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to kiss.", required=True)
 @lightbulb.command("kiss", "Kiss 'em", aliases=["smooch", "KISS", "SMOOCH"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def kiss(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="MMWAHH!", description="<@" + str(ctx.author.id) + "> smooched <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="MMWAHH!", description="<@" + str(ctx.author.id) + "> smooched " + u, color=comm.color())
     embed.set_image(random.choice(urls["kiss"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to give a cookie.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to give a cookie.", required=True)
 @lightbulb.command("give_cookie", "Give 'em a cookie", aliases=["GIVE_COOKIE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def give_cookie(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title=":cookie: COOKIES!!! :cookie:", description="<@" + str(ctx.author.id) + "> gave <@" + str(u) + "> a cookie!", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title=":cookie: COOKIES!!! :cookie:", description="<@" + str(ctx.author.id) + "> gave <@" + u + "> a cookie!", color=comm.color())
     embed.set_image(random.choice(urls["cookie"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to dap up.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to dap up.", required=True)
 @lightbulb.command("handshake", "Give 'em a good handshake", aliases=["HANDSHAKE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def handshake(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="Dap me up", description="<@" + str(ctx.author.id) + "> shook <@" + str(u) + ">'s hand.", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="Dap me up", description="<@" + str(ctx.author.id) + "> shook <@" + u + ">'s hand.", color=comm.color())
     embed.set_image(random.choice(urls["handshake"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to spank.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to spank.", required=True)
 @lightbulb.command("spank", "Spank 'em", aliases=["SPANK"], nsfw=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def spank(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="Naughty", description="<@" + str(ctx.author.id) + "> spanked <@" + str(u) + "> >w<", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="Naughty", description="<@" + str(ctx.author.id) + "> spanked <@" + u + "> >w<", color=comm.color())
 
     file = open("data/operation/spank.txt", "r")
     f = file.read().replace("\r","").split("\n")
@@ -210,95 +252,121 @@ async def spank(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to feed.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to feed.", required=True)
 @lightbulb.command("feed", "Feed 'em", aliases=["FEED"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def feed(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="Say aah~~!", description="<@" + str(ctx.author.id) + "> fed <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="Say aah~~!", description="<@" + str(ctx.author.id) + "> fed " + u, color=comm.color())
     embed.set_image(random.choice(urls["feed"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to bark at.", type=hikari.Member, required=False)
+@lightbulb.option("user", "The user to bark at.", required=False)
 @lightbulb.command("bark", "Bark at 'em", aliases=["woof", "BARK", "WOOF"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def bark(ctx: lightbulb.Context):
     comm.log_com(ctx)
     desc = "<@" + str(ctx.author.id) + "> barked"
     if ctx.options.user != None:
-        desc += " at <@" + str(ctx.options.user.id) + ">"
+        try:
+            u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+        except:
+            u = str(ctx.options.user)
+        desc += " at " + u
     embed = hikari.Embed(title="WOOF WOOF!", description=desc, color=comm.color())
     embed.set_image(random.choice(urls["bark"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to wag at.", type=hikari.Member, required=False)
+@lightbulb.option("user", "The user to wag at.", required=False)
 @lightbulb.command("wag", "Wag at 'em", aliases=["WAG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def wag(ctx: lightbulb.Context):
     comm.log_com(ctx)
     desc = "<@" + str(ctx.author.id) + "> wagged their tail"
     if ctx.options.user != None:
-        desc += " at <@" + str(ctx.options.user.id) + ">"
+        try:
+            u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+        except:
+            u = str(ctx.options.user)
+        desc += " at " + u
     embed = hikari.Embed(title="Wag!", description=desc, color=comm.color())
     embed.set_image(random.choice(urls["wag"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to smug.", type=hikari.Member, required=False)
+@lightbulb.option("user", "The user to smug.", required=False)
 @lightbulb.command("smug", "Look smug at 'em", aliases=["SMUG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def smug(ctx: lightbulb.Context):
     comm.log_com(ctx)
     desc = "<@" + str(ctx.author.id) + "> looked smug"
     if ctx.options.user != None:
-        desc += " at <@" + str(ctx.options.user.id) + ">"
+        try:
+            u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+        except:
+            u = str(ctx.options.user)
+        desc += " at " + u
     embed = hikari.Embed(title=">:33", description=desc, color=comm.color())
     embed.set_image(random.choice(urls["smug"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to wink.", type=hikari.Member, required=False)
+@lightbulb.option("user", "The user to wink.", required=False)
 @lightbulb.command("wink", "Wink at 'em", aliases=["WINK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def wink(ctx: lightbulb.Context):
     comm.log_com(ctx)
     desc = "<@" + str(ctx.author.id) + "> winked"
     if ctx.options.user != None:
-        desc += " at <@" + str(ctx.options.user.id) + ">"
+        try:
+            u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+        except:
+            u = str(ctx.options.user)
+        desc += " at " + u
     embed = hikari.Embed(title=";3", description=desc, color=comm.color())
     embed.set_image(random.choice(urls["wink"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to facepalm.", type=hikari.Member, required=False)
+@lightbulb.option("user", "The user to facepalm.", required=False)
 @lightbulb.command("facepalm", "Facepalm at 'em", aliases=["FACEPALM"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def facepalm(ctx: lightbulb.Context):
     comm.log_com(ctx)
     desc = "<@" + str(ctx.author.id) + "> facepalmed"
     if ctx.options.user != None:
-        desc += " at <@" + str(ctx.options.user.id) + ">"
+        try:
+            u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+        except:
+            u = str(ctx.options.user)
+        desc += " at " + u
     embed = hikari.Embed(title="uggh.....", description=desc, color=comm.color())
     embed.set_image(random.choice(urls["facepalm"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to bite.", type=hikari.Member, required=True)
+@lightbulb.option("user", "The user to bite.", required=True)
 @lightbulb.command("bite", "Bite 'em", aliases=["BITE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def feed(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    u = ctx.options.user.id
-    embed = hikari.Embed(title="*CHOMP*", description="<@" + str(ctx.author.id) + "> bit <@" + str(u) + ">", color=comm.color())
+    try:
+        u = "<@" + str(comm.user_id_check(ctx.options.user)) + ">"
+    except:
+        u = str(ctx.options.user)
+    embed = hikari.Embed(title="*CHOMP*", description="<@" + str(ctx.author.id) + "> bit " + u, color=comm.color())
     embed.set_image(random.choice(urls["bite"]))
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)

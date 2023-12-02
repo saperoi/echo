@@ -158,12 +158,13 @@ async def rtg(ctx: lightbulb.Context):
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def classpect(ctx: lightbulb.Context):
     comm.log_com(ctx)
+    sway = ["Derse", "Prospit"]
     classes =  ["Knight", "Prince", "Thief", "Mage", "Witch", "Maid", "Page", "Bard", "Rogue", "Seer", "Heir", "Sylph"]
     aspects = ["Space", "Time", "Mind", "Heart", "Hope", "Rage", "Breath", "Blood", "Life", "Doom", "Light", "Void"]
-    classp = list(itertools.product(classes,aspects))
+    classp = list(itertools.product(sway,classes,aspects))
     random.seed(comm.texthasher(ctx.options.who))
     classp = random.choice(classp)
-    classpects = classp[0] + " of " + classp[1]
+    classpects = classp[0] + " " + classp[1] + " of " + classp[2]
     if ctx.options.who in ["you", "You", "YOU"]:
         await ctx.respond("I am a " + classpects)
     elif ctx.options.who in ["me", "Me", "I", "ME"]:
