@@ -25,7 +25,7 @@ async def gifs_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("This user does not EXIST")
 
 @plugin.command
-@lightbulb.option("user", "The user to kill.", required=True)
+@lightbulb.option("user", "The user to kill.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("kill", "Kill 'em", aliases=["KILL"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def kill(ctx: lightbulb.Context):
@@ -40,7 +40,7 @@ async def kill(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to slap.", required=True)
+@lightbulb.option("user", "The user to slap.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("slap", "Slap 'em", aliases=["SLAP"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def slap(ctx: lightbulb.Context):
@@ -55,7 +55,7 @@ async def slap(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to bonk.", required=True)
+@lightbulb.option("user", "The user to bonk.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("bonk", "bonk 'em", aliases=["BONK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def bonk(ctx: lightbulb.Context):
@@ -70,7 +70,7 @@ async def bonk(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to bonk and send to jail.", required=True)
+@lightbulb.option("user", "The user to bonk and send to jail.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("hbonk", "bonk 'em and send 'em to horny jail", aliases=["HBONK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def hbonk(ctx: lightbulb.Context):
@@ -85,7 +85,7 @@ async def hbonk(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to boop.", required=True)
+@lightbulb.option("user", "The user to boop.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("boop", "Boop 'em", aliases=["BOOP"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def boop(ctx: lightbulb.Context):
@@ -100,7 +100,7 @@ async def boop(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to pass the jonko to.", required=True)
+@lightbulb.option("user", "The user to pass the jonko to.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("boof", "Pass it to 'em", aliases=["BOOF"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def boof(ctx: lightbulb.Context):
@@ -115,7 +115,7 @@ async def boof(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to pat.", required=True)
+@lightbulb.option("user", "The user to pat.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("pat", "Pat 'em", aliases=["PAT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def pat(ctx: lightbulb.Context):
@@ -130,7 +130,7 @@ async def pat(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to hug.", required=True)
+@lightbulb.option("user", "The user to hug.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("hug", "Hug 'em", aliases=["HUG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def hug(ctx: lightbulb.Context):
@@ -145,7 +145,7 @@ async def hug(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to cuddle.", required=True)
+@lightbulb.option("user", "The user to cuddle.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("cuddle", "Cuddle with 'em", aliases=["CUDDLE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def cuddle(ctx: lightbulb.Context):
@@ -160,7 +160,7 @@ async def cuddle(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to tickle.", required=True)
+@lightbulb.option("user", "The user to tickle.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("tickle", "Tickle 'em", aliases=["TICKLE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def tickle(ctx: lightbulb.Context):
@@ -175,7 +175,7 @@ async def tickle(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to kiss.", required=True)
+@lightbulb.option("user", "The user to kiss.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("kiss", "Kiss 'em", aliases=["smooch", "KISS", "SMOOCH"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def kiss(ctx: lightbulb.Context):
@@ -190,7 +190,7 @@ async def kiss(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to give a cookie.", required=True)
+@lightbulb.option("user", "The user to give a cookie.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("give_cookie", "Give 'em a cookie", aliases=["GIVE_COOKIE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def give_cookie(ctx: lightbulb.Context):
@@ -205,7 +205,7 @@ async def give_cookie(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to dap up.", required=True)
+@lightbulb.option("user", "The user to dap up.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("handshake", "Give 'em a good handshake", aliases=["HANDSHAKE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def handshake(ctx: lightbulb.Context):
@@ -220,7 +220,7 @@ async def handshake(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to spank.", required=True)
+@lightbulb.option("user", "The user to spank.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("spank", "Spank 'em", aliases=["SPANK"], nsfw=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def spank(ctx: lightbulb.Context):
@@ -252,7 +252,7 @@ async def spank(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to feed.", required=True)
+@lightbulb.option("user", "The user to feed.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("feed", "Feed 'em", aliases=["FEED"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def feed(ctx: lightbulb.Context):
@@ -267,7 +267,7 @@ async def feed(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to bark at.", required=False)
+@lightbulb.option("user", "The user to bark at.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=False)
 @lightbulb.command("bark", "Bark at 'em", aliases=["woof", "BARK", "WOOF"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def bark(ctx: lightbulb.Context):
@@ -285,7 +285,7 @@ async def bark(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to wag at.", required=False)
+@lightbulb.option("user", "The user to wag at.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=False)
 @lightbulb.command("wag", "Wag at 'em", aliases=["WAG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def wag(ctx: lightbulb.Context):
@@ -303,7 +303,7 @@ async def wag(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to smug.", required=False)
+@lightbulb.option("user", "The user to smug.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=False)
 @lightbulb.command("smug", "Look smug at 'em", aliases=["SMUG"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def smug(ctx: lightbulb.Context):
@@ -321,7 +321,7 @@ async def smug(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to wink.", required=False)
+@lightbulb.option("user", "The user to wink.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=False)
 @lightbulb.command("wink", "Wink at 'em", aliases=["WINK"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def wink(ctx: lightbulb.Context):
@@ -339,7 +339,7 @@ async def wink(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to facepalm.", required=False)
+@lightbulb.option("user", "The user to facepalm.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=False)
 @lightbulb.command("facepalm", "Facepalm at 'em", aliases=["FACEPALM"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def facepalm(ctx: lightbulb.Context):
@@ -357,7 +357,7 @@ async def facepalm(ctx: lightbulb.Context):
     await ctx.respond(embed)
 
 @plugin.command
-@lightbulb.option("user", "The user to bite.", required=True)
+@lightbulb.option("user", "The user to bite.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
 @lightbulb.command("bite", "Bite 'em", aliases=["BITE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def feed(ctx: lightbulb.Context):
