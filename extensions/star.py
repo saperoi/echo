@@ -32,7 +32,6 @@ async def board(ctx: lightbulb.Context):
     comm.log_com(ctx)
     embed = hikari.Embed(title="Boards!", color=comm.color())
     embed.set_footer("Ordered by: " + str(ctx.author))
-    embed.add_field(name="**__WARNING__**", value="THIS DOES NOT WORK YET")
     embed.add_field(name=f"{ctx.prefix}board **lst**", value="List all boards")
     embed.add_field(name=f"{ctx.prefix}board **crt** <name> <channel> <emoji> <count>", value="Create a board")
     embed.add_field(name=f"{ctx.prefix}board **rmv** <name>", value="Does nothing yet")
