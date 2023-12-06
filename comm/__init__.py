@@ -4,6 +4,7 @@ from .comm import send_msg
 from .comm import color
 from .comm import webhook_send
 
+from .comm import clean
 from .comm import url2uri
 from .comm import url2pil
 from .comm import pillow_image_to_base64_string

@@ -12,6 +12,7 @@ import base64
 import json
 import hashlib
 import io
+import re
 
 bot_id = [1039988982253092926, 1045057369085841458]
 owner_id = [738772518441320460]
@@ -152,3 +153,6 @@ async def webhook_send(ctx, user, content):
 
 def texthasher(text):
     return int(hashlib.sha256(str(text).encode('utf-8')).hexdigest(), 16)
+
+def clean(inputstring):
+    return re.sub(r'[^a-zA-Z0-9_ ]', '', inputstring)

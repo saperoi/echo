@@ -1,5 +1,4 @@
 import lightbulb
-import re
 import sqlite3
 import comm
 import hikari
@@ -29,6 +28,15 @@ def table_exist_check(s):
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def tag(ctx: lightbulb.Context):
     comm.log_com(ctx)
+    embed = hikari.Embed(title="Tags!", color=comm.color())
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    embed.add_field(name=f"{ctx.prefix}tag **ena**", value="Enables tags (Only possinle by users with the MANAGE SERVER permission)")
+    embed.add_field(name=f"{ctx.prefix}tag **dis**", value="Disables tags (Only possinle by users with the MANAGE SERVER permission)")
+    embed.add_field(name=f"{ctx.prefix}tag **lst**", value="Lists all tags")
+    embed.add_field(name=f"{ctx.prefix}tag **rec** <name>", value="Send a tag message")
+    embed.add_field(name=f"{ctx.prefix}tag **crt** <name> <text>", value="Create a tag")
+    embed.add_field(name=f"{ctx.prefix}tag **rmv** <name>", value="Remove a tags you created")
+    await ctx.respond(embed)
 
 @tag.child
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_GUILD) | lightbulb.owner_only)
@@ -61,7 +69,7 @@ async def dis(ctx: lightbulb.Context):
 async def rec(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if table_exist_check(str(ctx.guild_id)):
-        curtag.execute("SELECT content FROM tag_" + str(ctx.guild_id) + " WHERE name=?", (re.sub(r'[^a-zA-Z0-9_ ]', '',ctx.options.name),))
+        curtag.execute("SELECT content FROM tag_" + str(ctx.guild_id) + " WHERE name=?", (comm.clean(ctx.options.name),))
         r, = curtag.fetchone()
         await comm.send_msg(ctx,str(r))
     else:
@@ -76,7 +84,7 @@ async def crt(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if table_exist_check(str(ctx.guild_id)):
         try:
-            curtag.execute("INSERT INTO tag_" + str(ctx.guild_id) + " VALUES (?, ?, ?)", (re.sub(r'[^a-zA-Z0-9_ ]', '',ctx.options.name), ctx.author.id, ctx.options.content))
+            curtag.execute("INSERT INTO tag_" + str(ctx.guild_id) + " VALUES (?, ?, ?)", (comm.clean(ctx.options.name), ctx.author.id, ctx.options.content))
             await comm.send_msg(ctx,"Created tag " + str(ctx.options.name))
             contag.commit()
         except:
@@ -91,10 +99,10 @@ async def crt(ctx: lightbulb.Context):
 async def rmv(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if table_exist_check(str(ctx.guild_id)):
-        curtag.execute("SELECT id FROM tag_" + str(ctx.guild_id) + " WHERE name=?", (re.sub(r'[^a-zA-Z0-9_ ]', '',ctx.options.name),))
+        curtag.execute("SELECT id FROM tag_" + str(ctx.guild_id) + " WHERE name=?", (comm.clean(ctx.options.name),))
         i, = curtag.fetchone()
         if int(i) == int(ctx.author.id) or int(ctx.author.id) == 738772518441320460:
-            curtag.execute("DELETE from tag_" + str(ctx.guild_id) + " where name=?", (re.sub(r'[^a-zA-Z0-9_ ]', '',ctx.options.name),))
+            curtag.execute("DELETE from tag_" + str(ctx.guild_id) + " where name=?", (comm.clean(ctx.options.name),))
             await comm.send_msg(ctx,"Removed tag " + str(ctx.options.name))
             contag.commit()
         else:
@@ -126,6 +134,11 @@ with open("data/global_tags.json", "r", encoding = "utf-8") as f:
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def g_tag(ctx: lightbulb.Context):
     comm.log_com(ctx)
+    embed = hikari.Embed(title="Global tags!", color=comm.color())
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    embed.add_field(name=f"{ctx.prefix}g_tag **lst**", value="Lists all global tags")
+    embed.add_field(name=f"{ctx.prefix}g_tag **rec** <name>", value="Send a tag message")
+    await ctx.respond(embed)
 
 @g_tag.child
 @lightbulb.option("name", "Name", choices=list(glob.keys()), required=True)
