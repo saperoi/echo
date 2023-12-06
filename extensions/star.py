@@ -130,20 +130,27 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
     guild = event.guild_id
     channel = event.channel_id
     message = event.message_id
-    emoji = event.emoji_name
+    if event.emoji_id == None:
+        emoji = hikari.Emoji.parse(event.emoji_name)
+    else:
+        emoji = hikari.Emoji.parse(f"<:{event.emoji_name}:{event.emoji_id}>")
     message_obj = await plugin.app.rest.fetch_message(channel, message)
     og_msg = f"{channel}/{message}"
-    curstr.execute("SELECT * FROM board_" + str(guild) + " WHERE emoji=?", (emoji,))
+    print(emoji)
+    try:
+        curstr.execute("SELECT * FROM board_" + str(guild) + " WHERE emoji=?", (str(emoji),))
+    except:
+        return
     r = curstr.fetchall()
     constr.commit()
     if not r:
         return
-    emoji = hikari.Emoji.parse(emoji)
+    print("here")
     for c in r:
         for e in message_obj.reactions:
             if e.emoji == emoji:
                 if e.count >= c[3]:
-                    curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, emoji))
+                    curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, str(emoji)))
                     relays = curstr.fetchall()
                     if not relays:
                         embed = hikari.Embed(title="[Original Message]", url=f"https://discord.com/channels/{guild}/{channel}/{message}", description=message_obj.content)
@@ -153,15 +160,13 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
                             embed.set_author(name=message_obj.author.username, icon=comm.url2uri(message_obj.author.avatar_url))
                         if message_obj.attachments:
                             try:
-                                print(message_obj.attachments)
-
                                 embed.set_image(comm.url2uri(list(filter(lambda x: "image" in x.media_type, message_obj.attachments))[0].url))
                             except:
                                 pass
                         own_message = f"{e.count} {e} | <#{channel}>"
                         new_msg = await event.app.rest.create_message(c[1], content=own_message, embed=embed)
                         new_msg = f"{new_msg.channel_id}/{new_msg.id}"
-                        curstr.execute("INSERT INTO message_equ VALUES (?, ?, ?)", (new_msg, og_msg, emoji))
+                        curstr.execute("INSERT INTO message_equ VALUES (?, ?, ?)", (new_msg, og_msg, str(emoji)))
                         constr.commit()
                     else:
                         for relay in relays:
@@ -176,18 +181,18 @@ async def on_rmv_reaction(plugin, event: hikari.GuildReactionDeleteEvent):
     channel = event.channel_id
     message = event.message_id
     emoji = event.emoji_name
+    emoji = hikari.Emoji.parse(emoji)
     message_obj = await plugin.app.rest.fetch_message(channel, message)
     og_msg = f"{channel}/{message}"
-    curstr.execute("SELECT * FROM board_" + str(guild) + " WHERE emoji=?", (emoji,))
+    curstr.execute("SELECT * FROM board_" + str(guild) + " WHERE emoji=?", (str(emoji),))
     r = curstr.fetchall()
     constr.commit()
     if not r:
         return
-    emoji = hikari.Emoji.parse(emoji)
     for c in r:
         for e in message_obj.reactions:
             if e.emoji == emoji:
-                curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, emoji))
+                curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, str(emoji)))
                 relays = curstr.fetchall()
                 if e.count >= c[3]:
                     for relay in relays:
