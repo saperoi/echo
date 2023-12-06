@@ -190,7 +190,6 @@ async def on_rmv_reaction(plugin, event: hikari.GuildReactionDeleteEvent):
             if e.emoji == emoji:
                 curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, emoji))
                 relays = curstr.fetchall()
-                print(e.count, c[3])
                 if e.count >= c[3]:
                     for relay in relays:
                         relayed_channel, relayed_message = relay[0].split("/")
