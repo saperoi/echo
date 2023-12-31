@@ -52,8 +52,7 @@ async def ban_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("One of the users listed do not exist")
 
 @plugin.command
-@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.ADMINISTRATOR))
-@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.MANAGE_ROLES))
+@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
 @lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.command("ban_export", "Exports bans in server to a JSON.", aliases=["BAN_EXPORT"])
 @lightbulb.implements(lightbulb.PrefixCommand)
@@ -62,9 +61,19 @@ async def ban_export(ctx: lightbulb.Context):
     bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
     j = "{"
     for ban in bans:
-        j += '\n\t"' + str(ban.user.id) + '": {' + '\n\t\t"name": "' + ban.user.username + "#" + ban.user.discriminator + '", ' + '\n\t\t"banreason": "' + ban.reason + '"\n\t},'
+        j += '\n\t"' + str(ban.user.id) + '": {' + '\n\t\t"name": "' + str(ban.user.username) + "#" + str(ban.user.discriminator) + '", ' + '\n\t\t"banreason": "' + str(ban.reason).replace('"', '\\"') + '"\n\t},'
+        print(str(ban.reason).replace('"', '\"'))
     j = j[:-1] + "\n}"
     await ctx.respond(attachment = "data:application/json;base64,{}".format(base64.b64encode(str.encode(j)).decode() ))
+
+@plugin.command
+@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS) | lightbulb.owner_only)
+@lightbulb.command("bancount", "Count bans in a server", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def bancount(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
+    await ctx.respond("This server has " + str(len(bans)) + " bans.")
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)

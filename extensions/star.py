@@ -136,7 +136,6 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
         emoji = hikari.Emoji.parse(f"<:{event.emoji_name}:{event.emoji_id}>")
     message_obj = await plugin.app.rest.fetch_message(channel, message)
     og_msg = f"{channel}/{message}"
-    print(emoji)
     try:
         curstr.execute("SELECT * FROM board_" + str(guild) + " WHERE emoji=?", (str(emoji),))
     except:
@@ -145,7 +144,6 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
     constr.commit()
     if not r:
         return
-    print("here")
     for c in r:
         for e in message_obj.reactions:
             if e.emoji == emoji:
