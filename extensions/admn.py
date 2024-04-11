@@ -63,8 +63,7 @@ async def ban_export(ctx: lightbulb.Context):
     bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
     j = "{"
     for ban in bans:
-        j += '\n\t"' + str(ban.user.id) + '": {' + '\n\t\t"name": "' + str(ban.user.username) + "#" + str(ban.user.discriminator) + '", ' + '\n\t\t"banreason": "' + str(ban.reason).replace('"', '\\"') + '"\n\t},'
-        print(str(ban.reason).replace('"', '\"'))
+        j += '\n\t"' + str(ban.user.id) + '": {' + '\n\t\t"name": "' + str(ban.user.username) + "#" + str(ban.user.discriminator) + '", ' + '\n\t\t"banreason": "' + str(ban.reason).replace('"', '\\"').replace('\n', '\\n') + '"\n\t},'
     j = j[:-1] + "\n}"
     await ctx.respond(attachment = "data:application/json;base64,{}".format(base64.b64encode(str.encode(j)).decode() ))
 
@@ -77,12 +76,12 @@ async def ban_import(ctx: lightbulb.Context):
     comm.log_com(ctx)
     if ctx.event.message.attachments == [] or "json" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
         return
-    j = json.loads(requests.get([a for a in ctx.event.message.attachments if "json" in a.media_type][0].url).text, strict=False)
+    j = [a for a in ctx.event.message.attachments if "json" in a.media_type][0].url
+    j = requests.get(j).text
+    j = json.loads(j, strict=False)
     for x in j.keys():
-        print(x, j[x]['banreason'])
         try:
             await ctx.app.rest.ban_user(ctx.guild_id, int(x), reason=f"{j[x]['banreason']}\t-\tBan import by <@{str(ctx.author.id)}>")
-            print("banned")
             await comm.send_msg(ctx,f"Banned <@{x}>")
         except:
             await comm.send_msg(ctx,f"Exception occured with {x}")
@@ -95,18 +94,6 @@ async def bancount(ctx: lightbulb.Context):
     comm.log_com(ctx)
     bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
     await ctx.respond("This server has " + str(len(bans)) + " bans.")
-
-@plugin.command
-@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
-@lightbulb.command("unban_all", "Unbans everyone", hidden=True)
-@lightbulb.implements(lightbulb.PrefixCommand)
-async def unban_all(ctx: lightbulb.Context):
-    comm.log_com(ctx)
-    bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
-    for ban in bans:
-        await ctx.app.rest.unban_user(ctx.guild_id, ban.user.id)
-        await comm.send_msg(ctx,"Unbanned <@" + str(ban.user.id) + ">")
-        
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
@@ -278,3 +265,57 @@ async def lst_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("You did not provide a user (ID) to list warns from.")
     elif isinstance(exception, hikari.errors.NotFoundError):
         await event.context.respond("This user does not EXIST")
+
+@plugin.command
+@lightbulb.add_checks(lightbulb.guild_only)
+@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
+@lightbulb.option("data", "Data for banning. First user mention/id, then the reason (optional). Seperate users with at least one whiteline, if no reason is given, the one from the previous user will be used. If it's the first listed, the reason defaults to 'Banned by <your user>'", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
+@lightbulb.set_help("Bans users")
+@lightbulb.command("speedban", "Ban users from the server.", aliases=["SPEEDBAN"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def speedban(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    
+    bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
+    prebanned = [ban.user.id for ban in bans]
+    
+    lines = [line.split(" ") for line in str(ctx.options.data).split("\n") if line != '']
+    linetuples = [[line[0], None if len(line) == 1 or "".join(line[1:]) == "" else " ".join(line[1:])] for line in lines]
+    for entrynum in range(len(linetuples)):
+        u = linetuples[entrynum][0]
+        
+        if entrynum == 0:
+            if linetuples[entrynum][1] == None:
+                linetuples[entrynum][1] = "Banned by <@" + str(ctx.author.id) + ">."
+            else:
+                linetuples[entrynum][1] = str(linetuples[entrynum][1]) + "\t - \tBanned by <@" + str(ctx.author.id) + ">."
+        else:
+            if linetuples[entrynum][1] == None:
+                linetuples[entrynum][1] = linetuples[entrynum-1][1]
+            else:
+                linetuples[entrynum][1] = str(linetuples[entrynum][1]) + "\t - \tBanned by <@" + str(ctx.author.id) + ">."
+    
+        if int(u) in prebanned:
+            await comm.send_msg(ctx,f"Skipped {u} for already being banned.")
+            continue
+            
+        try:
+            us = await ctx.app.rest.fetch_user(u)
+        except:
+            await comm.send_msg(ctx,f"Skipped {u} for not existing.")
+            continue
+        
+        if "deleted" in us.username.lower():
+            await comm.send_msg(ctx,f"Skipped {u} for being deleted.")
+            continue
+        
+        if us.is_bot:
+            await comm.send_msg(ctx,f"Skipped {u} for being a bot.")
+            continue
+            
+        try:
+            await ctx.app.rest.ban_user(ctx.guild_id, linetuples[entrynum][0], reason=linetuples[entrynum][1])
+            await comm.send_msg(ctx,f"Banned <@{u}>.")
+        except:
+            await comm.send_msg(ctx,f"Could not ban {u} from {ctx.guild_id}.")
+    await comm.send_msg(ctx,f"Finished.")

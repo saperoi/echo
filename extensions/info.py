@@ -103,6 +103,7 @@ async def userinfo(ctx: lightbulb.Context):
     if nickname != None:
         description += "**Nickname**: " + nickname + "\n"
     description += "**UserID**: " + str(ru.id) + "\n"
+    description += "**Ping**: <@" + str(ru.id) + ">\n"
     description += "**Created at**: " + str(ru.created_at)[:16] + "\n"
     if join != None:
         description += "**Joined at**: " + join + "\n"
@@ -141,7 +142,10 @@ async def serverinfo(ctx: lightbulb.Context):
     description += "**Created at**: " + str(su.created_at)[:16] + "\n"
     description += "**Owner**: " + str(su.owner_id) + " <@" + str(su.owner_id) + ">\n"
     embed = hikari.Embed(title=str(su.name), description=description, color=comm.color())
-    embed.set_thumbnail(comm.url2uri(su.icon_url))
+    try:
+        embed.set_thumbnail(comm.url2uri(su.icon_url))
+    except:
+        pass
     embed.set_footer("Ordered by: " + str(ctx.author))
     await ctx.respond(embed)
 
@@ -152,3 +156,16 @@ async def serverinfo_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("You did not provide a server (ID)")
     elif isinstance(exception, hikari.errors.NotFoundError):
         await event.context.respond("This server does not EXIST")
+
+@plugin.command
+@lightbulb.option("snowflake", "The snowflake to get the date of.", type=int)
+@lightbulb.set_help("Discord snowflakes are in milliseconds starting from 1 January 2015 00:00 UTC+0. Results provided in YYYY-MM-DD")
+@lightbulb.command("snowflake", "Pulls information about a snowflake", aliases=["SNOWFLAKE"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def snowflake(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    description = ""
+    description += "**Date**: " + str(hikari.Snowflake(ctx.options.snowflake).created_at)
+    embed = hikari.Embed(title=str(ctx.options.snowflake), description=description, color=comm.color())
+    embed.set_footer("Ordered by: " + str(ctx.author))
+    await ctx.respond(embed)

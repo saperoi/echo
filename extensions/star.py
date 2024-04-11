@@ -211,4 +211,4 @@ async def on_rmv_reaction(plugin, event: hikari.GuildReactionDeleteEvent):
             for relay in relays:
                 relayed_channel, relayed_message = relay[0].split("/")
                 await plugin.app.rest.delete_message(relayed_channel, relayed_message)
-            curstr.execute("DELETE FROM message_equ WHERE relayed=?", (relay[0],))
+                curstr.execute("DELETE FROM message_equ WHERE relayed=?", (relay[0],))

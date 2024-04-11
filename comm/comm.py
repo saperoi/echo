@@ -52,7 +52,10 @@ def user_id_check(u):
         return int(u)
     elif type(u) == str:
         if u[0] == "<" and u[1] == "@" and u[-1] == ">":
-            return int(u.replace('<', '').replace('>', '').replace('@', ''))
+            if str(u.replace('<', '').replace('>', '').replace('@', '')).isnumeric():
+                return int(u.replace('<', '').replace('>', '').replace('@', ''))
+            else:
+                raise ValueError
         else:
             raise ValueError
     else:
