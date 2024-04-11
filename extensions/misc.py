@@ -36,7 +36,7 @@ async def emoji_enlarge(ctx: lightbulb.Context):
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def urban(ctx: lightbulb.Context):
     comm.log_com(ctx)
-
+    
     load_dotenv(find_dotenv())
     headers = {
         "X-RapidAPI-Key": os.getenv("URBAN_API"),

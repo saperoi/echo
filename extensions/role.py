@@ -446,7 +446,6 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
     channel = event.channel_id
     message = event.message_id
     emoji = event.emoji_name
-    message_obj = await plugin.app.rest.fetch_message(channel, message)
     emojitable = "rr_emoji_g" + str(guild) + "_c" + str(channel) + "_m" + str(message)
     ruletable = "rr_rule_g" + str(guild) + "_c" + str(channel)
     try:
@@ -478,7 +477,7 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
             except:
                 pass
     if mode == "verification":
-        await message_obj.remove_reaction(emoji=emoji, user=event.user_id)
+        await plugin.app.rest.fetch_message(channel, message).remove_reaction(emoji=emoji, user=event.user_id)
         for roleid in roles:
             try:
                 await plugin.app.rest.add_role_to_member(guild, member, roleid)
@@ -486,7 +485,7 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
                 pass
 
     if mode == "remove":
-        await message_obj.remove_reaction(emoji=emoji, user=event.user_id)
+        await plugin.app.rest.fetch_message(channel, message).remove_reaction(emoji=emoji, user=event.user_id)
         for roleid in roles:
             try:
                 await plugin.app.rest.remove_role_from_member(guild, member, roleid)

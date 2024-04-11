@@ -7,6 +7,8 @@ import datetime
 import sqlite3
 import time
 import base64
+import requests
+import json
 
 plugin = lightbulb.Plugin('admn')
 
@@ -41,7 +43,7 @@ async def ban(ctx: lightbulb.Context):
             else:
                 linetuples[entrynum][1] = str(linetuples[entrynum][1]) + "\t - \tBanned by <@" + str(ctx.author.id) + ">."
         await ctx.app.rest.ban_user(ctx.guild_id, linetuples[entrynum][0], reason=linetuples[entrynum][1])
-        await comm.send_msg(ctx,"Banned <@" + str(linetuples[entrynum][0]) + ">")
+        await comm.send_msg(ctx,f"Banned <@{str(linetuples[entrynum][0])}>")
 
 @ban.set_error_handler
 async def ban_error_handler(event: lightbulb.CommandErrorEvent):
@@ -67,6 +69,25 @@ async def ban_export(ctx: lightbulb.Context):
     await ctx.respond(attachment = "data:application/json;base64,{}".format(base64.b64encode(str.encode(j)).decode() ))
 
 @plugin.command
+@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
+@lightbulb.add_checks(lightbulb.guild_only)
+@lightbulb.command("ban_import", "Exports bans in server to a JSON.", aliases=["BAN_IMPORT"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def ban_import(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    if ctx.event.message.attachments == [] or "json" not in " ".join([a.media_type for a in ctx.event.message.attachments]):
+        return
+    j = json.loads(requests.get([a for a in ctx.event.message.attachments if "json" in a.media_type][0].url).text, strict=False)
+    for x in j.keys():
+        print(x, j[x]['banreason'])
+        try:
+            await ctx.app.rest.ban_user(ctx.guild_id, int(x), reason=f"{j[x]['banreason']}\t-\tBan import by <@{str(ctx.author.id)}>")
+            print("banned")
+            await comm.send_msg(ctx,f"Banned <@{x}>")
+        except:
+            await comm.send_msg(ctx,f"Exception occured with {x}")
+
+@plugin.command
 @lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS) | lightbulb.owner_only)
 @lightbulb.command("bancount", "Count bans in a server", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
@@ -74,6 +95,18 @@ async def bancount(ctx: lightbulb.Context):
     comm.log_com(ctx)
     bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
     await ctx.respond("This server has " + str(len(bans)) + " bans.")
+
+@plugin.command
+@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
+@lightbulb.command("unban_all", "Unbans everyone", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def unban_all(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    bans = await ctx.app.rest.fetch_bans(ctx.guild_id)
+    for ban in bans:
+        await ctx.app.rest.unban_user(ctx.guild_id, ban.user.id)
+        await comm.send_msg(ctx,"Unbanned <@" + str(ban.user.id) + ">")
+        
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
@@ -111,13 +144,8 @@ async def kick_error_handler(event: lightbulb.CommandErrorEvent):
 async def unban(ctx: lightbulb.Context):
     comm.log_com(ctx)
     u = ctx.options.user.id
-    if ctx.guild_id in comm.atheria_guilds:
-        for sid in comm.atheria_guilds:
-            await ctx.app.rest.unban_user(sid, u)
-        await comm.send_msg(ctx,"Unbanned <@" + str(u) + "> from all ΛTHERIΛ servers")
-    else:
-        await ctx.app.rest.unban_user(ctx.guild_id, u)
-        await comm.send_msg(ctx,"Unbanned <@" + str(u) + ">")
+    await ctx.app.rest.unban_user(ctx.guild_id, u)
+    await comm.send_msg(ctx,"Unbanned <@" + str(u) + ">")
 
 @unban.set_error_handler
 async def unban_error_handler(event: lightbulb.CommandErrorEvent):
@@ -250,114 +278,3 @@ async def lst_error_handler(event: lightbulb.CommandErrorEvent):
         await event.context.respond("You did not provide a user (ID) to list warns from.")
     elif isinstance(exception, hikari.errors.NotFoundError):
         await event.context.respond("This user does not EXIST")
-
-
-@plugin.command
-@lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.add_checks(lightbulb.has_guild_permissions(hikari.Permissions.BAN_MEMBERS))
-@lightbulb.command("vibe_check", "Activity Check", aliases=["activity_check", "activitycheck", "vibecheck", "VIBE_CHECK", "VIBECHECK", "ACTIVITYCHECK", "ACTIVITY_CHECK"])
-@lightbulb.implements(lightbulb.PrefixCommand)
-async def vibe_check(ctx: lightbulb.Context):
-    comm.log_com(ctx)
-    su = await ctx.app.rest.fetch_guild(ctx.guild_id)
-    if su.owner_id != ctx.author.id:
-        await ctx.respond("Only the owner of this server may initiate an activity check")
-        return
-    await ctx.respond("Started")
-    member_lazy = await ctx.app.rest.fetch_members(ctx.guild_id)
-    members = []
-    for mi in range(len(member_lazy)):
-        if member_lazy[mi].is_bot == False:
-            members.append(member_lazy[mi].user.id)
-    print("Pulled member list")
-    await ctx.edit_last_response("Pulled member list")
-    inactivity_members = []
-    other_members = []
-    await ctx.edit_last_response("Prelim determining")
-    for dsi in range(len(members)):
-        member = await ctx.app.rest.fetch_member(ctx.guild_id, members[dsi])
-        print("Prelim determining <@" + str(members[dsi]) + ">")
-        try:
-            hiat = comm.atheria_hiatus[ctx.guild_id]
-        except:
-            hiat = None
-        if hiat in member.role_ids:
-            print(str(members[dsi]) + " hiatus")
-            pass
-        elif comm.atheria_inactivity[ctx.guild_id] in member.role_ids:
-            inactivity_members.append(members[dsi])
-            print(str(members[dsi]) + " inactive")
-        else:
-            other_members.append(members[dsi])
-            print(str(members[dsi]) + " good")
-    c = await ctx.app.rest.fetch_guild_channels(ctx.guild_id)
-    channels = []
-    for ci in range(len(c)):
-        if str(type(c[ci])) == "<class 'hikari.channels.GuildTextChannel'>":
-            channels.append(c[ci].id)
-    print("Pulled channel list")
-    await ctx.edit_last_response("Pulled channel list")
-    now = datetime.datetime.now()
-
-    atheric_day, atheric_month, atheric_year = comm.gta(now.day, now.month, now.year)
-    atheric_leap = 1 if (atheric_year % 400 == 0) or (atheric_year % 4 == 0 and atheric_year % 100 != 0) or atheric_year == 0 else 0
-    date = comm.atg(1, atheric_month-1, atheric_year, atheric_leap)
-
-    await ctx.edit_last_response("Inactive determination")
-    latest_per_inactivity = []
-    for msi in range(len(inactivity_members)):
-        for csi in range(len(channels)):
-            msg = await ctx.app.rest.fetch_messages(channels[csi]).filter(lambda m: m.author.id == inactivity_members[msi]).limit(1)
-            print("[INACTIVITY] <@" + str(inactivity_members[msi]) + "> : <#" + str(channels[csi]) + "> : " + str(msg))
-            if msg != []:
-                tt = msg[0].timestamp
-                try:
-                    time = max(time, tt)
-                except:
-                    time = tt
-        latest_per_inactivity.append(time.strftime("%d/%m/%Y"))
-    days_since_inactivity = []
-    for di in range(len(latest_per_inactivity)):
-        days_since_inactivity.append((datetime.datetime.strptime(latest_per_inactivity[di], "%d/%m/%Y") - datetime.datetime.strptime(date, "%d %B %Y")).days)
-    for dsi in range(len(days_since_inactivity)):
-        member = await ctx.app.rest.fetch_member(ctx.guild_id, inactivity_members[dsi])
-        print(member)
-        print("[INACTIVITY] Determining <@" + str(inactivity_members[dsi]) + ">")
-
-        if days_since_inactivity[dsi] >= 0:
-            await ctx.app.rest.remove_role_from_member(ctx.guild_id, inactivity_members[dsi], comm.atheria_inactivity[ctx.guild_id])
-        elif days_since_inactivity[dsi] < 0:
-            await ctx.app.rest.add_role_to_member(ctx.guild_id, inactivity_members[dsi], comm.atheria_inactivity[ctx.guild_id])
-            u = await ctx.app.rest.fetch_user(inactivity_members[dsi])
-            await u.send("Due to inactivity in the ΛTHERIΛ server, you have been removed from that server.")
-            await ctx.app.rest.kick_user(ctx.guild_id, inactivity_members[dsi], reason="Activity Check")
-
-
-    await ctx.edit_last_response("Active determination")
-    latest_per_other = []
-    for msi in range(len(other_members)):
-        for csi in range(len(channels)):
-            msg = await ctx.app.rest.fetch_messages(channels[csi]).filter(lambda m: m.author.id == other_members[msi]).limit(1)
-            print("<@" + str(other_members[msi]) + "> : <#" + str(channels[csi]) + "> : " + str(msg))
-            if msg != []:
-                tt = msg[0].timestamp
-                try:
-                    time = max(time, tt)
-                except:
-                    time = tt
-        latest_per_other.append(time.strftime("%d/%m/%Y"))
-    days_since_other = []
-    for di in range(len(latest_per_other)):
-        days_since_other.append((datetime.datetime.strptime(latest_per_other[di], "%d/%m/%Y") - datetime.datetime.strptime(date, "%d %B %Y")).days)
-    for dsi in range(len(days_since_other)):
-        member = await ctx.app.rest.fetch_member(ctx.guild_id, other_members[dsi])
-        print(member)
-        print("Determining <@" + str(other_members[dsi]) + ">")
-
-        if days_since_other[dsi] < 0:
-            await ctx.app.rest.add_role_to_member(ctx.guild_id, members[dsi], comm.atheria_inactivity[ctx.guild_id])
-            u = await ctx.app.rest.fetch_user(members[dsi])
-            await u.send("Due to inactivity in the ΛTHERIΛ server, you have been given the `Inactive :heavy_multiplication_x:` role. Please send a message in the server to have the `Inactive :heavy_multiplication_x:` role removed or you will be kicked on the next Activity Check performed.")
-
-    print("Done")
-    await ctx.edit_last_response("Done")

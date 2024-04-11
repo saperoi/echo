@@ -144,34 +144,37 @@ async def on_add_reaction(plugin, event: hikari.GuildReactionAddEvent):
     constr.commit()
     if not r:
         return
+    
+
+    e = next((e for e in message_obj.reactions if e.emoji == emoji))
+    count = e.count
+    relays = curstr.fetchall()
     for c in r:
-        for e in message_obj.reactions:
-            if e.emoji == emoji:
-                if e.count >= c[3]:
-                    curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, str(emoji)))
-                    relays = curstr.fetchall()
-                    if not relays:
-                        embed = hikari.Embed(title="[Original Message]", url=f"https://discord.com/channels/{guild}/{channel}/{message}", description=message_obj.content)
-                        if message_obj.author.avatar_url == None:
-                            embed.set_author(name=message_obj.author.username, icon=comm.url2uri(message_obj.author.default_avatar_url))
-                        else:
-                            embed.set_author(name=message_obj.author.username, icon=comm.url2uri(message_obj.author.avatar_url))
-                        if message_obj.attachments:
-                            try:
-                                embed.set_image(comm.url2uri(list(filter(lambda x: "image" in x.media_type, message_obj.attachments))[0].url))
-                            except:
-                                pass
-                        own_message = f"{e.count} {e} | <#{channel}>"
-                        new_msg = await event.app.rest.create_message(c[1], content=own_message, embed=embed)
-                        new_msg = f"{new_msg.channel_id}/{new_msg.id}"
-                        curstr.execute("INSERT INTO message_equ VALUES (?, ?, ?)", (new_msg, og_msg, str(emoji)))
-                        constr.commit()
-                    else:
-                        for relay in relays:
-                            relayed_channel, relayed_message = relay[0].split("/")
-                            bot_message_obj = await plugin.app.rest.fetch_message(relayed_channel, relayed_message)
-                            own_message = f"{e.count} {e} | <#{channel}>"
-                            await bot_message_obj.edit(content=own_message, attachments=None, embeds=bot_message_obj.embeds)
+        if int(count) >= int(c[3]):
+            curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, str(emoji)))
+            relays = curstr.fetchall()
+            if not relays:
+                embed = hikari.Embed(title="[Original Message]", url=f"https://discord.com/channels/{guild}/{channel}/{message}", description=message_obj.content)
+                if message_obj.author.avatar_url == None:
+                    embed.set_author(name=message_obj.author.username, icon=comm.url2uri(message_obj.author.default_avatar_url))
+                else:
+                    embed.set_author(name=message_obj.author.username, icon=comm.url2uri(message_obj.author.avatar_url))
+                if message_obj.attachments:
+                    try:
+                        embed.set_image(comm.url2uri(list(filter(lambda x: "image" in x.media_type, message_obj.attachments))[0].url))
+                    except:
+                        pass
+                own_message = f"{count} {e} | <#{channel}>"
+                new_msg = await event.app.rest.create_message(c[1], content=own_message, embed=embed)
+                new_msg = f"{new_msg.channel_id}/{new_msg.id}"
+                curstr.execute("INSERT INTO message_equ VALUES (?, ?, ?)", (new_msg, og_msg, str(emoji)))
+                constr.commit()
+            else:
+                for relay in relays:
+                    relayed_channel, relayed_message = relay[0].split("/")
+                    bot_message_obj = await plugin.app.rest.fetch_message(relayed_channel, relayed_message)
+                    own_message = f"{count} {e} | <#{channel}>"
+                    await bot_message_obj.edit(content=own_message, attachments=None, embeds=bot_message_obj.embeds)
 
 @plugin.listener(hikari.GuildReactionDeleteEvent, bind=True)
 async def on_rmv_reaction(plugin, event: hikari.GuildReactionDeleteEvent):
@@ -182,24 +185,30 @@ async def on_rmv_reaction(plugin, event: hikari.GuildReactionDeleteEvent):
     emoji = hikari.Emoji.parse(emoji)
     message_obj = await plugin.app.rest.fetch_message(channel, message)
     og_msg = f"{channel}/{message}"
-    curstr.execute("SELECT * FROM board_" + str(guild) + " WHERE emoji=?", (str(emoji),))
-    r = curstr.fetchall()
-    constr.commit()
-    if not r:
+    try:
+        curstr.execute("SELECT * FROM board_" + str(guild) + " WHERE emoji=?", (str(emoji),))
+    except:
         return
+    r = curstr.fetchall()
+    if r == None:
+        return
+    
+    e = next((e for e in message_obj.reactions if e.emoji == emoji), None)
+    if e == None:
+        count = 0
+    else:
+        count = e.count
+    curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, str(emoji)))
+    relays = curstr.fetchall()
     for c in r:
-        for e in message_obj.reactions:
-            if e.emoji == emoji:
-                curstr.execute("SELECT * FROM message_equ WHERE original=? and emoji=?", (og_msg, str(emoji)))
-                relays = curstr.fetchall()
-                if e.count >= c[3]:
-                    for relay in relays:
-                        relayed_channel, relayed_message = relay[0].split("/")
-                        bot_message_obj = await plugin.app.rest.fetch_message(relayed_channel, relayed_message)
-                        own_message = f"{e.count} {e} | <#{channel}>"
-                        await bot_message_obj.edit(content=own_message, attachments=None, embeds=bot_message_obj.embeds)
-                else:
-                    for relay in relays:
-                        relayed_channel, relayed_message = relay[0].split("/")
-                        await plugin.app.rest.delete_message(relayed_channel, relayed_message)
-                    curstr.execute("DELETE FROM message_equ WHERE relayed=?", (relay[0],))
+        if int(count) >= int(c[3]):
+            for relay in relays:
+                relayed_channel, relayed_message = relay[0].split("/")
+                bot_message_obj = await plugin.app.rest.fetch_message(relayed_channel, relayed_message)
+                own_message = f"{count} {e} | <#{channel}>"
+                await bot_message_obj.edit(content=own_message, attachments=None, embeds=bot_message_obj.embeds)
+        else:
+            for relay in relays:
+                relayed_channel, relayed_message = relay[0].split("/")
+                await plugin.app.rest.delete_message(relayed_channel, relayed_message)
+            curstr.execute("DELETE FROM message_equ WHERE relayed=?", (relay[0],))

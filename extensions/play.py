@@ -593,12 +593,12 @@ async def chessBot_error_handler(event: lightbulb.CommandErrorEvent):
 
 @plugin.command
 @lightbulb.set_help("Standard Wordle rules.")
-@lightbulb.command("wordle", "Play a neat game of Wordle!", aliases=["WORLDE"])
+@lightbulb.command("wordle", "Play a neat game of Wordle!", aliases=["WORDLE"])
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def wordle(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    alpha = requests.get("https://cdn.discordapp.com/attachments/947100010959470595/954346459283734528/nyt_words_alpha.txt").text.replace("\r","").split("\n")
-    gamma = requests.get("https://cdn.discordapp.com/attachments/947100010959470595/954784115444547634/nyt_words_gamma.txt").text.replace("\r","").split("\n")
+    alpha = dictionary = open("./data/wordle_alpha.txt", "r", encoding = "utf-8").read().splitlines()
+    gamma = alpha
     secret = random.choice(alpha)
     starttime = time.time()
 
@@ -1049,7 +1049,7 @@ async def hangman(ctx: lightbulb.Context):
 ```"""]
     used_letters = []
     bad_letters = []
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    alphabet = list("abcdefghijklmnopqrstuvwxyz")
     starttime = time.time()
 
     async def await_answer(iss = ""):
@@ -1065,12 +1065,15 @@ async def hangman(ctx: lightbulb.Context):
 
     async def getGuess(used):
         letter = await await_answer()
+        letter = letter.lower()
         flagAlphabet = False
         while flagAlphabet == False:
-            if letter.upper() not in alphabet:
+            if letter not in alphabet:
                 letter = await await_answer("This isn't a letter! Please try again!")
+            elif letter in used_letters:
+                letter = await await_answer("This letter was used, try again!")
             else:
-                return letter.lower()
+                return letter
 
     embed = hikari.Embed(title="[[HANGMAN]]", description="", color=comm.color())
     embed.set_footer("Ordered by: " + str(ctx.author))
