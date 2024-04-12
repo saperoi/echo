@@ -12,12 +12,8 @@ def load(bot):
 def unload(bot):
     bot.remove_plugin(plugin)
 
-@lightbulb.Check
-def owners_only(ctx: lightbulb.Context) -> bool:
-    return ctx.author.id in [738772518441320460]
-
 @plugin.command
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.option("extension_name", "The name of the extension to reload.")
 @lightbulb.command("reload", "Reload an extension", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
@@ -27,7 +23,7 @@ async def reload_cmd(ctx: lightbulb.Context):
     await ctx.respond("Reloaded " + ctx.options.extension_name)
 
 @plugin.command
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.option("extension_name", "The name of the extension to load.")
 @lightbulb.command("load", "Load an extension", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
@@ -37,7 +33,7 @@ async def load_cmd(ctx: lightbulb.Context):
     await ctx.respond("Loaded " + ctx.options.extension_name)
 
 @plugin.command
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.option("extension_name", "The name of the extension to unload.")
 @lightbulb.command("unload", "Unload an extension", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
@@ -47,7 +43,7 @@ async def unload_cmd(ctx: lightbulb.Context):
     await ctx.respond("Unloaded " + ctx.options.extension_name)
 
 @plugin.command
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.command("shutdown", "Shuts down the bot", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def shutdown(ctx: lightbulb.Context):
@@ -56,7 +52,7 @@ async def shutdown(ctx: lightbulb.Context):
     quit()
 
 @plugin.command
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.command("slst", "Lists the bot's servers", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
 async def slst(ctx: lightbulb.Context):
@@ -69,7 +65,7 @@ async def slst(ctx: lightbulb.Context):
     await ctx.respond(re)
 
 @plugin.command
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.option("server", "The server to leave", type=int, required=True)
 @lightbulb.command("leave", "Lists the bot's servers", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
@@ -80,7 +76,7 @@ async def leave(ctx: lightbulb.Context):
 
 
 @plugin.command
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.option("server", "The server to create an invite for.", required=True, type=int)
 @lightbulb.command("owner_ban_export", "Exports bans in server to a JSON.", aliases=["OWNER_BAN_EXPORT"], hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
@@ -94,7 +90,7 @@ async def owner_ban_export(ctx: lightbulb.Context):
     await ctx.respond(attachment = "data:application/json;base64,{}".format(base64.b64encode(str.encode(j)).decode() ))
 
 @plugin.command
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.option("server", "The server to create an invite for.", required=True, type=int)
 @lightbulb.command("invite", "Make a server invite", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)
@@ -139,7 +135,7 @@ async def test(ctx: lightbulb.Context):
 
 @plugin.command
 @lightbulb.add_checks(lightbulb.guild_only)
-@lightbulb.add_checks(owners_only)
+@lightbulb.add_checks(comm.owners_only)
 @lightbulb.option("channel", "The channel to read.", required=True)
 @lightbulb.command("readmsg", "Reads messages", hidden=True)
 @lightbulb.implements(lightbulb.PrefixCommand)

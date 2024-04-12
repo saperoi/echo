@@ -25,6 +25,10 @@ with open("data/item_data.json", 'r', encoding = "utf-8") as file:
 with open("data/name_data.json", 'r', encoding = "utf-8") as file:
     name_data = json.load(file)
 
+@lightbulb.Check
+def owners_only(ctx: lightbulb.Context) -> bool:
+    return ctx.author.id in owner_id
+
 def cookies_table():
     curmisc.execute("CREATE TABLE IF NOT EXISTS misc_vars(key TEXT, value TEXT)")
 

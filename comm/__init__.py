@@ -12,6 +12,7 @@ from .comm import texthasher
 
 from .comm import bot_id
 from .comm import owner_id
+from .comm import owners_only
 
 from .comm import item_data
 from .comm import name_data
