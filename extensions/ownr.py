@@ -125,16 +125,7 @@ async def invite(ctx: lightbulb.Context):
                 i += 1
     await ctx.respond(re)
 
-"""
 @plugin.command
-@lightbulb.command("test", "test 'em")
-@lightbulb.implements(lightbulb.PrefixCommand)
-async def test(ctx: lightbulb.Context):
-    comm.log_com(ctx)
-    print(ctx.event.message.attachments)
-
-@plugin.command
-@lightbulb.add_checks(lightbulb.guild_only)
 @lightbulb.add_checks(comm.owners_only)
 @lightbulb.option("channel", "The channel to read.", required=True)
 @lightbulb.command("readmsg", "Reads messages", hidden=True)
@@ -149,5 +140,24 @@ async def readmsg(ctx: lightbulb.Context):
         s += t
         print(t)
 
+@plugin.command
+@lightbulb.add_checks(comm.owners_only)
+@lightbulb.option("text", "The text to send.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
+@lightbulb.option("channel", "The channel to send in.", required=True)
+@lightbulb.command("sendmsg", "Sends messages", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def sendmsg(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    await ctx.app.rest.create_message(ctx.options.channel, ctx.options.text)
 
+"""
+@plugin.command
+@lightbulb.add_checks(comm.owners_only)
+@lightbulb.option("text", "The text to send.", modifier=lightbulb.OptionModifier.CONSUME_REST, required=True)
+@lightbulb.option("user", "The user to send to.", required=True)
+@lightbulb.command("sendpm", "Sends DMs", hidden=True)
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def sendpm(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    await ctx.app.rest.dm(ctx.options.user, ctx.options.text)
 """

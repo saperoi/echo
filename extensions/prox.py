@@ -184,7 +184,6 @@ async def autoproxy(ctx: lightbulb.Context):
         conprox.commit()
         await ctx.respond("Autoproxy FALSE")
 
-
 @plugin.listener(hikari.GuildMessageCreateEvent, bind=True)
 async def echo_autoproxy_event(plugin, event: hikari.GuildMessageCreateEvent):
     curprox.execute("SELECT state FROM echo_auto WHERE user=?", (event.author_id, ) )
@@ -199,3 +198,23 @@ async def echo_autoproxy_event(plugin, event: hikari.GuildMessageCreateEvent):
     
     await event.app.rest.create_message(event.channel_id, event.content)
     await event.app.rest.delete_message(event.channel_id, event.message_id)
+
+@plugin.command
+@lightbulb.option("emoji", "Emoji to react with", type=hikari.Emoji, required=True)
+@lightbulb.option("message", "Message to react to", type=int, required=True)
+@lightbulb.option("channel", "Channel to react in", type=int, required=True)
+@lightbulb.command("react", "Reacts as ECHO", aliases=["REACT"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def react(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    try:
+        if type(ctx.options.emoji) is hikari.emojis.UnicodeEmoji:
+            await ctx.app.rest.add_reaction(ctx.options.channel, ctx.options.message, ctx.options.emoji.name)
+            await ctx.app.rest.delete_message(ctx.event.channel_id, ctx.event.message_id)
+        elif type(ctx.options.emoji) is hikari.emojis.CustomEmoji:
+            await ctx.app.rest.add_reaction(ctx.options.channel, ctx.options.message, ctx.options.emoji.name, ctx.options.emoji.id)
+            await ctx.app.rest.delete_message(ctx.event.channel_id, ctx.event.message_id)
+        else:
+            raise Exception
+    except:
+        await ctx.respond("One of the parameters was invalid.")

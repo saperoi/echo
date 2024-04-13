@@ -74,11 +74,7 @@ async def send_msg(ctx: lightbulb.Context, txt: str):
             await ctx.respond(lines[j])
 
 def rndm_name():
-    chars = [random.choice('azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890') for _ in range(10)]
-    name = ""
-    for i in range(len(chars)):
-        name += chars[i]
-    return name
+    return "".join([random.choice('azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890') for _ in range(10)])
 
 def random_name(category = "deity"):
     global name_data

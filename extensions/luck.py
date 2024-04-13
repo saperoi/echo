@@ -173,6 +173,28 @@ async def classpect(ctx: lightbulb.Context):
         await comm.send_msg(ctx, ctx.options.who + " is a " + classpects)
 
 @rtg.child
+@lightbulb.option("who", "Who to determine the alignment of", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
+@lightbulb.set_help("D&D Alignments")
+@lightbulb.command("dndalign", "D&D Alignments", aliases=["DNDALIGN"])
+@lightbulb.implements(lightbulb.PrefixSubCommand)
+async def dndalign(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    ethos = ["Lawful", "Neutral", "Chaotic"]
+    moral = ["Good", "Neutral", "Evil"]
+    align = list(itertools.product(ethos,moral))
+    random.seed(comm.texthasher(ctx.options.who))
+    align = random.choice(align)
+    alignment = align[0] + " " + align[1]
+    if alignment == "Neutral Neutral":
+        alignment = "True Neutral"
+    if ctx.options.who in ["you", "You", "YOU"]:
+        await ctx.respond("I am a " + alignment)
+    elif ctx.options.who in ["me", "Me", "I", "ME"]:
+        await ctx.respond(ctx.author.mention + " is a " + alignment)
+    else:
+        await comm.send_msg(ctx, ctx.options.who + " is a " + alignment)
+
+@rtg.child
 @lightbulb.option("who", "Who to put on the twunkscale", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)
 @lightbulb.set_help("Rates on the Twink-Hunk-Bear Scale")
 @lightbulb.command("twunkscale", "Rates on the Twink-Hunk-Bear Scale", aliases=["TWUNKSCALE"])
