@@ -3,8 +3,10 @@ import sys
 from dotenv import load_dotenv
 import hikari
 import lightbulb
+from lightbulb.ext import tasks
 import comm
 import miru
+import random
 
 load_dotenv()
 
@@ -14,17 +16,16 @@ except:
     mode = "echo"
 mode = mode.lower()
 if mode == "ache":
-    __tok = os.getenv("ACHE_TOKEN")
-    __prf = os.getenv("ACHE_PREFIX")
-    __uid = os.getenv("ACHE_ID")
+    token = os.getenv("ACHE_TOKEN")
+    prefix = os.getenv("ACHE_PREFIX")
+    uid = os.getenv("ACHE_ID")
 if mode == "echo":
     print('here')
-    __tok = os.getenv("ECHO_TOKEN")
-    __prf = os.getenv("ECHO_PREFIX")
-    __uid = os.getenv("ECHO_ID")
+    token = os.getenv("ECHO_TOKEN")
+    prefix = os.getenv("ECHO_PREFIX")
+    uid = os.getenv("ECHO_ID")
 
-bot = lightbulb.BotApp(token=__tok, prefix=[__prf, __prf.upper(), __prf.replace("/", "\/"), __prf.upper().replace("/", "\/"), "<@" + __uid + ">"], intents=hikari.Intents.ALL_UNPRIVILEGED | hikari.Intents.MESSAGE_CONTENT)
-miru.install(bot)
+bot = lightbulb.BotApp(token=token, prefix=[prefix, prefix.upper(), prefix.replace("/", "\/"), prefix.upper().replace("/", "\/"), "<@" + uid + ">"], intents=hikari.Intents.ALL_UNPRIVILEGED | hikari.Intents.MESSAGE_CONTENT)
 
 if mode.lower() == "echo":
     @bot.listen(lightbulb.CommandErrorEvent)
@@ -48,5 +49,18 @@ if mode.lower() == "echo":
         else:
             print(event.exception)
 
+activities = [
+    hikari.Activity(name="the " + prefix + "help command", type=hikari.ActivityType.WATCHING),
+    hikari.Activity(name="the " + prefix + "help command", type=hikari.ActivityType.WATCHING),
+    hikari.Activity(name="THINK HELLO AND WAIT.", type=hikari.ActivityType.CUSTOM),
+]
+
+@tasks.task(s=40, auto_start=True, pass_app=True)
+async def bot_status(bot):
+    act = random.choice(activities)
+    await bot.update_presence(activity=act, status=hikari.presences.Status.ONLINE)
+
+miru.install(bot)
+tasks.load(bot)
 bot.load_extensions_from("./extensions")
-bot.run(activity=hikari.Activity(name="the " + __prf + "help command", type=hikari.presences.ActivityType.WATCHING), status=hikari.presences.Status.ONLINE)
+bot.run(activity=hikari.Activity(name="THINK HELLO AND WAIT.", type=hikari.ActivityType.CUSTOM), status=hikari.presences.Status.ONLINE)
