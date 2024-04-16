@@ -11,7 +11,6 @@ from .comm import pillow_image_to_base64_string
 from .comm import texthasher
 
 from .comm import bot_id
-from .comm import owner_id
 from .comm import owners_only
 
 from .comm import item_data

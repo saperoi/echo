@@ -3,6 +3,7 @@ import comm
 import math
 import random
 import itertools
+import datetime as dt
 
 plugin = lightbulb.Plugin('luck', 'Test fate')
 
@@ -94,8 +95,39 @@ async def eightball(ctx: lightbulb.Context):
 
     await comm.send_msg(ctx,random.choice(ball))
 
-@eightball.set_error_handler
-async def eightball_error_handler(event: lightbulb.CommandErrorEvent):
+@plugin.command
+@lightbulb.option("question", "Your question")
+@lightbulb.command("3ball", "See the fortune", aliases=["shitty8ball", "SHITTY8BALL", "3BALL", "threeball", "THREEBALL"])
+@lightbulb.implements(lightbulb.PrefixCommand)
+async def threeball(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    ball = [
+        "Of course.",
+        "No shit, Sherlock.",
+        "A hundred percent, bestie.",
+        "Yeah, for sure, bud.",
+        "Mhm.",
+        "Hell yeah!!!",
+        "Probably.",
+        "Ehhh...",
+        "Ask a higher power at this point.",
+        "Sure??? I guess???",
+        "I can't even begin to explain.",
+        "Fucked up if true.",
+        "Of course not!",
+        "Nope. Not at all",
+        "NO!!!",
+        "No! Absolutely not! Go to hell!",
+        "In your dreams.",
+        "Never in a million years.",
+        "What.",
+        "I'm biting you for that one."
+    ]
+
+    await comm.send_msg(ctx,random.choice(ball))
+
+@threeball.set_error_handler
+async def threeball_error_handler(event: lightbulb.CommandErrorEvent):
     exception = event.exception.__cause__ or event.exception
     if isinstance(exception, lightbulb.NotEnoughArguments):
         await event.context.respond("You did not ask me a question!")
@@ -150,6 +182,22 @@ async def rps_error_handler(event: lightbulb.CommandErrorEvent):
 @lightbulb.implements(lightbulb.PrefixCommandGroup)
 async def rtg(ctx: lightbulb.Context):
     comm.log_com(ctx)
+
+
+@rtg.child
+@lightbulb.option("range", "Year range", type=str, default="100", choices=["1k", "1K", "200", "100", "fut", "FUT"])
+@lightbulb.set_help("Generate a random date. You can write after the function 1k (for between 1000 and 3000), 200 (for between 1800 and 2200), 100 (for between 1900 and 2100), or fut (for between now and 2100). Defaults to 100")
+@lightbulb.command("date", "Random date", aliases=["DATE"])
+@lightbulb.implements(lightbulb.PrefixSubCommand)
+async def date(ctx: lightbulb.Context):
+    comm.log_com(ctx)
+    year1, year2 = {"1k": (1000, 3000), "200": (1800, 2200), "100": (1900, 2100), "fut": (dt.datetime.now().year, 2100)}[ctx.options.range.lower()]
+    d1 = dt.datetime.strptime(f"1/1/{year1}", '%d/%m/%Y')
+    d2 = dt.datetime.strptime(f"31/12/{year2}", '%d/%m/%Y')
+    if ctx.options.range.lower() == "fut":
+        d1 = dt.datetime.now()
+    diff = d2 - d1
+    await comm.send_msg(ctx, (d1 + dt.timedelta(days=random.randrange(diff.days))).strftime("%d %B %Y"))
 
 @rtg.child
 @lightbulb.option("who", "Who to determine the classpect of", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)

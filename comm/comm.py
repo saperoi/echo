@@ -15,7 +15,6 @@ import io
 import re
 
 bot_id = [1039988982253092926, 1045057369085841458]
-owner_id = [738772518441320460]
 
 conmisc = sqlite3.connect("./db/misc.db")
 curmisc = conmisc.cursor()
@@ -27,7 +26,7 @@ with open("data/name_data.json", 'r', encoding = "utf-8") as file:
 
 @lightbulb.Check
 def owners_only(ctx: lightbulb.Context) -> bool:
-    return ctx.author.id in owner_id
+    return ctx.author.id in [738772518441320460]
 
 def cookies_table():
     curmisc.execute("CREATE TABLE IF NOT EXISTS misc_vars(key TEXT, value TEXT)")
@@ -148,10 +147,14 @@ def url2pil(url):
 def color():
     return random.randint(0x0, 0xffffff)
 
-async def webhook_send(ctx, user, content):
+async def webhook_send(ctx: lightbulb.Context, user, content):
     member = await ctx.app.rest.fetch_member(ctx.guild_id, user)
-    hook = await ctx.app.rest.create_webhook(channel=ctx.channel_id, name="ATMOS: " + str(member.id), avatar=member.display_avatar_url)
-    await hook.execute(content=content, username=member.display_name if ctx.author.id == user else "\"" + member.display_name + "\"")
+    if isinstance(ctx.get_channel(), hikari.GuildThreadChannel):
+        hook = await ctx.app.rest.create_webhook(channel=ctx.get_channel().parent_id, name="ECHO: " + str(member.id), avatar=member.display_avatar_url)
+        await ctx.app.rest.execute_webhook(webhook=hook.webhook_id, token=hook.token, content=content, username=member.display_name if ctx.author.id == user else "\"" + member.display_name + "\"", thread=ctx.channel_id)
+    else:
+        hook = await ctx.app.rest.create_webhook(channel=ctx.channel_id, name="ECHO: " + str(member.id), avatar=member.display_avatar_url)
+        await hook.execute(content=content, username=member.display_name if ctx.author.id == user else "\"" + member.display_name + "\"")
     await hook.delete()
 
 def texthasher(text):
