@@ -1,9 +1,11 @@
 import lightbulb
+import hikari
 import comm
 import math
 import random
 import itertools
 import datetime as dt
+from PIL import Image
 
 plugin = lightbulb.Plugin('luck', 'Test fate')
 
@@ -183,21 +185,31 @@ async def rps_error_handler(event: lightbulb.CommandErrorEvent):
 async def rtg(ctx: lightbulb.Context):
     comm.log_com(ctx)
 
-
 @rtg.child
-@lightbulb.option("range", "Year range", type=str, default="100", choices=["1k", "1K", "200", "100", "fut", "FUT"])
+@lightbulb.option("range", "Year range", type=str, default="100", choices=["1k", "1K", "200", "100", "fut", "FUT", "911"])
 @lightbulb.set_help("Generate a random date. You can write after the function 1k (for between 1000 and 3000), 200 (for between 1800 and 2200), 100 (for between 1900 and 2100), or fut (for between now and 2100). Defaults to 100")
 @lightbulb.command("date", "Random date", aliases=["DATE"])
 @lightbulb.implements(lightbulb.PrefixSubCommand)
 async def date(ctx: lightbulb.Context):
     comm.log_com(ctx)
-    year1, year2 = {"1k": (1000, 3000), "200": (1800, 2200), "100": (1900, 2100), "fut": (dt.datetime.now().year, 2100)}[ctx.options.range.lower()]
+    year1, year2 = {"1k": (1000, 3000), "200": (1800, 2200), "100": (1900, 2100), "fut": (dt.datetime.now().year, 2100), "911": (2001, 2001)}[ctx.options.range.lower()]
     d1 = dt.datetime.strptime(f"1/1/{year1}", '%d/%m/%Y')
     d2 = dt.datetime.strptime(f"31/12/{year2}", '%d/%m/%Y')
     if ctx.options.range.lower() == "fut":
         d1 = dt.datetime.now()
     diff = d2 - d1
-    await comm.send_msg(ctx, (d1 + dt.timedelta(days=random.randrange(diff.days))).strftime("%d %B %Y"))
+    date = (d1 + dt.timedelta(days=random.randrange(diff.days))).strftime("%d %B %Y")
+    if ctx.options.range == "911":
+        date = "9 September 2001"
+    if date == "9 September 2001":
+        with Image.open("./data/img/yuri911.jpg") as im:
+            data_url = 'data:image/png;base64,' + comm.pillow_image_to_base64_string(im)
+        embed = hikari.Embed(title="9/11", color=comm.color())
+        embed.set_image(data_url)
+        embed.set_footer("Ordered by: " + str(ctx.author))
+        await ctx.respond(embed)
+    else:
+        await ctx.respond(date)
 
 @rtg.child
 @lightbulb.option("who", "Who to determine the classpect of", type=str, required=True, modifier=lightbulb.OptionModifier.CONSUME_REST)

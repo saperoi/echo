@@ -149,12 +149,28 @@ def color():
 
 async def webhook_send(ctx: lightbulb.Context, user, content):
     member = await ctx.app.rest.fetch_member(ctx.guild_id, user)
-    if isinstance(ctx.get_channel(), hikari.GuildThreadChannel):
+    if ctx.channel_id == None:
+        await send_msg(ctx, content)
+    elif isinstance(ctx.get_channel(), hikari.GuildThreadChannel):
         hook = await ctx.app.rest.create_webhook(channel=ctx.get_channel().parent_id, name="ECHO: " + str(member.id), avatar=member.display_avatar_url)
         await ctx.app.rest.execute_webhook(webhook=hook.webhook_id, token=hook.token, content=content, username=member.display_name if ctx.author.id == user else "\"" + member.display_name + "\"", thread=ctx.channel_id)
     else:
         hook = await ctx.app.rest.create_webhook(channel=ctx.channel_id, name="ECHO: " + str(member.id), avatar=member.display_avatar_url)
         await hook.execute(content=content, username=member.display_name if ctx.author.id == user else "\"" + member.display_name + "\"")
+    await hook.delete()
+
+async def plurality_webhook_send(ctx: lightbulb.Context, user, content):
+    name = {"letterbot": "LetterBot"}[user]
+    with Image.open({"letterbot": "./data/img/letterbot.jpg"}[user]) as im:
+        avatar = 'data:image/jpeg;base64,' + pillow_image_to_base64_string(im)
+    if ctx.channel_id == None:
+        await send_msg(ctx, content)
+    elif isinstance(ctx.get_channel(), hikari.GuildThreadChannel):
+        hook = await ctx.app.rest.create_webhook(channel=ctx.get_channel().parent_id, name="ECHO HEADMATE: " + name, avatar=avatar)
+        await ctx.app.rest.execute_webhook(webhook=hook.webhook_id, token=hook.token, content=content, username=name, thread=ctx.channel_id)
+    else:
+        hook = await ctx.app.rest.create_webhook(channel=ctx.channel_id, name="ECHO HEADMATE: " + name, avatar=avatar)
+        await ctx.app.rest.execute_webhook(webhook=hook.webhook_id, token=hook.token, content=content, username=name)
     await hook.delete()
 
 def texthasher(text):

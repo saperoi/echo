@@ -3,6 +3,7 @@ from .comm import user_id_check
 from .comm import send_msg
 from .comm import color
 from .comm import webhook_send
+from .comm import plurality_webhook_send
 
 from .comm import clean
 from .comm import url2uri
