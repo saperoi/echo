@@ -4,6 +4,8 @@ Prefix: e//
 
 [Invite link](https://discord.com/oauth2/authorize?client_id=1039988982253092926&scope=bot&permissions=275683601487)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y210CCTA)
+
 # USING
 
 If you wish to use this bot locally, there are a few packages you need to install. These are:  
